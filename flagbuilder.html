@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Flag Builder</title>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" type="text/css" href="flagbuilder.css">
+</head>
+
+<body>
+    <div class="flagbuilder-wrap">
+
+        <div class="flag-panel flag-preview-panel">
+            <p class="flag-panel-title">Preview</p>
+            <div class="flag-preview-stage">
+                <canvas id="preview-canvas" class="flag-preview-canvas"></canvas>
+                <img id="layer-bg" class="flag-layer-source" alt="Flag background">
+                <img id="layer-border" class="flag-layer-source" alt="Flag border">
+                <img id="layer-emblem" class="flag-layer-source" alt="Flag emblem">
+            </div>
+            <p id="flag-summary" class="flag-summary"></p>
+        </div>
+
+        <div class="flag-panel flag-controls-panel">
+            <p class="flag-panel-title">Flag Builder</p>
+
+            <div class="flag-field">
+                <label class="flag-label" for="bg-select">Background</label>
+                <select id="bg-select" class="flag-select"></select>
+            </div>
+
+            <div class="flag-field">
+                <label class="flag-label" for="border-style-select">Border Style</label>
+                <select id="border-style-select" class="flag-select"></select>
+            </div>
+
+            <div class="flag-field">
+                <label class="flag-label" for="border-color-select">Border Color</label>
+                <select id="border-color-select" class="flag-select"></select>
+            </div>
+
+            <div class="flag-field">
+                <label class="flag-label" for="emblem-select">Emblem</label>
+                <select id="emblem-select" class="flag-select"></select>
+            </div>
+
+            <div class="flag-btn-row">
+                <button id="randomize-btn" class="flag-btn" title="Pick a random combination">Random</button>
+                <button id="reset-btn" class="flag-btn" title="Reset to defaults">Reset</button>
+            </div>
+            <div class="flag-btn-row">
+                <button id="export-btn" class="flag-btn" title="Download this flag as a PNG">Export PNG</button>
+            </div>
+            <div class="flag-btn-row">
+                <button id="save-sticker-btn" class="flag-btn flag-btn-primary" title="Save this flag as a placeable sticker for the server map">Save as Map Sticker</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="text/javascript" src="flagbuilder.js"></script>
+</body>
+
+</html>

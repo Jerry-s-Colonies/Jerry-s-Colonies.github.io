@@ -1,0 +1,601 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;    
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;    
+    font-size: 16px;
+}
+
+@font-face {
+    font-family: 'MinecraftRegular';
+    src: url('../assets/fonts/MinecraftRegular-Bmg3.otf') format('opentype');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'MinecraftTen';
+    src: url('../assets/fonts/MinecraftTen-VGORe.ttf') format('truetype');
+    font-display: swap;
+}
+
+#map {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    image-rendering: pixelated;
+}
+
+.territory-panel {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    gap: 10px;
+    max-width: 96vw;
+    background: linear-gradient(#4a4a4a, #313131);
+    border: 2px solid #1a1a1a;
+    border-radius: 8px;
+    box-shadow:
+        inset 0 0 0 1px #6e6e6e,
+        0 6px 16px rgba(0, 0, 0, 0.55);
+    padding: 10px 14px 14px;
+    font-family: 'MinecraftTen', 'MinecraftRegular', monospace;
+    image-rendering: pixelated;
+}
+
+.territory-panel,
+.territory-panel button,
+.territory-panel input,
+.territory-panel span {
+    font-family: 'MinecraftTen', 'MinecraftRegular', monospace;
+}
+
+.territory-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.territory-title {
+    font-size: 14px;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    color: #fff;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.65);
+}
+
+.territory-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    color: #fff;
+    background: linear-gradient(#6c6c6c, #464646);
+    border: 2px solid #1a1a1a;
+    border-radius: 4px;
+    cursor: pointer;
+    line-height: 1;
+    transition: background .12s ease;
+}
+
+.territory-toggle-btn:hover {
+    background: linear-gradient(#7c7c7c, #565656);
+}
+
+.territory-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.territory-panel-collapsed .territory-body {
+    display: none;
+}
+
+.territory-row {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    overflow-x: auto;
+}
+
+.territory-divider {
+    align-self: stretch;
+    width: 2px;
+    margin: 2px 0;
+    background: rgba(255, 255, 255, 0.14);
+    box-shadow: 1px 0 0 rgba(0, 0, 0, 0.4);
+    flex: none;
+}
+
+.territory-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    font-family: 'MinecraftTen', 'MinecraftRegular', monospace;
+    font-size: 10px;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    color: #fff;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.65);
+    background: linear-gradient(#6c6c6c, #464646);
+    border: 2px solid #1a1a1a;
+    border-radius: 4px;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.25),
+        inset 0 -2px 0 rgba(0, 0, 0, 0.35);
+    padding: 6px 10px;
+    min-width: 56px;
+    cursor: pointer;
+    white-space: nowrap;
+    position: relative;
+    transition: background .12s ease, transform .08s ease;
+}
+
+.territory-btn-icon {
+    width: 24px;
+    height: 24px;
+    image-rendering: pixelated;
+}
+
+.territory-btn-label {
+    white-space: nowrap;
+}
+
+.territory-btn:hover {
+    background: linear-gradient(#7c7c7c, #565656);
+    transform: translateY(-1px);
+}
+
+.territory-btn:active {
+    box-shadow: inset 0 2px 0 rgba(0, 0, 0, 0.4);
+    transform: translateY(1px);
+}
+
+.territory-btn-active {
+    background: linear-gradient(#79c353, #4c9330);
+    border-color: #244d14;
+}
+
+.territory-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    color: #fff;
+    background: linear-gradient(#e6194b, #a30f34);
+    border: 1px solid #1a1a1a;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.territory-badge-hidden {
+    display: none;
+}
+
+.territory-color {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 2px solid #1a1a1a;
+    border-radius: 4px;
+    cursor: pointer;
+    background: none;
+}
+
+.territory-label {
+    font-family: 'MinecraftRegular', 'MinecraftTen', monospace;
+    font-size: 12px;
+    color: #fff;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.65);
+    white-space: nowrap;
+}
+
+.territory-scale-value {
+    min-width: 18px;
+    text-align: center;
+}
+
+.territory-scale {
+    width: 70px;
+    cursor: pointer;
+    accent-color: #79c353;
+}
+
+.territory-tier-modal-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+}
+
+.territory-tier-modal-option {
+    min-width: 90px;
+}
+
+.territory-manage-modal {
+    width: min(280px, 100%);
+}
+
+.territory-select-overlay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    pointer-events: auto;
+}
+
+.territory-select-size {
+    background: linear-gradient(#4a4a4a, #313131);
+    border: 2px solid #1a1a1a;
+    border-radius: 6px;
+    box-shadow:
+        inset 0 0 0 1px #6e6e6e,
+        0 3px 6px rgba(0, 0, 0, 0.45);
+    padding: 4px 8px;
+}
+
+.territory-select-delete {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    font-family: 'MinecraftTen', 'MinecraftRegular', monospace;
+    font-size: 13px;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(#e6194b, #a30f34);
+    border: 2px solid #3a0510;
+    border-radius: 50%;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.35),
+        0 2px 6px rgba(0, 0, 0, 0.55);
+    cursor: pointer;
+    animation: territory-select-pop .12s ease-out;
+}
+
+.territory-select-delete:hover {
+    background: linear-gradient(#f03a5f, #b81c42);
+    transform: scale(1.08);
+}
+
+.territory-select-delete:active {
+    box-shadow: inset 0 2px 0 rgba(0, 0, 0, 0.4);
+    transform: scale(0.96);
+}
+
+@keyframes territory-select-pop {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+@media (max-width: 480px) {
+    .territory-panel {
+        padding: 8px 10px 10px;
+        gap: 6px;
+        max-width: 98vw;
+    }
+
+    .territory-row {
+        flex-wrap: wrap;
+        overflow-x: visible;
+    }
+
+    .territory-btn {
+        min-width: 48px;
+        padding: 5px 4px;
+    }
+
+    .territory-btn-label {
+        font-size: 7px;
+    }
+
+    .territory-divider {
+        display: none;
+    }
+
+    .territory-modal {
+        max-width: 96%;
+        max-height: 94%;
+    }
+
+    .territory-modal-hint {
+        max-width: 100%;
+    }
+}
+
+.territory-config-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.territory-config-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: linear-gradient(#3d3d3d, #2a2a2a);
+    border: 2px solid #1a1a1a;
+    border-radius: 4px;
+    padding: 6px 8px;
+}
+
+.territory-config-name {
+    font-size: 12px;
+    color: #fff;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.65);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.territory-config-delete {
+    flex-direction: row;
+    min-width: unset;
+    padding: 4px 9px;
+    background: linear-gradient(#8a3a3a, #5c2323);
+    border-color: #2a1010;
+}
+
+.territory-config-delete:hover {
+    background: linear-gradient(#a04444, #6c2a2a);
+}
+
+.territory-config-empty {
+    text-align: center;
+    padding: 10px 0;
+    opacity: .8;
+    white-space: normal;
+}
+
+.territory-sticker-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 8px;
+    max-height: 320px;
+    overflow-y: auto;
+    width: min(260px, 100%);
+}
+
+.territory-sticker-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(#3d3d3d, #2a2a2a);
+    border: 2px solid #1a1a1a;
+    border-radius: 4px;
+    padding: 6px;
+    cursor: pointer;
+}
+
+.territory-sticker-item:hover {
+    border-color: #79c353;
+}
+
+.territory-sticker-thumb {
+    width: 100%;
+    height: auto;
+    image-rendering: pixelated;
+    pointer-events: none;
+}
+
+.territory-sticker-delete {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    line-height: 1;
+    color: #fff;
+    background: linear-gradient(#8a3a3a, #5c2323);
+    border: 1px solid #2a1010;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.territory-sticker-delete:hover {
+    background: linear-gradient(#a04444, #6c2a2a);
+}
+
+.territory-tutorial-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 340px;
+    overflow-y: auto;
+    width: min(420px, 100%);
+}
+
+.territory-tutorial-item {
+    background: linear-gradient(#3d3d3d, #2a2a2a);
+    border: 2px solid #1a1a1a;
+    border-radius: 4px;
+    padding: 6px 8px;
+}
+
+.territory-tutorial-item-title {
+    font-family: 'MinecraftTen', 'MinecraftRegular', monospace;
+    font-size: 12px;
+    color: #ffd866;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.65);
+    margin-bottom: 3px;
+}
+
+.territory-tutorial-item-body {
+    font-family: 'MinecraftRegular', 'MinecraftTen', monospace;
+    font-size: 12px;
+    color: #e0e0e0;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.65);
+    white-space: normal;
+    line-height: 1.4;
+}
+
+.territory-tutorial-close {
+    align-self: center;
+    min-width: 120px;
+}
+
+.territory-file-input {
+    display: none;
+}
+
+.territory-modal-overlay {
+    display: none;
+    position: absolute;
+    inset: 0;
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.65);
+}
+
+.territory-modal-overlay.territory-modal-visible {
+    display: flex;
+}
+
+.territory-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-width: 90%;
+    max-height: 90%;
+    background: linear-gradient(#4a4a4a, #313131);
+    border: 2px solid #1a1a1a;
+    border-radius: 5px;
+    box-shadow:
+        inset 0 0 0 1px #6e6e6e,
+        0 4px 10px rgba(0, 0, 0, 0.6);
+    padding: 8px;
+}
+
+.territory-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-family: 'MinecraftTen', 'MinecraftRegular', monospace;
+    font-size: 13px;
+    color: #fff;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.65);
+}
+
+.territory-modal-hint {
+    white-space: normal;
+    font-size: 11px;
+    max-width: 480px;
+}
+
+.territory-modal-image {
+    max-width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+    border: 2px solid #1a1a1a;
+    background: #000;
+}
+
+.mouseposition {
+    background-color: white;
+    padding: 3px;
+    text-align: right;
+}
+
+.mousepositioncoord {
+    min-width: 40px;
+    display: inline-block;
+}
+
+div.ol-mouse-position {
+    background-color: white;
+    padding: 6px;
+    border-radius: 3px;
+    box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Default OL position (top-right) sits behind the server map/flag builder
+   tab bar on narrow screens, hiding the coordinates. Move it out from under it. */
+@media (max-width: 480px) {
+    div.ol-mouse-position {
+        top: auto;
+        right: 8px;
+        bottom: 8px;
+        font-size: 12px;
+        padding: 4px 6px;
+    }
+}
+
+.ol-ctx-menu-container {
+    font-size: 16px;
+}
+
+.ol-scale-step-text {
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 14px;
+    color: white;
+    text-shadow:
+        1px 0 0 black,
+        0 1px 0 black,
+        -1px 0 0 black,
+        0 -1px 0 black;
+    0px 0px 8px black;
+}
+
+.ol-scale-singlebar-odd {
+    background: #ddd;
+}
+
+.ol-scale-singlebar-even {
+    background: #444;
+}
+
+.toastify {
+    color: black;
+    background: yellow;
+}
+
+.ol-ctx-menu-container li {
+    padding-left: 20px;
+}
+
+.menuitem-checked::before {
+    content: '☑';
+    width: 20px;
+    display: inline-block;
+    margin-left: -20px;
+}
+
+.menuitem-unchecked::before {
+    content: '☐';
+    width: 20px;
+    display: inline-block;
+    margin-left: -20px;
+}

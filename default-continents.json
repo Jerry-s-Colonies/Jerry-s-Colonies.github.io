@@ -1,0 +1,110 @@
+{
+  "type": "jcservermap-config",
+  "version": 1,
+  "territories": {
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            6346.033093316491,
+            -6888.042118981903
+          ]
+        },
+        "properties": {
+          "text": "Terrasancta",
+          "color": "#ffffff",
+          "tier": "continent",
+          "scale": 32
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -5461.966906683512,
+            -904.0421189819045
+          ]
+        },
+        "properties": {
+          "text": "Valaia",
+          "color": "#ffffff",
+          "tier": "continent",
+          "scale": 46
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -8245.966906683509,
+            5271.957881018098
+          ]
+        },
+        "properties": {
+          "text": "Morrea",
+          "color": "#ffffff",
+          "tier": "continent",
+          "scale": 22
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -1148.6932231121739,
+            -9052.545766132444
+          ]
+        },
+        "properties": {
+          "text": "Nular",
+          "color": "#ffffff",
+          "tier": "continent",
+          "scale": 23
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            5539.3067768878345,
+            1315.4542338675578
+          ]
+        },
+        "properties": {
+          "text": "Thallasian Isles",
+          "color": "#ffffff",
+          "tier": "continent",
+          "scale": 20
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            5674.033093316494,
+            8567.957881018097
+          ]
+        },
+        "properties": {
+          "text": "Ardinvyr",
+          "color": "#ffffff",
+          "tier": "continent",
+          "scale": 35
+        }
+      }
+    ]
+  },
+  "view": {
+    "centerX": -3850,
+    "centerZ": 2227,
+    "zoom": 1
+  }
+}

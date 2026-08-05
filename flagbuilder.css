@@ -1,0 +1,199 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background: #2b2b2b;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    overflow-y: auto;
+}
+
+@font-face {
+    font-family: 'MinecraftRegular';
+    src: url('../assets/fonts/MinecraftRegular-Bmg3.otf') format('opentype');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'MinecraftTen';
+    src: url('../assets/fonts/MinecraftTen-VGORe.ttf') format('truetype');
+    font-display: swap;
+}
+
+.flagbuilder-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 20px;
+    padding: 70px 16px 24px;
+    box-sizing: border-box;
+    min-height: 100%;
+}
+
+/* Same pixel-art "wood/stone panel" look as the territory-panel on the server map */
+.flag-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: linear-gradient(#4a4a4a, #313131);
+    border: 2px solid #1a1a1a;
+    border-radius: 5px;
+    box-shadow:
+        inset 0 0 0 1px #6e6e6e,
+        0 3px 4px rgba(0, 0, 0, 0.45);
+    padding: 14px;
+    font-family: 'MinecraftTen', 'MinecraftRegular', monospace;
+    image-rendering: pixelated;
+}
+
+.flag-panel-title {
+    font-size: 16px;
+    color: #fff;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.65);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin: 0 0 4px;
+}
+
+.flag-preview-panel {
+    align-items: center;
+}
+
+.flag-preview-stage {
+    position: relative;
+    width: min(552px, 100%);
+    aspect-ratio: 552 / 384;
+    background: repeating-conic-gradient(#3a3a3a 0% 25%, #2f2f2f 0% 50%) 50% / 24px 24px;
+    border: 2px solid #1a1a1a;
+    border-radius: 3px;
+    box-shadow: inset 0 0 0 1px #6e6e6e;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.flag-preview-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+}
+
+.flag-layer-source {
+    display: none;
+}
+
+.flag-controls-panel {
+    width: min(300px, 100%);
+    box-sizing: border-box;
+}
+
+.flag-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.flag-label {
+    font-family: 'MinecraftTen', 'MinecraftRegular', monospace;
+    font-size: 12px;
+    color: #fff;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.65);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+
+.flag-select {
+    font-family: 'MinecraftTen', 'MinecraftRegular', monospace;
+    font-size: 13px;
+    color: #fff;
+    background: linear-gradient(#6c6c6c, #464646);
+    border: 2px solid #1a1a1a;
+    border-radius: 3px;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.25),
+        inset 0 -2px 0 rgba(0, 0, 0, 0.35);
+    padding: 6px 6px;
+    cursor: pointer;
+}
+
+.flag-select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Native dropdown popups render option text with the page's font; the pixel font's
+   unusual line metrics were blowing up each row's height, so reset it for options. */
+.flag-select option {
+    font-family: Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    background: #2b2b2b;
+    color: #fff;
+}
+
+.flag-btn-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.flag-btn {
+    flex: 1;
+    font-family: 'MinecraftTen', 'MinecraftRegular', monospace;
+    font-size: 12px;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    color: #fff;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.65);
+    background: linear-gradient(#6c6c6c, #464646);
+    border: 2px solid #1a1a1a;
+    border-radius: 3px;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.25),
+        inset 0 -2px 0 rgba(0, 0, 0, 0.35);
+    padding: 7px 7px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.flag-btn:hover {
+    background: linear-gradient(#7c7c7c, #565656);
+}
+
+.flag-btn:active {
+    box-shadow: inset 0 2px 0 rgba(0, 0, 0, 0.4);
+    transform: translateY(1px);
+}
+
+.flag-btn-primary {
+    background: linear-gradient(#79c353, #4c9330);
+    border-color: #244d14;
+}
+
+.flag-btn-primary:hover {
+    background: linear-gradient(#89d363, #5ca340);
+}
+
+.flag-summary {
+    font-family: 'MinecraftRegular', 'MinecraftTen', monospace;
+    font-size: 12px;
+    color: #d8d8d8;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.65);
+    line-height: 1.6;
+    white-space: pre-line;
+}
+
+@media (max-width: 480px) {
+    .flagbuilder-wrap {
+        padding: 60px 10px 20px;
+        gap: 12px;
+    }
+
+    .flag-select,
+    .flag-btn {
+        padding: 10px 8px;
+    }
+}
+

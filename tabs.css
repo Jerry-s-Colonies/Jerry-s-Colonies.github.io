@@ -1,0 +1,79 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #1a1a1a;
+}
+
+@font-face {
+    font-family: 'MinecraftRegular';
+    src: url('../assets/fonts/MinecraftRegular-Bmg3.otf') format('opentype');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'MinecraftTen';
+    src: url('../assets/fonts/MinecraftTen-VGORe.ttf') format('truetype');
+    font-display: swap;
+}
+
+.site-tab-bar {
+    display: flex;
+    gap: 4px;
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    background: linear-gradient(#4a4a4a, #313131);
+    border: 2px solid #1a1a1a;
+    border-radius: 5px;
+    box-shadow:
+        inset 0 0 0 1px #6e6e6e,
+        0 3px 4px rgba(0, 0, 0, 0.45);
+    padding: 5px;
+    image-rendering: pixelated;
+}
+
+.site-tab {
+    font-family: 'MinecraftTen', 'MinecraftRegular', monospace;
+    font-size: 13px;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    color: #fff;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.65);
+    background: linear-gradient(#6c6c6c, #464646);
+    border: 2px solid #1a1a1a;
+    border-radius: 3px;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.25),
+        inset 0 -2px 0 rgba(0, 0, 0, 0.35);
+    padding: 6px 14px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.site-tab:hover {
+    background: linear-gradient(#7c7c7c, #565656);
+}
+
+.site-tab:active {
+    box-shadow: inset 0 2px 0 rgba(0, 0, 0, 0.4);
+    transform: translateY(1px);
+}
+
+.site-tab-active {
+    background: linear-gradient(#79c353, #4c9330);
+    border-color: #244d14;
+}
+
+.site-content-frame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
