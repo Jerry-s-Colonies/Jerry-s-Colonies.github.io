@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>The Frontier World Map</title>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <base href="/">
+
+    <link rel="icon" type="image/png" href="assets/icons/logo.png">
+    <link rel="stylesheet" type="text/css" href="tabs.css">
+</head>
+
+<body>
+    <div class="site-tab-bar">
+        <button class="site-tab site-tab-home" onclick="location.href='/'">&larr; Home</button>
+        <button class="site-tab site-tab-active" data-target="/servermap/">Server Map</button>
+        <button class="site-tab" data-target="/flagbuilder/">Flag Builder</button>
+    </div>
+
+    <iframe id="content-frame" class="site-content-frame" src="/servermap/" title="Jerry's Colonies"></iframe>
+
+    <script>
+        const tabs = document.querySelectorAll('.site-tab');
+        const frame = document.getElementById('content-frame');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                if (tab.classList.contains('site-tab-active')) return;
+                tabs.forEach(t => t.classList.remove('site-tab-active'));
+                tab.classList.add('site-tab-active');
+                frame.src = tab.dataset.target;
+            });
+        });
+    </script>
+</body>
+
+</html>

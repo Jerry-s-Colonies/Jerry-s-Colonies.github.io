@@ -11,13 +11,13 @@ html, body {
 
 @font-face {
     font-family: 'MinecraftRegular';
-    src: url('../assets/fonts/MinecraftRegular-Bmg3.otf') format('opentype');
+    src: url('assets/fonts/MinecraftRegular-Bmg3.otf') format('opentype');
     font-display: swap;
 }
 
 @font-face {
     font-family: 'MinecraftTen';
-    src: url('../assets/fonts/MinecraftTen-VGORe.ttf') format('truetype');
+    src: url('assets/fonts/MinecraftTen-VGORe.ttf') format('truetype');
     font-display: swap;
 }
 

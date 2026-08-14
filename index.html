@@ -1,37 +1,245 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>The Frontier World Map</title>
-
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>The Frontier | Bedrock Nations Server</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="The Frontier is a Minecraft Bedrock server where you build nations, forge alliances, wage naval warfare, and govern your own citizens. Join play.thefrontiermc.net today.">
 
-    <link rel="icon" type="image/png" href="image.png">
-    <link rel="stylesheet" type="text/css" href="tabs.css">
+    <meta property="og:title" content="You've Been Invited to The Frontier">
+    <meta property="og:description"
+        content="A Minecraft Bedrock server where you build nations, forge alliances, sail to war, and govern your own citizens. Come join a growing community writing its own history.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://thefrontiermc.net/">
+    <meta property="og:image" content="https://thefrontiermc.net/assets/icons/logo.png">
+    <meta property="og:site_name" content="The Frontier">
+    <meta name="theme-color" content="#4c9330">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="You've Been Invited to The Frontier">
+    <meta name="twitter:description"
+        content="A Minecraft Bedrock server where you build nations, forge alliances, sail to war, and govern your own citizens.">
+    <meta name="twitter:image" content="https://thefrontiermc.net/assets/backgrounds/1.png">
+
+    <link rel="icon" type="image/png" href="assets/icons/logo.png">
+    <link rel="stylesheet" type="text/css" href="landing.css">
 </head>
 
 <body>
-    <div class="site-tab-bar">
-        <button class="site-tab site-tab-active" data-target="servermap.html">Server Map</button>
-        <button class="site-tab" data-target="flagbuilder.html">Flag Builder</button>
-    </div>
 
-    <iframe id="content-frame" class="site-content-frame" src="servermap.html" title="Jerry's Colonies"></iframe>
+    <nav class="landing-nav">
+        <div class="landing-nav-brand">
+            <img src="assets/icons/logo.png" alt="The Frontier logo">
+            <span>The Frontier</span>
+        </div>
+        <button class="landing-nav-toggle" id="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+            <span></span><span></span><span></span>
+        </button>
+        <div class="landing-nav-links" id="nav-links">
+            <a class="oreui-btn oreui-btn-status" href="#stats">Server Status</a>
+            <a class="oreui-btn oreui-btn-map" href="/map/">World Map</a>
+            <a class="oreui-btn oreui-btn-trailer" href="#trailer">Trailer</a>
+            <a class="oreui-btn oreui-btn-discord" href="https://discord.gg/P3ahdUzgMH" target="_blank" rel="noopener">
+                <img class="oreui-btn-icon" src="assets/icons/discord-icon.png" alt="">Discord
+            </a>
+        </div>
+    </nav>
 
-    <script>
-        const tabs = document.querySelectorAll('.site-tab');
-        const frame = document.getElementById('content-frame');
+    <header class="hero" id="hero">
+        <div class="hero-bg" id="hero-bg-a"></div>
+        <div class="hero-bg" id="hero-bg-b"></div>
 
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                if (tab.classList.contains('site-tab-active')) return;
-                tabs.forEach(t => t.classList.remove('site-tab-active'));
-                tab.classList.add('site-tab-active');
-                frame.src = tab.dataset.target;
-            });
-        });
-    </script>
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="hero-badge-dot"></span>
+                Online Now
+            </div>
+            <img class="hero-logo" src="assets/icons/logo.png" alt="The Frontier logo">
+            <div class="hero-title-wrap">
+                <h1 class="hero-title">The Frontier</h1>
+                <span class="hero-splash">Bedrock Edition!</span>
+            </div>
+            <p class="hero-subtitle">
+                A Minecraft Bedrock server where you build nations, forge alliances, wage war, and govern your own citizens. Rules are primarily enforced by players, meaning justice is shaped by the community. Every decision has consequences, and the history of the world is written by players like you.
+            </p>
+
+            <div class="hero-cta-row">
+                <a class="oreui-btn oreui-btn-primary" href="https://discord.gg/P3ahdUzgMH" target="_blank" rel="noopener">
+                    <img class="oreui-btn-icon" src="assets/icons/discord-icon.png" alt="">Join The Community
+                </a>
+                <a class="oreui-btn" href="#trailer">
+                    <img class="oreui-btn-icon" src="assets/icons/youtube-icon.png" alt="">Watch Trailer
+                </a>
+                <a class="oreui-btn oreui-btn-patreon" href="https://www.patreon.com/cw/jerryscolonies" target="_blank" rel="noopener">
+                    <img class="oreui-btn-icon" src="assets/icons/patreon.png" alt="">Support Us
+                </a>
+            </div>
+
+            <div class="ip-box oreui-panel">
+                <div class="ip-box-field">
+                    <span class="ip-box-label">Server Address</span>
+                    <span class="ip-box-value">play.thefrontiermc.net</span>
+                </div>
+                <div class="ip-box-divider"></div>
+                <div class="ip-box-field">
+                    <span class="ip-box-label">Port</span>
+                    <span class="ip-box-value">25565</span>
+                </div>
+                <button id="copy-ip-btn" class="oreui-btn ip-copy-btn" type="button">Copy</button>
+            </div>
+        </div>
+    </header>
+
+    <section class="section" id="stats">
+        <div class="section-header">
+            <div class="section-kicker">Live</div>
+            <h2 class="section-title">Server &amp; Community</h2>
+        </div>
+
+        <div class="combo-panel oreui-panel">
+            <button type="button" id="server-half-btn" class="combo-half combo-half-server">
+                <div class="combo-half-head">
+                    <div class="stats-status">
+                        <span id="status-dot" class="stats-status-dot"></span>
+                        <span id="status-label">Checking&hellip;</span>
+                    </div>
+                    <span class="combo-half-tag">Tap to Copy IP</span>
+                </div>
+
+                <div class="combo-stat-row">
+                    <div class="stat-cell">
+                        <div id="stat-players" class="stat-cell-value">--</div>
+                        <div class="stat-cell-label">Players Online</div>
+                    </div>
+                    <div class="stat-cell">
+                        <div id="stat-version" class="stat-cell-value">--</div>
+                        <div class="stat-cell-label">Version</div>
+                    </div>
+                    <div class="stat-cell">
+                        <div id="stat-gamemode" class="stat-cell-value">--</div>
+                        <div class="stat-cell-label">Gamemode</div>
+                    </div>
+                </div>
+
+                <div class="player-bar-track">
+                    <div id="player-bar-fill" class="player-bar-fill"></div>
+                </div>
+
+                <span class="stats-refresh-note">Auto-refreshes every 60s &middot; live via mcsrvstat.us</span>
+            </button>
+
+            <div class="combo-divider"></div>
+
+            <a class="combo-half combo-half-discord" href="https://discord.gg/P3ahdUzgMH" target="_blank" rel="noopener">
+                <div class="combo-half-head">
+                    <div class="stats-status">
+                        <span id="discord-status-dot" class="stats-status-dot"></span>
+                        <span id="discord-status-label">Checking&hellip;</span>
+                    </div>
+                    <span class="combo-half-tag">Tap to Join</span>
+                </div>
+
+                <div class="discord-half-body">
+                    <img class="discord-panel-icon" src="assets/icons/discord-icon.png" alt="">
+                    <div class="discord-panel-info">
+                        <div class="discord-panel-name" id="stat-discord-name">The Frontier</div>
+                        <div class="discord-panel-sub">
+                            <span id="stat-discord-online">--</span> members online
+                        </div>
+                    </div>
+                </div>
+
+                <span class="combo-half-cta">
+                    <img class="oreui-btn-icon" src="assets/icons/discord-icon.png" alt="">Join The Discord
+                </span>
+            </a>
+        </div>
+    </section>
+
+    <section class="section" id="features">
+        <div class="section-header">
+            <div class="section-kicker">What You Can Do</div>
+            <h2 class="section-title">Life on The Frontier</h2>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card feature-card-nation oreui-panel">
+                <div class="feature-card-title">Start Something From Nothing</div>
+                <div class="feature-card-desc">Ever pictured yourself carving a patch of land into a country people
+                    actually want to live in? Grab some friends, plant a flag, and see where it goes.</div>
+            </div>
+            <div class="feature-card feature-card-alliance oreui-panel">
+                <div class="feature-card-title">Choose Your Neighbors Wisely</div>
+                <div class="feature-card-desc">Some of the best stories here start with two strangers agreeing not
+                    to fight each other. Where that friendship goes next is entirely up to you.</div>
+            </div>
+            <div class="feature-card feature-card-war oreui-panel">
+                <div class="feature-card-title">Not Every Story Ends in Peace</div>
+                <div class="feature-card-desc">When talks break down, the only thing left to decide is who's still
+                    standing. How far you're willing to go is a question only you can answer.</div>
+            </div>
+            <div class="feature-card feature-card-society oreui-panel">
+                <div class="feature-card-title">Write Your Own Rules</div>
+                <div class="feature-card-desc">There's no rulebook telling you how to live here &mdash; just the
+                    players around you, and whatever order you all decide to keep.</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="media">
+        <div class="section-header">
+            <div class="section-kicker">See It In Action</div>
+            <h2 class="section-title" id="trailer">Screenshots &amp; Trailer</h2>
+        </div>
+
+        <div class="media-grid">
+            <div class="media-frame media-carousel oreui-panel">
+                <button class="media-carousel-btn media-carousel-prev" id="carousel-prev" type="button" aria-label="Previous screenshot">&lsaquo;</button>
+                <img id="carousel-image" src="assets/backgrounds/1.png" alt="Screenshot of The Frontier server">
+                <button class="media-carousel-btn media-carousel-next" id="carousel-next" type="button" aria-label="Next screenshot">&rsaquo;</button>
+            </div>
+            <div class="media-frame oreui-panel">
+                <iframe src="https://www.youtube.com/embed/InIni2iCDkM" title="The Frontier server trailer"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen loading="lazy"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="about">
+        <div class="section-header">
+            <div class="section-kicker">About</div>
+            <h2 class="section-title">A Community-Run Frontier</h2>
+        </div>
+        <p class="about-text">
+            <strong>The Frontier</strong> keeps rules to a minimum because most order comes from the
+            players themselves &mdash; through trade, diplomacy, and the occasional war. It's a
+            community-driven experience that's growing every day, and there's always room for another
+            builder, trader, or leader to leave their mark.
+        </p>
+    </section>
+
+    <footer class="landing-footer">
+        <div class="footer-cta-row">
+            <a class="oreui-btn oreui-btn-discord" href="https://discord.gg/P3ahdUzgMH" target="_blank" rel="noopener">
+                <img class="oreui-btn-icon" src="assets/icons/discord-icon.png" alt="">Discord
+            </a>
+            <a class="oreui-btn oreui-btn-patreon" href="https://www.patreon.com/cw/jerryscolonies" target="_blank" rel="noopener">
+                <img class="oreui-btn-icon" src="assets/icons/patreon.png" alt="">Patreon
+            </a>
+            <a class="oreui-btn" href="https://www.youtube.com/watch?v=InIni2iCDkM" target="_blank" rel="noopener">
+                <img class="oreui-btn-icon" src="assets/icons/youtube-icon.png" alt="">YouTube
+            </a>
+            <a class="oreui-btn" href="/map/">World Map</a>
+        </div>
+        <div class="footer-note">play.thefrontiermc.net : 25565 &middot; Minecraft Bedrock Edition</div>
+    </footer>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="landing.js"></script>
 </body>
 
 </html>

@@ -9,13 +9,13 @@ html, body {
 
 @font-face {
     font-family: 'MinecraftRegular';
-    src: url('../assets/fonts/MinecraftRegular-Bmg3.otf') format('opentype');
+    src: url('assets/fonts/MinecraftRegular-Bmg3.otf') format('opentype');
     font-display: swap;
 }
 
 @font-face {
     font-family: 'MinecraftTen';
-    src: url('../assets/fonts/MinecraftTen-VGORe.ttf') format('truetype');
+    src: url('assets/fonts/MinecraftTen-VGORe.ttf') format('truetype');
     font-display: swap;
 }
 
@@ -67,6 +67,15 @@ html, body {
 .site-tab-active {
     background: linear-gradient(#79c353, #4c9330);
     border-color: #244d14;
+}
+
+.site-tab-home {
+    background: linear-gradient(#5a8fc7, #35618f);
+    border-color: #1a3550;
+}
+
+.site-tab-home:hover {
+    background: linear-gradient(#6a9fd7, #45719f);
 }
 
 .site-content-frame {
