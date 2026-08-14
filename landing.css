@@ -272,8 +272,8 @@ a {
     position: relative;
     display: flex;
     min-height: 100svh;
-    min-height: 92vh;
-    padding: 60px 16px 40px;
+    min-height: 88vh;
+    padding: 32px 16px 60px;
     background: #17181a;
     overflow: hidden;
 }
