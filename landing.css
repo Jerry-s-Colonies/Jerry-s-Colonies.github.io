@@ -97,12 +97,12 @@ a {
 }
 
 .oreui-btn-primary {
-    background: linear-gradient(#e0525f, #8a1220);
-    border-color: #4d0f14;
+    background: linear-gradient(#8ed965, #4fa832);
+    border-color: #1f4611;
 }
 
 .oreui-btn-primary:hover {
-    background: linear-gradient(#ef6b76, #a81c2b);
+    background: linear-gradient(#a0e878, #5cbf3d);
 }
 
 .oreui-btn-discord {
@@ -133,12 +133,12 @@ a {
 }
 
 .oreui-btn-status {
-    background: linear-gradient(#e0525f, #8a1220);
-    border-color: #4d0f14;
+    background: linear-gradient(#8ed965, #4fa832);
+    border-color: #1f4611;
 }
 
 .oreui-btn-status:hover {
-    background: linear-gradient(#ef6b76, #a81c2b);
+    background: linear-gradient(#a0e878, #5cbf3d);
 }
 
 .oreui-btn-map {
@@ -400,9 +400,9 @@ a {
     font-size: 10px;
     letter-spacing: .5px;
     text-transform: uppercase;
-    color: #ffd0d4;
-    background: rgba(138, 18, 32, 0.25);
-    border: 1px solid #8a1220;
+    color: #c8ffb8;
+    background: rgba(79, 168, 50, 0.25);
+    border: 1px solid #4fa832;
     border-radius: 20px;
 }
 
@@ -546,7 +546,7 @@ a {
     font-size: 10px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: #e0525f;
+    color: #8ed965;
     margin-bottom: 8px;
 }
 
@@ -597,11 +597,11 @@ a {
 }
 
 .combo-half-server {
-    background: linear-gradient(160deg, rgba(224, 82, 95, 0.14), rgba(224, 82, 95, 0) 55%);
+    background: linear-gradient(160deg, rgba(142, 217, 101, 0.14), rgba(142, 217, 101, 0) 55%);
 }
 
 .combo-half-server:hover {
-    background: linear-gradient(160deg, rgba(224, 82, 95, 0.24), rgba(224, 82, 95, 0) 65%);
+    background: linear-gradient(160deg, rgba(142, 217, 101, 0.24), rgba(142, 217, 101, 0) 65%);
 }
 
 .combo-half-discord {
@@ -640,8 +640,8 @@ a {
 }
 
 .combo-half-server:hover .combo-half-tag {
-    color: #ffd0d4;
-    border-color: #8a1220;
+    color: #c8ffb8;
+    border-color: #4fa832;
 }
 
 .combo-half-discord:hover .combo-half-tag {
@@ -722,7 +722,7 @@ a {
 .player-bar-fill {
     height: 100%;
     width: 0%;
-    background: linear-gradient(#ef6b76, #8a1220);
+    background: linear-gradient(#a0e878, #4fa832);
     transition: width .6s ease;
 }
 
@@ -929,7 +929,7 @@ a {
 }
 
 .about-text strong {
-    color: #ffd0d4;
+    color: #c8ffb8;
 }
 
 /* ---------- Footer ---------- */
@@ -964,9 +964,9 @@ a {
     font-size: 12px;
     letter-spacing: .5px;
     text-transform: uppercase;
-    color: #ffd0d4;
-    background: linear-gradient(#4a2327, #30181a);
-    border: 2px solid #4d0f14;
+    color: #c8ffb8;
+    background: linear-gradient(#3a4a34, #23301f);
+    border: 2px solid #1f4611;
     border-radius: 6px;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.55);
     opacity: 0;
