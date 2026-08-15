@@ -165,8 +165,8 @@ html, body {
 }
 
 .territory-btn-active {
-    background: linear-gradient(#79c353, #4c9330);
-    border-color: #244d14;
+    background: linear-gradient(#e0525f, #8a1220);
+    border-color: #4d0f14;
 }
 
 .territory-badge {
@@ -217,7 +217,7 @@ html, body {
 .territory-scale {
     width: 70px;
     cursor: pointer;
-    accent-color: #79c353;
+    accent-color: #e0525f;
 }
 
 .territory-tier-modal-options {
@@ -393,7 +393,7 @@ html, body {
 }
 
 .territory-sticker-item:hover {
-    border-color: #79c353;
+    border-color: #e0525f;
 }
 
 .territory-sticker-thumb {

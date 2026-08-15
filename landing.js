@@ -1,5 +1,5 @@
 const SERVER_ADDRESS = 'play.thefrontiermc.net';
-const SERVER_PORT = 25565;
+const SERVER_PORT = 19132;
 const STATS_ENDPOINT = `https://api.mcsrvstat.us/bedrock/3/${SERVER_ADDRESS}:${SERVER_PORT}`;
 
 const DISCORD_SERVER_ID = '1202257363747213343';

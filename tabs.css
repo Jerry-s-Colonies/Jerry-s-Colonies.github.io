@@ -65,8 +65,8 @@ html, body {
 }
 
 .site-tab-active {
-    background: linear-gradient(#79c353, #4c9330);
-    border-color: #244d14;
+    background: linear-gradient(#e0525f, #8a1220);
+    border-color: #4d0f14;
 }
 
 .site-tab-home {
