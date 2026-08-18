@@ -37,7 +37,18 @@ function setupCopyButton() {
     if (btn) btn.addEventListener('click', copyServerAddress);
 
     const serverHalf = document.getElementById('server-half-btn');
-    if (serverHalf) serverHalf.addEventListener('click', copyServerAddress);
+    if (serverHalf) {
+        serverHalf.addEventListener('click', copyServerAddress);
+        serverHalf.addEventListener('keydown', (e) => {
+            if (e.target === serverHalf && (e.key === 'Enter' || e.key === ' ')) {
+                e.preventDefault();
+                copyServerAddress();
+            }
+        });
+    }
+
+    const mapBtn = document.getElementById('server-map-btn');
+    if (mapBtn) mapBtn.addEventListener('click', (e) => e.stopPropagation());
 }
 
 function setupNavToggle() {

@@ -644,6 +644,44 @@ a {
     border-color: #4fa832;
 }
 
+.combo-half-head-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.map-jump-btn {
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    background: linear-gradient(#5a8fc7, #35618f);
+    border: 2px solid #1a3550;
+    border-radius: 20px;
+    color: #fff;
+    font-size: 9px;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+    text-decoration: none;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.25),
+        0 3px 8px rgba(0, 0, 0, 0.35);
+    transition: transform .12s ease, background .12s ease;
+}
+
+.map-jump-btn:hover {
+    background: linear-gradient(#6a9fd7, #45719f);
+    transform: translateY(-1px);
+}
+
+.map-jump-icon {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+}
+
 .combo-half-discord:hover .combo-half-tag {
     color: #c7cdff;
     border-color: #5865f2;
@@ -939,6 +977,87 @@ a {
     text-align: center;
     border-top: 2px solid #000;
     background: linear-gradient(#1c1d20, #131417);
+}
+
+.content-pack-cta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    max-width: 640px;
+    margin: 0 auto 24px;
+    padding: 16px 20px;
+    background: linear-gradient(160deg, rgba(242, 163, 94, 0.18), rgba(242, 163, 94, 0.04));
+    border: 2px solid #6b3810;
+    border-radius: 8px;
+    text-align: left;
+    text-decoration: none;
+    color: inherit;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        0 6px 16px rgba(0, 0, 0, 0.4);
+    transition: transform .12s ease, background .18s ease;
+}
+
+.content-pack-cta:hover {
+    background: linear-gradient(160deg, rgba(242, 163, 94, 0.3), rgba(242, 163, 94, 0.06));
+    transform: translateY(-2px);
+}
+
+.content-pack-icon {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+}
+
+.content-pack-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.content-pack-title {
+    font-family: 'MinecraftRegular', 'MinecraftTen', monospace;
+    font-size: 14px;
+    color: #ffd7a8;
+    margin-bottom: 4px;
+}
+
+.content-pack-desc {
+    font-size: 12px;
+    color: #d8d8d8;
+    line-height: 1.4;
+}
+
+.content-pack-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    font-family: 'MinecraftRegular', 'MinecraftTen', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: #fff;
+    background: linear-gradient(#f2a35e, #d97a2b);
+    border: 2px solid #6b3810;
+    border-radius: 4px;
+    padding: 8px 12px;
+    white-space: nowrap;
+}
+
+.content-pack-arrow {
+    font-size: 12px;
+}
+
+@media (max-width: 560px) {
+    .content-pack-cta {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .content-pack-btn {
+        width: 100%;
+        justify-content: center;
+    }
 }
 
 .footer-cta-row {

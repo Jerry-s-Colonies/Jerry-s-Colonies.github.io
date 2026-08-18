@@ -99,13 +99,18 @@
         </div>
 
         <div class="combo-panel oreui-panel">
-            <button type="button" id="server-half-btn" class="combo-half combo-half-server">
+            <div role="button" tabindex="0" id="server-half-btn" class="combo-half combo-half-server">
                 <div class="combo-half-head">
                     <div class="stats-status">
                         <span id="status-dot" class="stats-status-dot"></span>
                         <span id="status-label">Checking&hellip;</span>
                     </div>
-                    <span class="combo-half-tag">Tap to Copy IP</span>
+                    <div class="combo-half-head-actions">
+                        <a id="server-map-btn" class="map-jump-btn" href="/map/" aria-label="Open World Map">
+                            <img class="map-jump-icon" src="assets/icons/maplogo.webp" alt="">World Map
+                        </a>
+                        <span class="combo-half-tag">Tap to Copy IP</span>
+                    </div>
                 </div>
 
                 <div class="combo-stat-row">
@@ -128,7 +133,7 @@
                 </div>
 
                 <span class="stats-refresh-note">Auto-refreshes every 60s &middot; live via mcsrvstat.us</span>
-            </button>
+            </div>
 
             <div class="combo-divider"></div>
 
@@ -222,6 +227,14 @@
     </section>
 
     <footer class="landing-footer">
+        <a class="content-pack-cta" href="https://drive.google.com/file/d/1Lj7ndn2NRltEeEyZmmYae8Uv3smMZ1z6/view?usp=sharing" target="_blank" rel="noopener">
+            <img class="content-pack-icon" src="assets/icons/youtube-icon.png" alt="">
+            <div class="content-pack-text">
+                <div class="content-pack-title">Aspiring Content Creator?</div>
+                <div class="content-pack-desc">Check out our assets for YouTube, TikTok, Twitch, etc by clicking here.</div>
+            </div>
+            <span class="content-pack-btn">Browse Assets<span class="content-pack-arrow">&#8595;</span></span>
+        </a>
         <div class="footer-cta-row">
             <a class="oreui-btn oreui-btn-discord" href="https://discord.gg/P3ahdUzgMH" target="_blank" rel="noopener">
                 <img class="oreui-btn-icon" src="assets/icons/discord-icon.png" alt="">Discord
