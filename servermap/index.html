@@ -31,6 +31,7 @@
 
     <!-- uNmINeD JS and CSS -->
     <script type="text/javascript" src="unmined.js"></script>
+    <script type="text/javascript" src="netherbeam.js"></script>
     <link rel="stylesheet" type="text/css" href="index.css">
         
     </style>
@@ -54,6 +55,7 @@
 
         const mapElement = document.getElementById('map');
         const unmined = new Unmined(mapElement, UnminedMapProperties, UnminedRegions);
+        new NetherbeamMarker(unmined);
 
 
     </script>
