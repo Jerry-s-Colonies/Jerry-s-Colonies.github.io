@@ -540,7 +540,7 @@ div.ol-mouse-position {
     box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.2);
 }
 
-/* Default OL position (top-right) sits behind the server map/flag builder
+/* Default OL position (top-right) sits behind the server map
    tab bar on narrow screens, hiding the coordinates. Move it out from under it. */
 @media (max-width: 480px) {
     div.ol-mouse-position {
