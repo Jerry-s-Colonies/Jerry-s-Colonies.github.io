@@ -4,7 +4,7 @@ class NetherbeamMarker {
     static refreshInterval = 5 * 60 * 1000;
     static rotationPeriod = 60;
 
-    // FrontierEngine publishes {"x": number, "z": number} whenever the beam moves.
+    // {} means not yet published; FrontierEngine publishes {"x": number, "z": number}.
     static parsePosition(data) {
         if (!data || !Number.isFinite(data.x) || !Number.isFinite(data.z)) return null;
         return [data.x, data.z];
@@ -55,7 +55,12 @@ class NetherbeamMarker {
             try {
                 const response = await fetch(`${NetherbeamMarker.dataUrl}?t=${Date.now()}`, { cache: 'no-store' });
                 if (!response.ok) throw new Error(`Nether beam request failed: ${response.status}`);
-                const position = NetherbeamMarker.parsePosition(await response.json());
+                const data = await response.json();
+                if (data && typeof data === 'object' && !Array.isArray(data) && Object.keys(data).length === 0) {
+                    console.info('Nether beam position has not been published yet; keeping any cached location and retrying on the next refresh.');
+                    return;
+                }
+                const position = NetherbeamMarker.parsePosition(data);
                 if (!position) throw new Error('Invalid published Nether beam position');
                 place(position);
                 try {

@@ -33,6 +33,7 @@ async function createMarker({
     const urls = [];
     const fetchOptions = [];
     const warnings = [];
+    const messages = [];
     let visibilityUpdates = 0;
     let refreshInterval;
     let frame;
@@ -45,7 +46,10 @@ async function createMarker({
         },
         requestAnimationFrame: callback => { frame = callback; },
         setInterval: (callback, interval) => { refresh = callback; refreshInterval = interval; },
-        console: { warn: (...args) => warnings.push(args) },
+        console: {
+            warn: (...args) => warnings.push(args),
+            info: (...args) => messages.push(args)
+        },
         localStorage: {
             getItem: key => {
                 if (storageReadError) throw storageReadError;
@@ -78,7 +82,7 @@ async function createMarker({
     const settle = () => new Promise(resolve => setImmediate(resolve));
     await settle();
     return {
-        features, layers, urls, context, settle, storage, warnings, initialPosition, refreshInterval, fetchOptions,
+        features, layers, urls, context, settle, storage, warnings, messages, initialPosition, refreshInterval, fetchOptions,
         visibilityUpdates: () => visibilityUpdates,
         refresh: async () => { refresh(); await settle(); },
         tick: time => frame(time),
@@ -110,6 +114,27 @@ test('shows no marker until a valid position is published', async () => {
         assert.equal(marker.features.length, 0);
         assert.equal(marker.layers.length, 0);
     }
+});
+
+test('the unpublished placeholder reports pending publication and continues polling', async () => {
+    const marker = await createMarker({ responses: [{}, { x: 10, z: 20 }] });
+    assert.equal(marker.warnings.length, 0);
+    assert.match(marker.messages[0][0], /has not been published yet/);
+    assert.equal(marker.features.length, 0);
+    assert.equal(marker.storage.has('netherbeamPosition'), false);
+    await marker.refresh();
+    assert.deepEqual(marker.position(), [10, 20]);
+    assert.deepEqual(JSON.parse(marker.storage.get('netherbeamPosition')), { x: 10, z: 20 });
+});
+
+test('an unpublished position preserves the cached location without an invalid-data warning', async () => {
+    const cached = JSON.stringify({ x: 0, z: -200 });
+    const storage = new Map([['netherbeamPosition', cached]]);
+    const marker = await createMarker({ storage, responses: [{}] });
+    assert.deepEqual(marker.position(), [0, -200]);
+    assert.equal(storage.get('netherbeamPosition'), cached);
+    assert.equal(marker.warnings.length, 0);
+    assert.equal(marker.messages.length, 1);
 });
 
 test('moves the existing marker when the published position changes', async () => {
@@ -158,7 +183,7 @@ test('persists new locations across reloads and keeps polling after failures', a
 });
 
 test('invalid or unavailable updates do not overwrite a valid cached position', async () => {
-    for (const body of [{}, { x: 'a', z: 1 }, { x: Infinity, z: 2 }, null, new Error('offline')]) {
+    for (const body of [[], '', false, { updated: 'incomplete' }, { x: 1 }, { z: 2 }, { x: 'a', z: 1 }, { x: Infinity, z: 2 }, null, new Error('offline')]) {
         const cached = JSON.stringify({ x: 0, z: -200 });
         const storage = new Map([['netherbeamPosition', cached]]);
         const marker = await createMarker({ storage, responses: [body] });
