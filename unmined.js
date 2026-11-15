@@ -181,9 +181,7 @@ class Unmined {
     static defaultOptions = {
         enableGrid: true,
         showGrid: true,
-        binaryGrid: true,
         showScaleBar: true,
-        denseGrid: false,
         showMarkers: true,
         showPlayers: true,
         centerX: 0,
@@ -463,28 +461,13 @@ class Unmined {
         const bgColor = "#ffffff";
         const fgColor = "#222222";
 
-        const intervalCount = this.olMap.getView().getMaxZoom() + 2;
-        const graticuleIntervals = new Array(intervalCount);
-
-        if (this.#options.binaryGrid) {
-            let base = 16;
-            for (let z = 0; z < intervalCount; ++z) {
-                const intervalInBlocks = base;
-                const intervalInDegrees = ol.proj.transform([intervalInBlocks, intervalInBlocks], this.dataProjection, this.viewProjection)[0];
-                graticuleIntervals[intervalCount - 1 - z] = intervalInDegrees;
-                base *= 2;
-            }
-        } else {
-            const factors = [1, 2, 5];
-            let base = 10;
-            let factorIndex = 0;
-            for (let z = 0; z < intervalCount; ++z) {
-                const intervalInBlocks = base * factors[factorIndex++ % factors.length]
-                const intervalInDegrees = ol.proj.transform([intervalInBlocks, intervalInBlocks], this.dataProjection, this.viewProjection)[0];
-                graticuleIntervals[intervalCount - 1 - z] = intervalInDegrees;
-                if (factorIndex % factors.length == 0) base *= 10;
-            }
-        }
+        // Jerry's Nations flag-claim parcel grid: fixed 100x100 block cells
+        // anchored at world origin. Must match CELL_SIZE in
+        // JerrysNationsBP/scripts/territory/territory_grid.js.
+        const PARCEL_SIZE = 100;
+        const parcelIntervalInDegrees = ol.proj.transform(
+            [PARCEL_SIZE, PARCEL_SIZE], this.dataProjection, this.viewProjection)[0];
+        const graticuleIntervals = [parcelIntervalInDegrees];
 
         const graticuleLabelStyle = new ol.style.Text({
             //font: '14px "Finlandica"',
@@ -524,7 +507,10 @@ class Unmined {
             strokeStyle: graticuleStrokeStyle,
             showLabels: coord,
             wrapX: false,
-            targetSize: this.#options.denseGrid ? 60 : 120,
+            // Hide parcel lines only when cells get too small to be useful;
+            // show coordinate labels only once cells are wide enough to fit them.
+            targetSize: coord ? 45 : 20,
+            maxLines: 300,
             intervals: graticuleIntervals,
             lonLabelFormatter: coord ? (lon) => {
                 const c = new ol.geom.Point(ol.proj.transform([lon, 0], this.viewProjection, this.dataProjection)).getFirstCoordinate()
@@ -640,18 +626,6 @@ class Unmined {
                         text: 'Show grid',
                         callback: () => this.toggleGrid()
                     })
-                contextmenu.push(
-                    {
-                        classname: this.#options.denseGrid ? 'menuitem-checked' : 'menuitem-unchecked',
-                        text: 'Dense grid',
-                        callback: () => this.toggleGridInterval()
-                    })
-                contextmenu.push(
-                    {
-                        classname: this.#options.binaryGrid ? 'menuitem-checked' : 'menuitem-unchecked',
-                        text: 'Binary coordinates',
-                        callback: () => this.toggleBinaryGrid()
-                    })
             }
 
             contextmenu.push(
@@ -664,18 +638,6 @@ class Unmined {
 
         })
         return contextmenu;
-    }
-
-    toggleGridInterval() {
-        this.#options.denseGrid = !this.#options.denseGrid;
-        this.updateGraticule();
-        this.saveSettings();
-    }
-
-    toggleBinaryGrid() {
-        this.#options.binaryGrid = !this.#options.binaryGrid;
-        this.updateGraticule();
-        this.saveSettings();
     }
 
     toggleGrid() {
@@ -716,8 +678,6 @@ class Unmined {
         if (!mapSettings) return;
         this.#options.showScaleBar = mapSettings.showScaleBar ?? this.#options.showScaleBar;
         this.#options.showGrid = mapSettings.showGrid ?? this.#options.showGrid;
-        this.#options.binaryGrid = mapSettings.binaryGrid ?? this.#options.binaryGrid;
-        this.#options.denseGrid = mapSettings.denseGrid ?? this.#options.denseGrid;
         this.#options.showMarkers = mapSettings.showMarkers ?? this.#options.showMarkers;
         this.#options.showPlayers = mapSettings.showPlayers ?? this.#options.showPlayers;
 
@@ -727,8 +687,6 @@ class Unmined {
         const mapSettings = {
             showScaleBar: this.#options.showScaleBar,
             showGrid: this.#options.showGrid,
-            binaryGrid: this.#options.binaryGrid,
-            denseGrid: this.#options.denseGrid,
             showMarkers: this.#options.showMarkers,
             showPlayers: this.#options.showPlayers,
         }

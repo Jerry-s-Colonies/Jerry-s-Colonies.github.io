@@ -1,0 +1,18 @@
+﻿{
+  "updated": "2026-11-15T20:00:00.000Z",
+  "cellSize": 100,
+  "nations": [
+    {
+      "id": "nation_a", "name": "Avaloria", "color": "#dc143c",
+      "flag": [["base","white"],["bands","crimson"],["dragon","crimson"]],
+      "capital": {"x": 9150, "z": -3550},
+      "claims": [[90,-37],[91,-37],[90,-36],[91,-36],[92,-36],[91,-35],[92,-35]]
+    },
+    {
+      "id": "nation_b", "name": "Emeraldheim", "color": "#50c878",
+      "flag": [["base","black"],["border","emerald"],["skull","emerald"]],
+      "capital": {"x": 9350, "z": -4050},
+      "claims": [[92,-41],[93,-41],[92,-40],[93,-40]]
+    }
+  ]
+}
