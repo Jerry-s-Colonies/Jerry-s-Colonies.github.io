@@ -15,10 +15,38 @@ class NationClaims {
         return { cellSize, nations };
     }
 
-    static hexToRgba(hex, alpha) {
+    static colorChannels(hex) {
         const match = /^#([0-9a-f]{6})$/i.exec(typeof hex === 'string' ? hex : '');
         const value = match ? parseInt(match[1], 16) : 0xffffff;
-        return `rgba(${(value >> 16) & 255}, ${(value >> 8) & 255}, ${value & 255}, ${alpha})`;
+        return [(value >> 16) & 255, (value >> 8) & 255, value & 255];
+    }
+
+    static hexToRgba(hex, alpha) {
+        return `rgba(${NationClaims.colorChannels(hex).join(', ')}, ${alpha})`;
+    }
+
+    /** Keeps label hues while ensuring 7:1 contrast against their black outline. */
+    static readableTextColor(hex) {
+        let channels = NationClaims.colorChannels(hex);
+        const luminance = rgb => {
+            const linear = rgb.map(channel => {
+                const value = channel / 255;
+                return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+            });
+            return linear[0] * 0.2126 + linear[1] * 0.7152 + linear[2] * 0.0722;
+        };
+        if (luminance(channels) < 0.3) {
+            if (channels[0] === channels[1] && channels[1] === channels[2]) return '#ffffff';
+            const lighten = amount => channels.map(channel => Math.ceil(channel + (255 - channel) * amount));
+            let low = 0, high = 1;
+            for (let step = 0; step < 12; step++) {
+                const middle = (low + high) / 2;
+                if (luminance(lighten(middle)) < 0.3) low = middle;
+                else high = middle;
+            }
+            channels = lighten(high);
+        }
+        return `#${channels.map(channel => channel.toString(16).padStart(2, '0')).join('')}`;
     }
 
     static layerImageUrl(patternId, colorId) {
@@ -59,6 +87,8 @@ class NationClaims {
 
     constructor(unmined) {
         this.unmined = unmined;
+        this.territoryStyles = [];
+        this.renderVersion = 0;
 
         const source = new ol.source.Vector();
         this.claimsLayer = new ol.layer.Vector({ source });
@@ -69,6 +99,15 @@ class NationClaims {
         this.markersLayer = new ol.layer.Vector({ source: markerSource, declutter: true });
         this.markersLayer.setZIndex(9000); // Above the grid, below coordinate labels.
         unmined.olMap.addLayer(this.markersLayer);
+        unmined.nationClaims = this;
+        unmined.updateNationClaims();
+        this.createDetailsDialog();
+        unmined.olMap.on('singleclick', event => {
+            const nation = unmined.olMap.forEachFeatureAtPixel(
+                event.pixel, feature => feature.get('nation'),
+                { layerFilter: layer => layer === this.markersLayer, hitTolerance: 6 });
+            if (nation) this.showDetails(nation);
+        });
 
         let cachedData;
         try {
@@ -124,14 +163,71 @@ class NationClaims {
         ]]);
     }
 
+    createDetailsDialog() {
+        this.detailsDialog = document.createElement('dialog');
+        this.detailsDialog.className = 'map-dialog nation-details-dialog';
+        this.detailsDialog.setAttribute('aria-labelledby', 'nation-details-title');
+        this.detailsTitle = document.createElement('h2');
+        this.detailsTitle.id = 'nation-details-title';
+        this.detailsList = document.createElement('dl');
+        const note = document.createElement('p');
+        note.className = 'map-dialog-note';
+        note.textContent = 'Last published snapshot. Nation data is published hourly.';
+        const close = document.createElement('button');
+        close.type = 'button';
+        close.textContent = 'Close';
+        close.addEventListener('click', () => this.detailsDialog.close());
+        this.detailsDialog.append(this.detailsTitle, this.detailsList, note, close);
+        document.body.append(this.detailsDialog);
+    }
+
+    showDetails(nation) {
+        this.detailsTitle.textContent = nation.name;
+        this.detailsList.replaceChildren();
+        const values = [
+            ['Leader', nation.leaderName || 'Unavailable'],
+            ['Members', Number.isSafeInteger(nation.memberCount) && nation.memberCount >= 0
+                ? nation.memberCount.toLocaleString() : 'Unavailable'],
+            ['Treasury', Number.isFinite(nation.treasury) ? `${nation.treasury.toLocaleString()} coins` : 'Unavailable']
+        ];
+        for (const [label, value] of values) {
+            const term = document.createElement('dt');
+            const description = document.createElement('dd');
+            term.textContent = label;
+            description.textContent = value;
+            this.detailsList.append(term, description);
+        }
+        if (!this.detailsDialog.open) this.detailsDialog.showModal();
+    }
+
+    updateSettings(settings) {
+        this.settings = settings;
+        this.claimsLayer.setVisible(settings.showTerritories && settings.territoryOpacity > 0);
+        for (const { fill, stroke, color } of this.territoryStyles) {
+            fill.setColor(NationClaims.hexToRgba(color, settings.territoryOpacity));
+            stroke.setColor(NationClaims.hexToRgba(color, Math.min(0.8, settings.territoryOpacity * 4)));
+        }
+        this.claimsLayer.changed();
+        this.markersLayer.setVisible(settings.showMarkers && (settings.showNationFlags || settings.showNationNames));
+        for (const feature of this.markersLayer.getSource().getFeatures()) {
+            const styles = [];
+            if (settings.showNationFlags && feature.get('flagStyle')) styles.push(feature.get('flagStyle'));
+            if (settings.showNationNames) styles.push(feature.get('nameStyle'));
+            feature.setStyle(styles);
+        }
+    }
+
     async render(data) {
+        const version = ++this.renderVersion;
         const claimFeatures = [];
         const markerFeatures = [];
+        const territoryStyles = [];
 
         for (const nation of data.nations) {
             const fill = new ol.style.Fill({ color: NationClaims.hexToRgba(nation.color, 0.22) });
             const stroke = new ol.style.Stroke({ color: NationClaims.hexToRgba(nation.color, 0.8), width: 1 });
             const cellStyle = new ol.style.Style({ fill, stroke });
+            territoryStyles.push({ fill, stroke, color: nation.color });
 
             let sumX = 0, sumZ = 0, count = 0;
             for (const cell of nation.claims) {
@@ -160,21 +256,29 @@ class NationClaims {
                 text: new ol.style.Text({
                     text: nation.name,
                     font: 'bold 14px sans-serif',
-                    fill: new ol.style.Fill({ color: NationClaims.hexToRgba(nation.color, 1) }),
+                    fill: new ol.style.Fill({ color: NationClaims.readableTextColor(nation.color) }),
                     stroke: new ol.style.Stroke({ color: '#000000', width: 3 }),
                     offsetY: 12,
                     overflow: true
                 })
             }));
 
-            const marker = new ol.Feature({ geometry: new ol.geom.Point(this.toView(anchor[0], anchor[1])) });
+            const marker = new ol.Feature({
+                geometry: new ol.geom.Point(this.toView(anchor[0], anchor[1])),
+                nation,
+                flagStyle: flagUrl ? styles[0] : null,
+                nameStyle: styles[styles.length - 1]
+            });
             marker.setStyle(styles);
             markerFeatures.push(marker);
         }
 
+        if (version !== this.renderVersion) return;
+        this.territoryStyles = territoryStyles;
         this.claimsLayer.getSource().clear();
         this.claimsLayer.getSource().addFeatures(claimFeatures);
         this.markersLayer.getSource().clear();
         this.markersLayer.getSource().addFeatures(markerFeatures);
+        this.updateSettings(this.settings);
     }
 }

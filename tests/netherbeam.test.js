@@ -93,11 +93,12 @@ async function createMarker({
     };
 }
 
-test('places a centered 32px marker at the published position and keeps visibility control', async () => {
+test('places a centered 32px marker on its own independently controllable layer', async () => {
     for (const existing of [false, true]) {
         const marker = await createMarker({ existingLayer: existing });
         assert.equal(marker.features.length, 1);
-        assert.equal(marker.layers.length, existing ? 0 : 1);
+        assert.equal(marker.layers.length, 1);
+        assert.equal(marker.layers[0], marker.context.unmined.netherbeamLayer);
         assert.equal(marker.visibilityUpdates(), 1);
         assert.deepEqual(marker.position(), [1200, -3400]);
         const icon = marker.features[0].style.image;

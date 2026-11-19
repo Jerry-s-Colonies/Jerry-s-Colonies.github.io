@@ -32,11 +32,11 @@ class NetherbeamMarker {
             feature = new ol.Feature({ geometry });
             feature.setStyle(new ol.style.Style({ image: icon }));
 
-            if (!unmined.markersLayer) {
-                unmined.markersLayer = unmined.createMarkersLayer([]);
-                unmined.olMap.addLayer(unmined.markersLayer);
+            if (!unmined.netherbeamLayer) {
+                unmined.netherbeamLayer = unmined.createMarkersLayer([]);
+                unmined.olMap.addLayer(unmined.netherbeamLayer);
             }
-            unmined.markersLayer.getSource().addFeature(feature);
+            unmined.netherbeamLayer.getSource().addFeature(feature);
             unmined.updateMarkersLayer();
             requestAnimationFrame(animate);
         };

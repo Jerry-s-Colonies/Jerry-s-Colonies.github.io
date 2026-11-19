@@ -174,6 +174,8 @@ class Unmined {
     regionMap = null;
     markersLayer = null;
     playerMarkersLayer = null;
+    netherbeamLayer = null;
+    nationClaims = null;
 
     #scaleLine = null;
     #options = null;
@@ -183,7 +185,13 @@ class Unmined {
         showGrid: true,
         showScaleBar: true,
         showMarkers: true,
+        showMapIcons: true,
         showPlayers: true,
+        showNetherbeam: true,
+        showNationFlags: true,
+        showNationNames: true,
+        showTerritories: true,
+        territoryOpacity: 0.22,
         centerX: 0,
         centerZ: 0
     }
@@ -323,6 +331,7 @@ class Unmined {
         this.updateMarkersLayer();
         this.updatePlayerMarkersLayer();
         this.olMap.addControl(this.createContextMenu());
+        this.olMap.addControl(this.createSettingsControl());
 
         this.redDotMarker = new RedDotMarker(this.olMap, this.dataProjection, this.viewProjection);
 
@@ -635,6 +644,11 @@ class Unmined {
                     callback: () => this.toggleScaleBar()
                 })
 
+            contextmenu.push('-');
+            contextmenu.push({
+                text: 'Map settings...',
+                callback: () => this.openSettings()
+            });
 
         })
         return contextmenu;
@@ -655,6 +669,8 @@ class Unmined {
     toggleMarkers() {
         this.#options.showMarkers = !this.#options.showMarkers;
         this.updateMarkersLayer();
+        this.updatePlayerMarkersLayer();
+        this.updateNationClaims();
         this.saveSettings();
     }
 
@@ -670,17 +686,20 @@ class Unmined {
                 const s = localStorage.getItem("mapSettings");
                 if (!s) return undefined;
                 return JSON.parse(s);
-            } catch {
+            } catch (error) {
+                console.warn('Unable to load map settings.', error);
                 return undefined;
             }
         })();
 
         if (!mapSettings) return;
-        this.#options.showScaleBar = mapSettings.showScaleBar ?? this.#options.showScaleBar;
-        this.#options.showGrid = mapSettings.showGrid ?? this.#options.showGrid;
-        this.#options.showMarkers = mapSettings.showMarkers ?? this.#options.showMarkers;
-        this.#options.showPlayers = mapSettings.showPlayers ?? this.#options.showPlayers;
-
+        for (const key of ['showScaleBar', 'showGrid', 'showMarkers', 'showPlayers',
+            'showMapIcons', 'showNetherbeam', 'showNationFlags', 'showNationNames', 'showTerritories']) {
+            if (typeof mapSettings[key] === 'boolean') this.#options[key] = mapSettings[key];
+        }
+        if (Number.isFinite(mapSettings.territoryOpacity)) {
+            this.#options.territoryOpacity = Math.max(0, Math.min(1, mapSettings.territoryOpacity));
+        }
     }
 
     saveSettings() {
@@ -688,17 +707,114 @@ class Unmined {
             showScaleBar: this.#options.showScaleBar,
             showGrid: this.#options.showGrid,
             showMarkers: this.#options.showMarkers,
+            showMapIcons: this.#options.showMapIcons,
             showPlayers: this.#options.showPlayers,
+            showNetherbeam: this.#options.showNetherbeam,
+            showNationFlags: this.#options.showNationFlags,
+            showNationNames: this.#options.showNationNames,
+            showTerritories: this.#options.showTerritories,
+            territoryOpacity: this.#options.territoryOpacity,
         }
-        localStorage.setItem("mapSettings", JSON.stringify(mapSettings))
+        try {
+            localStorage.setItem("mapSettings", JSON.stringify(mapSettings));
+        } catch (error) {
+            console.warn('Unable to save map settings.', error);
+            Unmined.toast('Map settings could not be saved in this browser.');
+        }
     }
 
     updateMarkersLayer() {
-        this.markersLayer?.setVisible(this.#options.showMarkers);
+        this.markersLayer?.setVisible(this.#options.showMarkers && this.#options.showMapIcons);
+        this.netherbeamLayer?.setVisible(this.#options.showMarkers && this.#options.showNetherbeam);
+    }
+
+    updateNationClaims() {
+        this.nationClaims?.updateSettings(this.#options);
+    }
+
+    createSettingsControl() {
+        const element = document.createElement('div');
+        element.className = 'map-settings-control ol-unselectable ol-control';
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = '\u2699';
+        button.title = 'Map settings';
+        button.setAttribute('aria-label', 'Map settings');
+        button.addEventListener('click', () => this.openSettings());
+        element.append(button);
+
+        this.settingsDialog = document.createElement('dialog');
+        this.settingsDialog.className = 'map-dialog map-settings-dialog';
+        this.settingsDialog.setAttribute('aria-labelledby', 'map-settings-title');
+        const heading = document.createElement('h2');
+        heading.id = 'map-settings-title';
+        heading.textContent = 'Map settings';
+        this.settingsDialog.append(heading);
+        this.settingsInputs = new Map();
+        const choices = [
+            ['showMarkers', 'Map icons (master switch)'],
+            ['showMapIcons', 'Other map icons'],
+            ['showPlayers', 'Player icons'],
+            ['showNetherbeam', 'Nether Beam icon'],
+            ['showNationFlags', 'Nation flags'],
+            ['showNationNames', 'Nation names'],
+            ['showTerritories', 'Nation territories'],
+            ['showGrid', 'Grid and coordinates'],
+            ['showScaleBar', 'Scalebar']
+        ];
+        for (const [key, text] of choices) {
+            if (key === 'showGrid' && !this.#options.enableGrid) continue;
+            const label = document.createElement('label');
+            const input = document.createElement('input');
+            input.type = 'checkbox';
+            input.addEventListener('change', () => {
+                this.#options[key] = input.checked;
+                if (key === 'showGrid') this.updateGraticule();
+                if (key === 'showScaleBar') this.updateScaleBar();
+                this.updateMarkersLayer();
+                this.updatePlayerMarkersLayer();
+                this.updateNationClaims();
+                this.saveSettings();
+            });
+            this.settingsInputs.set(key, input);
+            label.append(input, document.createTextNode(text));
+            this.settingsDialog.append(label);
+        }
+        const opacityLabel = document.createElement('label');
+        opacityLabel.className = 'map-opacity-setting';
+        this.opacityValue = document.createElement('span');
+        this.opacityInput = document.createElement('input');
+        this.opacityInput.type = 'range';
+        this.opacityInput.min = '0';
+        this.opacityInput.max = '100';
+        this.opacityInput.step = '1';
+        this.opacityInput.setAttribute('aria-label', 'Territory opacity');
+        this.opacityInput.addEventListener('input', () => {
+            this.#options.territoryOpacity = Number(this.opacityInput.value) / 100;
+            this.opacityValue.textContent = `Territory opacity: ${this.opacityInput.value}%`;
+            this.updateNationClaims();
+        });
+        this.opacityInput.addEventListener('change', () => this.saveSettings());
+        opacityLabel.append(this.opacityValue, this.opacityInput);
+        this.settingsDialog.append(opacityLabel);
+        const close = document.createElement('button');
+        close.type = 'button';
+        close.textContent = 'Done';
+        close.addEventListener('click', () => this.settingsDialog.close());
+        this.settingsDialog.append(close);
+        document.body.append(this.settingsDialog);
+        return new ol.control.Control({ element });
+    }
+
+    openSettings() {
+        for (const [key, input] of this.settingsInputs) input.checked = this.#options[key];
+        this.opacityInput.value = String(Math.round(this.#options.territoryOpacity * 100));
+        this.opacityValue.textContent = `Territory opacity: ${this.opacityInput.value}%`;
+        if (!this.settingsDialog.open) this.settingsDialog.showModal();
     }
 
     updatePlayerMarkersLayer() {
-        this.playerMarkersLayer?.setVisible(this.#options.showPlayers);
+        this.playerMarkersLayer?.setVisible(this.#options.showMarkers && this.#options.showPlayers);
     }
 
     updateScaleBar() {
