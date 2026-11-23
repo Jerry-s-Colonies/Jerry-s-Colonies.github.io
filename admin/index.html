@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Frontier - Panel Admin Web</title>
+  <link rel="icon" type="image/png" href="../assets/icons/logo.png">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+  <!-- ECRAN DE CONNEXION -->
+  <section id="loginView" class="auth-screen">
+    <div class="auth-card oreui-panel">
+      <div class="auth-top-actions">
+        <button id="loginLangBtn" class="oreui-btn oreui-btn-primary oreui-btn-sm lang-toggle-btn" type="button" data-i18n-title="ui.lang_title" title="Changer de langue / Switch language">Lang: FR</button>
+        <button id="loginThemeBtn" class="oreui-btn oreui-btn-sm" type="button" data-i18n="ui.theme_btn" data-i18n-title="ui.theme_title" title="Theme Sombre / Clair">Theme</button>
+      </div>
+
+      <div class="auth-head">
+        <span class="auth-badge pixel-font" data-i18n="login.badge">THE FRONTIER STAFF</span>
+        <h1 class="pixel-font" data-i18n="login.title">PANEL ADMIN WEB</h1>
+        <p data-i18n="login.subtitle">Moderation et gestion serveur en temps reel (Modo / Admin / Manager / Owner)</p>
+      </div>
+
+      <div id="loginError" class="alert-box alert-error hidden"></div>
+      <div class="alert-box alert-info">
+        <span data-i18n="login.hint_before">Definissez votre mot de passe directement en jeu via </span>
+        <strong data-i18n="login.hint_path">/frontier:menu -> Admin -> Panel Web</strong><span data-i18n="login.hint_after">. Aucun secret n'est enregistre sur ce site.</span>
+      </div>
+
+      <form id="loginForm">
+        <div class="field-group">
+          <label for="loginUser" data-i18n="login.user_label">Pseudo Minecraft</label>
+          <input id="loginUser" class="input-ore" type="text" data-i18n-placeholder="login.user_ph" placeholder="Votre gamertag exact" required autocomplete="username">
+        </div>
+        <div class="field-group">
+          <label for="loginPass" data-i18n="login.pass_label">Mot de passe Admin (defini en jeu)</label>
+          <input id="loginPass" class="input-ore" type="password" data-i18n-placeholder="login.pass_ph" placeholder="Mot de passe Web" required autocomplete="current-password">
+        </div>
+        <button id="loginSubmitBtn" class="oreui-btn oreui-btn-primary" style="width: 100%;" type="submit" data-i18n="login.submit">Se connecter</button>
+      </form>
+
+      <details class="relay-settings">
+        <summary data-i18n="login.api_summary">Configuration connexion API / Mode Local</summary>
+        <div class="field-group" style="margin-top: 10px;">
+          <label for="relayUrlInput" data-i18n="login.relay_label">URL du Relais HTTPS (vide = meme origine / mode local)</label>
+          <input id="relayUrlInput" class="input-ore" type="text" placeholder="https://frontier-webpanel-relay.compte.workers.dev">
+        </div>
+        <div id="localModePanel" class="hidden" style="margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(128,128,128,0.3);">
+          <div style="margin-bottom: 6px;" data-i18n="login.local_mode_label">Mode du Lanceur Local PC :</div>
+          <div class="toolbar-group">
+            <select id="localModeSelect" class="select-ore" style="width: auto;">
+              <option value="standalone" data-i18n="login.mode_standalone">Autonome Local (BDS local)</option>
+              <option value="relay" data-i18n="login.mode_relay">Proxy Relais Cloudflare (The Frontier live)</option>
+            </select>
+            <button id="saveLocalModeBtn" type="button" class="oreui-btn oreui-btn-info oreui-btn-sm" data-i18n="ui.apply">Appliquer</button>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- APPLICATION PRINCIPALE -->
+  <div id="appView" class="app-shell hidden">
+    <aside class="sidebar">
+      <div class="brand-box">
+        <div>
+          <div class="brand-title pixel-font">THE FRONTIER</div>
+          <div style="font-size: 11px; color: var(--text-muted);" data-i18n="sidebar.subtitle">WebAdmin OreUI</div>
+        </div>
+        <div class="toolbar-group" style="gap: 6px;">
+          <button id="langToggleBtn" class="oreui-btn oreui-btn-primary oreui-btn-sm lang-toggle-btn" type="button" data-i18n-title="ui.lang_title" title="Changer de langue / Switch language">FR</button>
+          <button id="themeToggleBtn" class="oreui-btn oreui-btn-sm" type="button" data-i18n="ui.theme_btn" data-i18n-title="ui.theme_title" title="Theme Sombre / Clair">Theme</button>
+        </div>
+      </div>
+
+      <div class="oreui-card status-card">
+        <div class="status-row">
+          <span id="serverDot" class="dot offline"></span>
+          <span id="serverOnlineLabel" data-i18n="status.offline">Serveur hors ligne</span>
+        </div>
+        <div><span data-i18n="status.tps">TPS</span>: <strong id="sideTps">--</strong> | <span data-i18n="status.players">Joueurs</span>: <strong id="sidePlayers">0</strong></div>
+        <div style="color: var(--text-muted); margin-top: 3px;" id="sideUptime">Uptime: --</div>
+      </div>
+
+      <nav class="nav-list" id="navList">
+        <button class="oreui-btn nav-btn active" data-tab="tabOverview" data-min="1" data-i18n="nav.overview">Vue d'ensemble</button>
+        <button class="oreui-btn nav-btn" data-tab="tabPlayers" data-min="1" data-i18n="nav.players">Joueurs & Moderation</button>
+        <button class="oreui-btn nav-btn" data-tab="tabChat" data-min="1" data-i18n="nav.chat">Chat & Annonces</button>
+        <button class="oreui-btn nav-btn" data-tab="tabAntiCheat" data-min="1" data-i18n="nav.anticheat">Anti-Cheat & PacketGuard</button>
+        <button class="oreui-btn nav-btn" data-tab="tabProgression" data-min="3" data-i18n="nav.progression">Progression & Codes</button>
+        <button class="oreui-btn nav-btn" data-tab="tabStaff" data-min="3" data-i18n="nav.staff">Staff & Acces Web</button>
+        <button class="oreui-btn nav-btn" data-tab="tabConsole" data-min="2" data-i18n="nav.console">Console & Audit</button>
+      </nav>
+
+      <div class="oreui-card sidebar-user">
+        <div>
+          <div id="staffNameLabel" style="font-weight: 700;">--</div>
+          <span id="staffRoleBadge" class="role-pill role-1">Modo</span>
+        </div>
+        <button id="logoutBtn" class="oreui-btn oreui-btn-danger oreui-btn-sm" type="button" data-i18n="ui.logout">Quitter</button>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <div>
+          <div id="pageTitle" class="pixel-font" style="font-size: 20px;">Vue d'ensemble</div>
+          <div id="syncInfo" style="font-size: 11px; color: var(--text-muted);">Synchronisation: --</div>
+        </div>
+        <div class="topbar-meta">
+          <span id="localLauncherBadge" class="tag-badge tag-info hidden" data-i18n="topbar.local_badge">Lanceur Local PC</span>
+          <button id="refreshNowBtn" class="oreui-btn oreui-btn-sm" type="button" data-i18n="ui.refresh">Actualiser</button>
+        </div>
+      </header>
+
+      <div class="content-wrap">
+        <!-- ONGLET 1: VUE D'ENSEMBLE -->
+        <section id="tabOverview" class="tab-section">
+          <div class="stats-grid">
+            <div class="oreui-panel stat-tile"><div class="stat-label" data-i18n="ov.online">Joueurs en ligne</div><div id="ovOnline" class="stat-val pixel-font">0</div></div>
+            <div class="oreui-panel stat-tile"><div class="stat-label" data-i18n="ov.known">Joueurs connus</div><div id="ovKnown" class="stat-val pixel-font">0</div></div>
+            <div class="oreui-panel stat-tile"><div class="stat-label" data-i18n="ov.tps">TPS Serveur</div><div id="ovTps" class="stat-val pixel-font">--</div></div>
+            <div class="oreui-panel stat-tile"><div class="stat-label" data-i18n="ov.sanctions">Bannis / Mutes / Geles</div><div id="ovSanctions" class="stat-val pixel-font">0 / 0 / 0</div></div>
+            <div class="oreui-panel stat-tile"><div class="stat-label" data-i18n="ov.suspects">Suspects AC en ligne</div><div id="ovSuspects" class="stat-val pixel-font">0</div></div>
+            <div class="oreui-panel stat-tile"><div class="stat-label" data-i18n="ov.alerts">Alertes PacketGuard / Sec</div><div id="ovAlerts" class="stat-val pixel-font">0</div></div>
+          </div>
+          <div class="grid-2" style="margin-top: 14px;">
+            <div class="oreui-panel oreui-card">
+              <h3 class="pixel-font" style="margin-top: 0;" data-i18n="ov.recent_alerts">Dernieres Alertes Securite</h3>
+              <div id="ovAlertFeed" class="feed-list"></div>
+            </div>
+            <div class="oreui-panel oreui-card">
+              <h3 class="pixel-font" style="margin-top: 0;" data-i18n="ov.recent_audits">Dernieres Actions Audit</h3>
+              <div id="ovAuditFeed" class="feed-list"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ONGLET 2: JOUEURS & MODERATION -->
+        <section id="tabPlayers" class="tab-section hidden">
+          <div class="oreui-panel oreui-card">
+            <div class="toolbar">
+              <div class="toolbar-group">
+                <button class="oreui-btn oreui-btn-sm filter-player-btn oreui-btn-primary" data-filter="online" data-i18n="players.filter.online">En ligne</button>
+                <button class="oreui-btn oreui-btn-sm filter-player-btn" data-filter="all" data-i18n="players.filter.all">Tous</button>
+                <button class="oreui-btn oreui-btn-sm filter-player-btn" data-filter="sanctioned" data-i18n="players.filter.sanctioned">Sanctionnes</button>
+                <button class="oreui-btn oreui-btn-sm filter-player-btn" data-filter="banned" data-i18n="players.filter.banned">Bannis</button>
+              </div>
+              <div class="toolbar-group" style="min-width: 240px;">
+                <input id="playerSearchInput" class="input-ore" type="text" data-i18n-placeholder="players.search_ph" placeholder="Rechercher un pseudo...">
+              </div>
+            </div>
+            <div class="table-scroll">
+              <table class="ore-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="players.col.player">Joueur</th>
+                    <th data-i18n="players.col.state">Etat</th>
+                    <th data-i18n="players.col.role">Role</th>
+                    <th data-i18n="players.col.status">Statut</th>
+                    <th data-i18n="players.col.vl">VL AC</th>
+                    <th data-i18n="players.col.actions">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="playersTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ONGLET 3: CHAT & ANNONCES -->
+        <section id="tabChat" class="tab-section hidden">
+          <div class="grid-2">
+            <div class="oreui-panel oreui-card">
+              <h3 class="pixel-font" style="margin-top: 0;" data-i18n="chat.heading">Chat en Direct (Jeu <-> Web)</h3>
+              <div id="chatFeed" class="feed-list"></div>
+              <form id="chatSendForm" class="toolbar-group" style="margin-top: 10px;">
+                <input id="chatMessageInput" class="input-ore" style="flex: 1;" type="text" data-i18n-placeholder="chat.input_ph" placeholder="Envoyer un message en jeu..." maxlength="220" required>
+                <button class="oreui-btn oreui-btn-primary" type="submit" data-i18n="ui.send">Envoyer</button>
+              </form>
+            </div>
+            <div id="broadcastPanel" class="oreui-panel oreui-card" data-min="2">
+              <h3 class="pixel-font" style="margin-top: 0;" data-i18n="broadcast.heading">Annonce Globale (Admin+)</h3>
+              <form id="broadcastForm">
+                <div class="field-group">
+                  <label for="broadcastHeader" data-i18n="broadcast.header_label">Titre ecran</label>
+                  <input id="broadcastHeader" class="input-ore" type="text" value="ANNONCE SERVEUR" maxlength="48" required>
+                </div>
+                <div class="field-group">
+                  <label for="broadcastMessage" data-i18n="broadcast.msg_label">Message</label>
+                  <textarea id="broadcastMessage" class="textarea-ore" rows="4" data-i18n-placeholder="broadcast.msg_ph" placeholder="Message diffuse en titre + chat..." maxlength="240" required></textarea>
+                </div>
+                <button class="oreui-btn oreui-btn-danger" type="submit" data-i18n="broadcast.submit">Diffuser l'annonce</button>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- ONGLET 4: ANTI-CHEAT & PACKETGUARD -->
+        <section id="tabAntiCheat" class="tab-section hidden">
+          <div class="grid-2">
+            <div class="oreui-panel oreui-card">
+              <h3 class="pixel-font" style="margin-top: 0;" data-i18n="ac.suspects_heading">Suspects en ligne & Alertes PacketGuard</h3>
+              <div id="suspectsList" style="margin-bottom: 12px;"></div>
+              <div id="acLogsFeed" class="feed-list"></div>
+            </div>
+            <div id="acSettingsPanel" class="oreui-panel oreui-card" data-min="3">
+              <h3 class="pixel-font" style="margin-top: 0;" data-i18n="ac.settings_heading">Parametres Anti-Cheat & Maintenance (Manager+)</h3>
+              <form id="acGlobalForm" style="display: grid; gap: 8px; margin-bottom: 14px;">
+                <label><input type="checkbox" id="acCfgEnabled"> <span data-i18n="ac.cfg.enabled">Activer Frontier Anti-Cheat</span></label>
+                <label><input type="checkbox" id="acCfgAlerts"> <span data-i18n="ac.cfg.alerts">Diffuser les alertes au staff en ligne</span></label>
+                <label><input type="checkbox" id="acCfgExempt"> <span data-i18n="ac.cfg.exempt">Exempter le staff</span></label>
+                <label><input type="checkbox" id="acCfgMaps"> <span data-i18n="ac.cfg.maps">Purger cartes de localisation</span></label>
+                <label><input type="checkbox" id="acCfgShulkers"> <span data-i18n="ac.cfg.shulkers">Purger Shulker & EnderChest</span></label>
+                <label><input type="checkbox" id="acCfgHideTag"> <span data-i18n="ac.cfg.hidetag">Masquer pseudos par distance</span></label>
+                <div class="field-group" style="margin: 0;">
+                  <label for="acCfgDist" data-i18n="ac.cfg.dist_label">Distance max pseudos (6..48)</label>
+                  <input id="acCfgDist" class="input-ore" type="number" min="6" max="48" step="2" value="16">
+                </div>
+                <button class="oreui-btn oreui-btn-primary oreui-btn-sm" type="submit" data-i18n="ui.save_settings">Enregistrer Parametres</button>
+              </form>
+              <div class="toolbar-group">
+                <button class="oreui-btn oreui-btn-gold oreui-btn-sm ac-maint-btn" data-op="reset_all_vl" type="button" data-i18n="ac.maint.reset_vl">Reset Tous les VL</button>
+                <button class="oreui-btn oreui-btn-danger oreui-btn-sm ac-maint-btn" data-op="clear_logs" type="button" data-i18n="ac.maint.clear_logs">Vider Logs AC</button>
+                <button class="oreui-btn oreui-btn-sm ac-maint-btn" data-op="restore_defaults" type="button" data-i18n="ac.maint.defaults">Defauts 15 Modules</button>
+              </div>
+            </div>
+          </div>
+          <div id="acModulesPanel" class="oreui-panel oreui-card" style="margin-top: 14px;" data-min="3">
+            <h3 class="pixel-font" style="margin-top: 0;" data-i18n="ac.modules_heading">Modules Anti-Cheat (15)</h3>
+            <div class="table-scroll">
+              <table class="ore-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="ac.col.module">Module</th>
+                    <th data-i18n="ac.col.category">Categorie</th>
+                    <th data-i18n="ac.col.enabled">Actif</th>
+                    <th data-i18n="ac.col.action">Action</th>
+                    <th data-i18n="ac.col.max_vl">Max VL</th>
+                    <th data-i18n="ac.col.save">Enregistrer</th>
+                  </tr>
+                </thead>
+                <tbody id="acModulesBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ONGLET 5: PROGRESSION & CODES CADEAUX -->
+        <section id="tabProgression" class="tab-section hidden">
+          <div class="grid-2">
+            <div class="oreui-panel oreui-card">
+              <h3 class="pixel-font" style="margin-top: 0;" data-i18n="prog.heading">Progression & Economie Joueur (Manager+)</h3>
+              <form id="progActionForm" style="display: grid; gap: 10px;">
+                <div class="field-group" style="margin: 0;">
+                  <label for="progTargetSelect" data-i18n="prog.target_label">Joueur en ligne</label>
+                  <select id="progTargetSelect" class="select-ore"></select>
+                </div>
+                <div class="toolbar-group">
+                  <input id="progXpAmount" class="input-ore" style="width: 140px;" type="number" min="1" value="100">
+                  <button id="btnProgXp" class="oreui-btn oreui-btn-primary oreui-btn-sm" type="button" data-i18n="prog.btn_xp">Ajouter XP Pass</button>
+                </div>
+                <div class="toolbar-group">
+                  <select id="progRankSelect" class="select-ore" style="width: auto;"></select>
+                  <button id="btnProgRank" class="oreui-btn oreui-btn-info oreui-btn-sm" type="button" data-i18n="prog.btn_rank">Appliquer Rang</button>
+                </div>
+                <div class="toolbar-group">
+                  <input id="progCoinsInput" class="input-ore" style="width: 120px;" type="number" min="0" data-i18n-placeholder="prog.coins_ph" placeholder="Coins">
+                  <input id="progTokensInput" class="input-ore" style="width: 120px;" type="number" min="0" data-i18n-placeholder="prog.tokens_ph" placeholder="Jetons">
+                  <button id="btnProgEco" class="oreui-btn oreui-btn-gold oreui-btn-sm" type="button" data-i18n="prog.btn_eco">Definir Solde</button>
+                </div>
+                <div class="toolbar-group">
+                  <select id="progKeyRarity" class="select-ore" style="width: auto;"></select>
+                  <input id="progKeyCount" class="input-ore" style="width: 80px;" type="number" min="1" max="64" value="1">
+                  <button id="btnProgKey" class="oreui-btn oreui-btn-sm" type="button" data-i18n="prog.btn_key">Donner Cle Lootbox</button>
+                  <button id="btnProgResetPass" class="oreui-btn oreui-btn-danger oreui-btn-sm" type="button" data-i18n="prog.btn_reset_pass">Reset FrontierPass</button>
+                </div>
+              </form>
+            </div>
+
+            <div class="oreui-panel oreui-card">
+              <h3 class="pixel-font" style="margin-top: 0;" data-i18n="codes.heading">Codes Cadeaux</h3>
+              <form id="codeCreateForm" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                <input id="codeName" class="input-ore" type="text" data-i18n-placeholder="codes.ph.code" placeholder="CODE (ex: FRONTIER)" required>
+                <input id="codeMaxUses" class="input-ore" type="number" min="0" value="0" data-i18n-placeholder="codes.ph.max_uses" placeholder="Max uses (0=inf)">
+                <input id="codeTokens" class="input-ore" type="number" min="0" value="0" data-i18n-placeholder="codes.ph.tokens" placeholder="Jetons">
+                <input id="codeCoins" class="input-ore" type="number" min="0" value="0" data-i18n-placeholder="codes.ph.coins" placeholder="Coins">
+                <input id="codeXp" class="input-ore" type="number" min="0" value="0" data-i18n-placeholder="codes.ph.xp" placeholder="XP">
+                <input id="codeItem" class="input-ore" type="text" data-i18n-placeholder="codes.ph.item" placeholder="Item (ex: minecraft:diamond)">
+                <input id="codeItemCount" class="input-ore" type="number" min="0" value="0" data-i18n-placeholder="codes.ph.item_count" placeholder="Qte Item">
+                <select id="codeRank" class="select-ore"><option value="" data-i18n="codes.no_rank">Aucun rang</option></select>
+                <button class="oreui-btn oreui-btn-primary" style="grid-column: span 2;" type="submit" data-i18n="codes.submit">Creer / Mettre a jour Code</button>
+              </form>
+              <div class="table-scroll">
+                <table class="ore-table">
+                  <thead>
+                    <tr>
+                      <th data-i18n="codes.col.code">Code</th>
+                      <th data-i18n="codes.col.uses">Uses</th>
+                      <th data-i18n="codes.col.rewards">Recompenses</th>
+                      <th data-i18n="codes.col.actions">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="codesTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ONGLET 6: STAFF, REVOCATION WEB & PROTECTIONS -->
+        <section id="tabStaff" class="tab-section hidden">
+          <div class="grid-2">
+            <div class="oreui-panel oreui-card">
+              <h3 class="pixel-font" style="margin-top: 0;" data-i18n="staff.heading">Gestion Staff & Acces Panel Web</h3>
+              <div class="table-scroll">
+                <table class="ore-table">
+                  <thead>
+                    <tr>
+                      <th data-i18n="staff.col.member">Membre</th>
+                      <th data-i18n="staff.col.role">Role</th>
+                      <th data-i18n="staff.col.web_access">Acces Web</th>
+                      <th data-i18n="staff.col.actions">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="staffTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="oreui-panel oreui-card">
+              <h3 class="pixel-font" style="margin-top: 0;" data-i18n="staff.promote_heading">Nommer un Role Staff & Protections</h3>
+              <form id="promoteStaffForm" style="display: grid; gap: 8px; margin-bottom: 16px;">
+                <select id="promotePlayerSelect" class="select-ore"></select>
+                <select id="promoteLevelSelect" class="select-ore">
+                  <option value="0" data-i18n="staff.role.player_revoke">Joueur (Retirer Staff & Revoquer Web)</option>
+                  <option value="1" data-i18n="staff.role.modo">Modo</option>
+                  <option value="2" data-i18n="staff.role.admin">Admin</option>
+                  <option value="3" data-i18n="staff.role.manager">Server Manager (Owner uniquement)</option>
+                </select>
+                <button class="oreui-btn oreui-btn-primary oreui-btn-sm" type="submit" data-i18n="staff.promote_submit">Appliquer Role Staff</button>
+              </form>
+              <form id="protectionsForm" style="display: grid; gap: 8px; border-top: 1px solid rgba(128,128,128,0.3); padding-top: 12px;">
+                <label><input type="checkbox" id="protAutoDeop"> <span data-i18n="prot.auto_deop">Auto-Deop protect</span></label>
+                <label><input type="checkbox" id="protRestrictions"> <span data-i18n="prot.restrictions">Restrictions (Bundles / EnderChest / Perles)</span></label>
+                <div class="toolbar-group">
+                  <button class="oreui-btn oreui-btn-primary oreui-btn-sm" type="submit" data-i18n="prot.save">Sauver Protections</button>
+                  <button id="btnDeopNow" class="oreui-btn oreui-btn-danger oreui-btn-sm" type="button" data-i18n="prot.deop_all">Executer Deop-All</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- ONGLET 7: CONSOLE & AUDIT -->
+        <section id="tabConsole" class="tab-section hidden">
+          <div class="grid-2">
+            <div class="oreui-panel oreui-card">
+              <h3 class="pixel-font" style="margin-top: 0;" data-i18n="console.heading">Commandes Rapides & Console</h3>
+              <div id="quickCmdBox" class="toolbar-group" style="margin-bottom: 12px;" data-min="3">
+                <button class="oreui-btn oreui-btn-info oreui-btn-sm quick-cmd-btn" data-preset="time_day" type="button" data-i18n="quick.day">Jour</button>
+                <button class="oreui-btn oreui-btn-info oreui-btn-sm quick-cmd-btn" data-preset="time_night" type="button" data-i18n="quick.night">Nuit</button>
+                <button class="oreui-btn oreui-btn-sm quick-cmd-btn" data-preset="weather_clear" type="button" data-i18n="quick.clear">Meteo Claire</button>
+                <button class="oreui-btn oreui-btn-sm quick-cmd-btn" data-preset="weather_rain" type="button" data-i18n="quick.rain">Pluie</button>
+                <button class="oreui-btn oreui-btn-gold oreui-btn-sm quick-cmd-btn" data-preset="clearlag" type="button" data-i18n="quick.clearlag">ClearLag</button>
+              </div>
+              <form id="consoleCmdForm" class="hidden" data-min="4">
+                <div class="field-group">
+                  <label for="consoleCmdInput" data-i18n="console.cmd_label">Console Serveur Libre (Owner uniquement)</label>
+                  <div class="toolbar-group">
+                    <input id="consoleCmdInput" class="input-ore" style="flex: 1;" type="text" data-i18n-placeholder="console.cmd_ph" placeholder="Ex: say Maintenance dans 5 minutes">
+                    <button class="oreui-btn oreui-btn-danger" type="submit" data-i18n="console.execute">Executer</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="oreui-panel oreui-card">
+              <div class="toolbar">
+                <h3 class="pixel-font" style="margin: 0;" data-i18n="audit.heading">Journal d'Audit Complet</h3>
+                <div class="toolbar-group">
+                  <button id="exportJsonBtn" class="oreui-btn oreui-btn-info oreui-btn-sm" type="button" data-i18n="audit.export_json">Export JSON</button>
+                  <button id="exportCsvBtn" class="oreui-btn oreui-btn-primary oreui-btn-sm" type="button" data-i18n="audit.export_csv">Export CSV</button>
+                </div>
+              </div>
+              <div id="auditFullFeed" class="feed-list"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- MODALE FICHE JOUEUR & EDITEUR INVENTAIRE -->
+  <div id="playerModal" class="modal-backdrop hidden">
+    <div class="modal-card oreui-panel">
+      <div class="modal-head">
+        <h2 id="modalPlayerName" class="pixel-font" style="margin: 0;">Joueur</h2>
+        <button id="closePlayerModalBtn" class="oreui-btn oreui-btn-sm" type="button" data-i18n="ui.close">Fermer</button>
+      </div>
+      <div id="modalPlayerMeta" class="oreui-card" style="margin-bottom: 12px; font-size: 13px;"></div>
+      <div id="modalModActions" style="display: grid; gap: 10px; margin-bottom: 14px;"></div>
+      <div id="modalInventorySection" class="oreui-card">
+        <div class="toolbar">
+          <strong class="pixel-font" data-i18n="modal.inv_heading">Inventaire en Direct / Snapshot</strong>
+          <div id="modalInvControls" class="toolbar-group">
+            <input id="invGiveItem" class="input-ore" style="width: 170px;" type="text" placeholder="minecraft:diamond">
+            <input id="invGiveQty" class="input-ore" style="width: 70px;" type="number" min="1" max="256" value="1">
+            <button id="btnInvGive" class="oreui-btn oreui-btn-primary oreui-btn-sm" type="button" data-i18n="modal.inv_give">Donner</button>
+            <button id="btnInvClear" class="oreui-btn oreui-btn-danger oreui-btn-sm" type="button" data-i18n="modal.inv_clear">Vider Tout</button>
+          </div>
+        </div>
+        <div id="modalArmorBar" style="margin-bottom: 8px; font-size: 12px;"></div>
+        <div id="modalInvGrid" class="inv-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastStack" class="toast-stack"></div>
+
+  <script src="config.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,521 @@
+:root {
+  --bg-page: #17181a;
+  --bg-panel: linear-gradient(180deg, #434549 0%, #2d2f33 100%);
+  --bg-panel-solid: #2d2f33;
+  --bg-card: #222428;
+  --bg-input: #141517;
+  --border-dark: #101113;
+  --border-inner: #64676d;
+  --text-main: #eef0f3;
+  --text-muted: #a4a9b3;
+  --crimson: #8a1220;
+  --crimson-bright: #e0525f;
+  --green-top: #8ed965;
+  --green-bot: #4fa832;
+  --blue-top: #5a8fc7;
+  --blue-bot: #35618f;
+  --gold: #f5b942;
+  --danger: #e74c3c;
+  --warning: #e67e22;
+  --ok: #5cbf3d;
+}
+
+[data-theme="light"] {
+  --bg-page: #e7e9ed;
+  --bg-panel: linear-gradient(180deg, #f7f8fa 0%, #e1e4ea 100%);
+  --bg-panel-solid: #eceef2;
+  --bg-card: #ffffff;
+  --bg-input: #f2f4f8;
+  --border-dark: #8e94a0;
+  --border-inner: #ffffff;
+  --text-main: #1b1e24;
+  --text-muted: #525965;
+}
+
+@font-face {
+  font-family: 'MinecraftRegular';
+  src: url('../assets/fonts/MinecraftRegular-Bmg3.otf') format('opentype');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'MinecraftTen';
+  src: url('../assets/fonts/MinecraftTen-VGORe.ttf') format('truetype');
+  font-display: swap;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: var(--bg-page);
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+}
+
+.hidden { display: none !important; }
+
+.pixel-font {
+  font-family: 'MinecraftTen', 'MinecraftRegular', 'Consolas', monospace;
+  letter-spacing: 0.5px;
+}
+
+/* ---------- OreUI Primitives ---------- */
+.oreui-panel {
+  background: var(--bg-panel);
+  border: 2px solid var(--border-dark);
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px var(--border-inner), 0 6px 16px rgba(0, 0, 0, 0.45);
+}
+
+.oreui-card {
+  background: var(--bg-card);
+  border: 2px solid var(--border-dark);
+  border-radius: 5px;
+  padding: 14px;
+}
+
+.oreui-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: 'MinecraftRegular', 'MinecraftTen', 'Consolas', monospace;
+  font-size: 12px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.7);
+  background: linear-gradient(#6c6c6c, #464646);
+  border: 2px solid #1a1a1a;
+  border-radius: 4px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), inset 0 -2px 0 rgba(0, 0, 0, 0.35);
+  padding: 8px 14px;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform 0.08s ease, filter 0.12s ease;
+}
+
+.oreui-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.oreui-btn:active { box-shadow: inset 0 2px 0 rgba(0, 0, 0, 0.45); transform: translateY(1px); }
+.oreui-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.oreui-btn-sm { padding: 5px 10px; font-size: 11px; }
+.oreui-btn-primary { background: linear-gradient(var(--green-top), var(--green-bot)); border-color: #1f4611; }
+.oreui-btn-danger { background: linear-gradient(#e0525f, #8a1220); border-color: #4d0f14; }
+.oreui-btn-info { background: linear-gradient(var(--blue-top), var(--blue-bot)); border-color: #1a3550; }
+.oreui-btn-gold { background: linear-gradient(#f2b544, #c97f18); border-color: #613b05; }
+
+.input-ore, .select-ore, .textarea-ore {
+  width: 100%;
+  background: var(--bg-input);
+  color: var(--text-main);
+  border: 2px solid var(--border-dark);
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-size: 13px;
+  outline: none;
+}
+
+.input-ore:focus, .select-ore:focus, .textarea-ore:focus {
+  border-color: var(--blue-top);
+}
+
+/* ---------- Login Screen ---------- */
+.auth-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: radial-gradient(circle at top, rgba(138, 18, 32, 0.25), transparent 60%), var(--bg-page);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  padding: 26px;
+}
+
+.auth-top-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.lang-toggle-btn {
+  border-color: #1f4611;
+}
+
+.auth-head {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.auth-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 11px;
+  background: var(--crimson);
+  color: #fff;
+  border: 1px solid #4d0f14;
+  border-radius: 3px;
+  margin-bottom: 8px;
+}
+
+.auth-head h1 {
+  margin: 4px 0;
+  font-size: 26px;
+}
+
+.auth-head p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.field-group { margin-bottom: 14px; }
+.field-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: var(--text-muted);
+}
+
+.alert-box {
+  padding: 10px 12px;
+  border-radius: 4px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  border: 1px solid;
+}
+
+.alert-error {
+  background: rgba(231, 76, 60, 0.16);
+  border-color: var(--danger);
+  color: #ff9c92;
+}
+
+.alert-info {
+  background: rgba(90, 143, 199, 0.16);
+  border-color: var(--blue-top);
+  color: var(--text-main);
+}
+
+details.relay-settings {
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+details.relay-settings summary {
+  cursor: pointer;
+  user-select: none;
+}
+
+/* ---------- App Layout ---------- */
+.app-shell {
+  display: grid;
+  grid-template-columns: 245px 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  padding: 14px;
+  border-right: 2px solid var(--border-dark);
+  background: var(--bg-panel-solid);
+  gap: 12px;
+}
+
+.brand-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.brand-title { font-size: 18px; color: #fff; }
+.status-card {
+  padding: 10px;
+  font-size: 12px;
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #777;
+}
+
+.dot.online { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+.dot.offline { background: var(--danger); }
+
+.nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.nav-btn {
+  width: 100%;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.nav-btn.active {
+  background: linear-gradient(#e0525f, #8a1220);
+  border-color: #4d0f14;
+}
+
+.sidebar-user {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.role-pill {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.role-1 { background: #2f7d32; }
+.role-2 { background: #c97f18; }
+.role-3 { background: #2b6cb0; }
+.role-4 { background: #9b1c2c; }
+
+.main-area {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 18px;
+  border-bottom: 2px solid var(--border-dark);
+  background: var(--bg-panel-solid);
+}
+
+.topbar-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.content-wrap {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+  gap: 12px;
+}
+
+.stat-tile {
+  padding: 14px;
+}
+
+.stat-label { font-size: 11px; text-transform: uppercase; color: var(--text-muted); }
+.stat-val { font-size: 24px; margin-top: 4px; color: var(--text-main); }
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 14px;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.toolbar-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+table.ore-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+table.ore-table th, table.ore-table td {
+  padding: 9px 10px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.22);
+  text-align: left;
+  vertical-align: middle;
+}
+
+table.ore-table th {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+table.ore-table tr:hover td {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.tag-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(128, 128, 128, 0.25);
+}
+
+.tag-ok { background: rgba(79, 168, 50, 0.25); color: #8ed965; }
+.tag-danger { background: rgba(231, 76, 60, 0.25); color: #ff8c80; }
+.tag-warn { background: rgba(230, 126, 34, 0.25); color: #f6b979; }
+.tag-info { background: rgba(90, 143, 199, 0.25); color: #8ec5fc; }
+
+/* ---------- Chat & Feeds ---------- */
+.feed-list {
+  max-height: 360px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px;
+  background: var(--bg-input);
+  border: 2px solid var(--border-dark);
+  border-radius: 4px;
+}
+
+.feed-item {
+  padding: 6px 8px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 13px;
+  word-break: break-word;
+}
+
+.feed-time { color: var(--text-muted); font-size: 11px; margin-right: 6px; }
+
+/* ---------- Inventory Grid ---------- */
+.inv-grid {
+  display: grid;
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.inv-slot {
+  min-height: 54px;
+  background: var(--bg-input);
+  border: 2px solid var(--border-dark);
+  border-radius: 3px;
+  padding: 4px;
+  font-size: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.inv-slot:hover { border-color: var(--crimson-bright); }
+.inv-slot-id { font-weight: 600; word-break: break-word; }
+.inv-slot-qty { align-self: flex-end; color: var(--gold); font-weight: 700; }
+
+/* ---------- Modal ---------- */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 200;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 780px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.toast-stack {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 300;
+}
+
+.toast {
+  padding: 10px 14px;
+  border-radius: 4px;
+  background: #232529;
+  color: #fff;
+  border: 2px solid var(--border-dark);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  max-width: 340px;
+}
+
+.toast.ok { border-color: var(--ok); }
+.toast.err { border-color: var(--danger); }
+
+@media (max-width: 880px) {
+  .app-shell { grid-template-columns: 1fr; }
+  .sidebar { border-right: none; border-bottom: 2px solid var(--border-dark); }
+  .nav-list { flex-direction: row; flex-wrap: wrap; }
+  .nav-btn { width: auto; }
+  .inv-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
