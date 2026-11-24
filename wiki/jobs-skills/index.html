@@ -3,43 +3,1021 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jobs &amp; Skills Wiki — The Frontier</title>
+  <title>Jobs &amp; Skill Trees Wiki — The Frontier</title>
   <link rel="icon" href="../assets/img/jobs_skills_icon.png" type="image/png" />
   <link rel="stylesheet" href="../assets/css/oreui-wiki.css" />
 </head>
-<body>
+<body class="theme-jobs">
   <header class="topbar">
     <div class="topbar-left">
+      <button class="oreui-btn oreui-btn-sm mobile-menu-btn" id="btnMobileMenu" type="button">Menu</button>
       <a class="brand-link" href="../index.html">
-        <img class="brand-icon" src="../assets/img/jobs_skills_icon.png" alt="Jobs & Skills" />
+        <img class="brand-icon" src="../assets/img/jobs_skills_icon.png" alt="Jobs &amp; Skill Trees" />
         <div>
-          <div class="brand-title">JOBS &amp; SKILLS</div>
-          <span class="brand-sub" data-en="Wiki Hub Bridge" data-fr="Portail Wiki">Wiki Hub Bridge</span>
+          <div class="brand-title">JOBS &amp; SKILL TREES</div>
+          <span class="brand-sub" data-en="The Frontier Wiki • v1.0.0" data-fr="Wiki The Frontier • v1.0.0">The Frontier Wiki • v1.0.0</span>
         </div>
       </a>
     </div>
+
+    <div class="topbar-search">
+      <input
+        id="globalSearch"
+        type="search"
+        autocomplete="off"
+        data-ph-en="Search professions, 156 skills, forge stats, leather tanning, war seals..."
+        data-ph-fr="Rechercher metiers, 156 competences, forge, tannage, sceaux..."
+        placeholder="Search professions, 156 skills, forge stats, leather tanning, war seals..."
+      />
+      <span class="search-kbd">Ctrl+K</span>
+      <div class="search-dropdown" id="searchDropdown"></div>
+    </div>
+
     <div class="topbar-actions">
-      <a class="oreui-btn oreui-btn-sm" href="../index.html" data-en="All Wikis" data-fr="Tous les Wikis">All Wikis</a>
+      <a class="oreui-btn oreui-btn-sm" href="../index.html" data-en="Hub" data-fr="Hub">Hub</a>
       <button class="oreui-btn oreui-btn-sm" id="btnLangToggle" type="button">EN / FR [EN]</button>
       <button class="oreui-btn oreui-btn-sm oreui-btn-info" id="btnThemeToggle" type="button">Light</button>
     </div>
   </header>
 
-  <main class="hub-wrap">
-    <section class="oreui-panel hub-hero">
-      <span class="hub-hero-badge" data-en="COMING NEXT" data-fr="BIENTOT DISPONIBLE">COMING NEXT</span>
-      <h1>Jobs &amp; Skill Trees Wiki</h1>
-      <p data-en="This portal will document all 8 Player Professions (Miner, Lumberjack, Blacksmith, Rancher, Farmer, Fisher, Hunter, Knight), all 156 skill nodes, 3D Forge Hammer &amp; Steel Alloy minigames, Hide Tanning, and Frontier Epic Knights synergy." data-fr="Ce portail documentera les 8 Metiers Joueurs, les 156 competences, les mini-jeux 3D (Marteau, Acier, Plaques, Tannage 5s) et la synergie avec Frontier Epic Knights.">
-        This portal will document all 8 Player Professions (Miner, Lumberjack, Blacksmith, Rancher, Farmer, Fisher, Hunter, Knight), all 156 skill nodes, 3D Forge Hammer &amp; Steel Alloy minigames, Hide Tanning, and Frontier Epic Knights synergy.
-      </p>
-      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;">
-        <a class="oreui-btn oreui-btn-primary" href="../jerry-nations/index.html" data-en="Read Jerry's Nations Wiki" data-fr="Lire le Wiki Jerry's Nations">Read Jerry's Nations Wiki</a>
-        <a class="oreui-btn" href="../index.html" data-en="Back to Wiki Hub" data-fr="Retour au Hub">Back to Wiki Hub</a>
-      </div>
-    </section>
-  </main>
+  <div class="wiki-shell">
+    <aside class="sidebar" id="wikiSidebar"></aside>
+    <main class="wiki-main">
+      <div class="wiki-content-inner" id="wikiMain"></div>
+    </main>
+  </div>
 
+  <!-- 3D Render + Recipe Lightbox Modal -->
+  <div class="modal-backdrop" id="wikiModal">
+    <div class="oreui-panel modal-dialog">
+      <button class="oreui-btn oreui-btn-sm oreui-btn-crimson modal-close" id="btnCloseModal" type="button">X</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <script src="../assets/js/vanilla-icons.js"></script>
   <script src="../assets/js/wiki-core.js"></script>
-  <script>window.FrontierWiki.initThemeAndLangControls();</script>
+  <script src="data/jobs-data.js"></script>
+  <script src="data/guide-core-blacksmith.js"></script>
+  <script src="data/guide-all-professions.js"></script>
+
+  <script>
+    (function () {
+      const W = window.FrontierWiki;
+      const JS = window.JS_DATA || { jobs: [], items: [], entities: [], byId: {}, forgeStats: { thresholds: [], pools: {}, defs: {} } };
+      const MODULES = window.JS_GUIDE_MODULES || [];
+
+      const NAV_GROUPS = [
+        { id: "core-system", label: { en: "Core System", fr: "Systeme General" } },
+        { id: "professions", label: { en: "Professions (8 Roles)", fr: "Metiers (8 Roles)" } },
+      ];
+
+      const ENCYCLOPEDIAS = [
+        { id: "enc-trees", label: { en: "Interactive 13x9 Skill Trees", fr: "Arbres 13x9 Interactifs" }, count: JS.totalSkills || 156 },
+        { id: "enc-items", label: { en: "Items, Recipes & 3D Bar", fr: "Objets, Recettes & Barre 3D" }, count: (JS.items?.length || 0) + (JS.entities?.length || 0) },
+        { id: "enc-consumables", label: { en: "Artisan Buffs Lab", fr: "Labo Buffs Artisanaux" }, count: 5 },
+      ];
+
+      const PAGE_ORDER = [...MODULES.map((m) => m.id), ...ENCYCLOPEDIAS.map((e) => e.id)];
+      let currentPageId = (location.hash || "").replace(/^#/, "");
+      if (!PAGE_ORDER.includes(currentPageId)) currentPageId = PAGE_ORDER[0] || "jobs-overview";
+
+      const jobById = Object.fromEntries((JS.jobs || []).map((j) => [j.id, j]));
+
+      const state = {
+        activeTreeJob: "blacksmith",
+        selectedSkillId: null,
+        treeSearch: "",
+        simCat: "weapon",
+        simHeat: 96,
+        simStrike: 95,
+        simMasterSeal: true,
+        consJob: "farmer",
+        consCategory: "v",
+        consRating: 5,
+      };
+
+      const WORKSTATION_NAMES = {
+        "minecraft:furnace": { en: "Furnace", fr: "Fourneau" },
+        "minecraft:blast_furnace": { en: "Blast Furnace", fr: "Haut Fourneau" },
+        "minecraft:anvil": { en: "Anvil", fr: "Enclume" },
+        "minecraft:cauldron": { en: "Water Cauldron", fr: "Chaudron d'Eau" },
+        "minecraft:smoker": { en: "Smoker", fr: "Fumoir" },
+        "minecraft:grindstone": { en: "Grindstone", fr: "Meule" },
+        "minecraft:hay_block": { en: "Hay Block", fr: "Bloc de Foin" },
+        "minecraft:beehive": { en: "Beehive", fr: "Ruche" },
+        "minecraft:composter": { en: "Composter", fr: "Composteur" },
+        "minecraft:barrel": { en: "Barrel", fr: "Tonneau" },
+        "minecraft:fletching_table": { en: "Fletching Table", fr: "Table d'Archerie" },
+      };
+
+      const STAT_LABELS = {
+        might: { en: "Melee Damage Might", fr: "Puissance Melee" },
+        durability: { en: "Durability Save", fr: "Economie Durabilite" },
+        weapon_agility: { en: "Quick Blade (Speed)", fr: "Lame Agile (Vitesse)" },
+        strength: { en: "Battle Fury (Strength)", fr: "Fureur Combat (Force)" },
+        lifesteal: { en: "Vampiric Lifesteal", fr: "Vol de Vie" },
+        efficiency: { en: "Efficiency (Haste)", fr: "Efficacite (Hate)" },
+        defense: { en: "Heavy Armor Defense", fr: "Blindage Armure Lourde" },
+        resilience: { en: "Armor Resilience", fr: "Resilience Armure" },
+        vitality: { en: "Health Vitality", fr: "Vitalite (Coeurs+)" },
+        resistance: { en: "Resistance Shield", fr: "Bouclier Resistance" },
+        fireproof: { en: "Fireproof Ward", fr: "Protection Feu/Lave" },
+        agility: { en: "Agile Speed", fr: "Agilite (Vitesse)" },
+        feather: { en: "Feather Fall Reduction", fr: "Chute Amortie" },
+        defense_agile: { en: "Agile Mitigation", fr: "Mitigation Agile" },
+        leap: { en: "Acrobatic Leap (Jump)", fr: "Bond Acrobatique (Saut)" },
+        tool_agility: { en: "Tool Haste / Speed", fr: "Celerite Outil" },
+        night_eye: { en: "Underground Night Vision", fr: "Vision Nocturne" },
+      };
+
+      function openInspectorModal(kind, id) {
+        const modal = document.getElementById("wikiModal");
+        const body = document.getElementById("modalBody");
+        const lang = W.getLang();
+
+        if (kind === "entity") {
+          const ent = (JS.entities || []).find((e) => e.id === id);
+          if (!ent) return;
+          const title = W.t(ent.name);
+          body.innerHTML = `
+            <div style="display:flex;flex-wrap:wrap;gap:18px;align-items:center;">
+              <div style="width:260px;height:160px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at center, rgba(240,173,40,0.16) 0%, var(--bg-input) 78%);border:2px solid var(--border-dark);border-radius:6px;padding:10px;">
+                <img src="${ent.render3d}" alt="${W.escapeHtml(title)}" style="max-width:100%;max-height:100%;image-rendering:pixelated;" />
+              </div>
+              <div style="flex:1;min-width:220px;">
+                <div class="chapter-kicker">${W.escapeHtml(ent.category)}</div>
+                <h2 style="margin:0 0 8px;font-family:'MinecraftTen',sans-serif;color:var(--accent-bright);">${W.escapeHtml(title)}</h2>
+                <div style="margin-bottom:8px;"><span class="badge badge-gold">Entity: <code>jobskills:forge_bar</code></span></div>
+                <p style="margin:8px 0 0;font-size:13px;color:var(--text-secondary);">${W.escapeHtml(W.t(ent.desc))}</p>
+              </div>
+            </div>
+          `;
+          modal.classList.add("open");
+          return;
+        }
+
+        const it = (JS.items || []).find((x) => x.id === id || x.shortId === id);
+        if (!it) return;
+        const title = W.t(it.name);
+        const recipes = it.recipes || [];
+        let recipeHtml = "";
+        if (recipes.length > 0) {
+          recipeHtml = `
+            <h3 style="margin-top:16px;">${lang === "fr" ? "Recette de Fabrication" : "Crafting Recipe"}</h3>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;">
+              ${recipes.map((r) => W.renderRecipeHtml(r, JS, "")).join("")}
+            </div>
+          `;
+        } else {
+          recipeHtml = `<p style="margin-top:14px;color:var(--text-muted);font-size:12.5px;">${
+            lang === "fr"
+              ? "Obtenu via atelier du Forgeron (Chaudron / Fourneau / Haut Fourneau / Enclume) en mode Sneak+Clic."
+              : "Produced through Blacksmith workstations (Cauldron / Furnace / Blast Furnace / Anvil) using Sneak+Click."
+          }</p>`;
+        }
+        body.innerHTML = `
+          <div style="display:flex;flex-wrap:wrap;gap:18px;align-items:center;">
+            <div style="width:140px;height:140px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at center, rgba(240,173,40,0.16) 0%, var(--bg-input) 78%);border:2px solid var(--border-dark);border-radius:6px;">
+              <img src="${it.icon}" alt="${W.escapeHtml(title)}" style="width:76px;height:76px;image-rendering:pixelated;" />
+            </div>
+            <div style="flex:1;min-width:220px;">
+              <div class="chapter-kicker">${W.escapeHtml(it.category)}</div>
+              <h2 style="margin:0 0 8px;font-family:'MinecraftTen',sans-serif;color:var(--accent-bright);">${W.escapeHtml(title)}</h2>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;">
+                <span class="badge badge-gold">ID: <code>${W.escapeHtml(it.id)}</code></span>
+                <span class="badge">Stack: ${it.maxStack}</span>
+              </div>
+              <p style="margin:6px 0 0;font-size:13px;color:var(--text-secondary);">${W.escapeHtml(W.t(it.desc))}</p>
+            </div>
+          </div>
+          ${recipeHtml}
+        `;
+        modal.classList.add("open");
+      }
+
+      function renderSidebar() {
+        const sb = document.getElementById("wikiSidebar");
+        const lang = W.getLang();
+        let html = "";
+
+        for (const grp of NAV_GROUPS) {
+          const mods = MODULES.filter((m) => m.groupId === grp.id);
+          html += `<div class="sidebar-group"><div class="sidebar-group-title">${W.escapeHtml(W.t(grp.label))}</div>`;
+          for (const m of mods) {
+            const job = m.jobId ? jobById[m.jobId] : null;
+            const label = job ? `${W.t(job.name)} (${job.skillCount})` : W.t(m.title);
+            const iconHtml = job ? `<img src="${job.icon}" alt="" style="width:18px;height:18px;image-rendering:pixelated;margin-right:6px;vertical-align:middle;" />` : "";
+            html += `<button class="nav-item ${currentPageId === m.id ? "active" : ""}" data-page="${m.id}" style="display:flex;align-items:center;">${iconHtml}<span>${W.escapeHtml(label)}</span></button>`;
+          }
+          html += `</div>`;
+        }
+
+        html += `<div class="sidebar-group"><div class="sidebar-group-title">${lang === "fr" ? "Encyclopedies & Outils" : "Encyclopedias & Tools"}</div>`;
+        for (const enc of ENCYCLOPEDIAS) {
+          html += `
+            <button class="nav-item ${currentPageId === enc.id ? "active" : ""}" data-page="${enc.id}">
+              <span>${W.escapeHtml(W.t(enc.label))}</span>
+              <span class="nav-count">${enc.count}</span>
+            </button>
+          `;
+        }
+        html += `</div>`;
+
+        sb.innerHTML = html;
+        sb.querySelectorAll(".nav-item[data-page]").forEach((btn) => {
+          btn.addEventListener("click", () => navigateTo(btn.getAttribute("data-page")));
+        });
+      }
+
+      function renderRoleHeroHtml(jobId) {
+        const job = jobById[jobId];
+        if (!job) return "";
+        const lang = W.getLang();
+        const wsList = (job.workstations || []).map((id) => WORKSTATION_NAMES[id] ? W.t(WORKSTATION_NAMES[id]) : id).join(", ") || (lang === "fr" ? "Aucun (Monde / Outils)" : "None (World / Tools)");
+        const activeStr = job.activeAbility
+          ? `${W.t(job.activeAbility.name)} (1 XP)`
+          : (lang === "fr" ? "100% Passif / Sneak" : "100% Passive / Sneak");
+
+        return `
+          <div class="role-hero-box">
+            <div class="role-stat-tile">
+              <img src="${job.icon}" alt="${W.escapeHtml(W.t(job.name))}" />
+              <div>
+                <span class="role-stat-lbl">${lang === "fr" ? "Metier" : "Profession"}</span>
+                <span class="role-stat-val">${W.escapeHtml(W.t(job.name))}</span>
+              </div>
+            </div>
+            <div class="role-stat-tile">
+              <img src="assets/items/skill_book.png" alt="Skills" />
+              <div>
+                <span class="role-stat-lbl">${lang === "fr" ? "Arbre de Talents" : "Skill Tree"}</span>
+                <span class="role-stat-val">${job.skillCount} ${lang === "fr" ? "Noeuds" : "Nodes"} (10 XP)</span>
+              </div>
+            </div>
+            <div class="role-stat-tile">
+              <img src="${job.workstations?.length ? `../assets/vanilla/${job.workstations[0].replace("minecraft:", "")}.png` : job.icon}" alt="Workstations" />
+              <div>
+                <span class="role-stat-lbl">${lang === "fr" ? "Etablis Clefs" : "Workstations"}</span>
+                <span class="role-stat-val" style="font-size:12.5px;">${W.escapeHtml(wsList)}</span>
+              </div>
+            </div>
+            <div class="role-stat-tile">
+              <img src="../assets/vanilla/experience_bottle.png" alt="Active" />
+              <div>
+                <span class="role-stat-lbl">${lang === "fr" ? "Pouvoir Actif" : "Active Ability"}</span>
+                <span class="role-stat-val" style="font-size:12.5px;">${W.escapeHtml(activeStr)}</span>
+              </div>
+            </div>
+          </div>
+          <div style="margin-bottom:14px;">
+            <button class="oreui-btn oreui-btn-sm oreui-btn-gold js-open-tree-btn" data-job="${job.id}" type="button">
+              ${lang === "fr" ? `Explorer l'Arbre 13x9 (${job.skillCount} Competences)` : `Explore 13x9 Skill Tree (${job.skillCount} Skills)`}
+            </button>
+          </div>
+        `;
+      }
+
+      function renderPipelineHtml(steps) {
+        const parts = [];
+        steps.forEach((st, idx) => {
+          if (idx > 0) parts.push(`<div class="workflow-arrow">&#10142;</div>`);
+          const iconsHtml = (st.icons || []).map((src) => `<img src="${src}" alt="" />`).join("");
+          parts.push(`
+            <div class="workflow-step">
+              <div class="workflow-step-head">
+                <span class="workflow-step-num">${st.step}</span>
+                <div class="workflow-step-title">${W.escapeHtml(W.t(st.title))}</div>
+              </div>
+              <div class="workflow-step-icons">${iconsHtml}</div>
+              ${st.badge ? `<span class="badge badge-gold">${W.escapeHtml(W.t(st.badge))}</span>` : ""}
+              <p>${W.t(st.desc)}</p>
+            </div>
+          `);
+        });
+        return `<div class="workflow-pipeline">${parts.join("")}</div>`;
+      }
+
+      function renderJobsOverviewCardsHtml() {
+        const lang = W.getLang();
+        return `
+          <div class="role-overview-grid">
+            ${(JS.jobs || []).map((j) => `
+              <div class="role-mini-card" data-jump-page="${j.chapterId}">
+                <div class="role-mini-head">
+                  <img src="${j.icon}" alt="${W.escapeHtml(W.t(j.name))}" />
+                  <div>
+                    <div class="role-mini-title">${W.escapeHtml(W.t(j.name))}</div>
+                    <div class="role-mini-sub">${j.skillCount} ${lang === "fr" ? "competences" : "skills"} • ${j.connectorCount} ${lang === "fr" ? "liens" : "links"}</div>
+                  </div>
+                </div>
+                <p style="margin:0;font-size:12.5px;color:var(--text-secondary);">${W.escapeHtml(W.t(j.subtitle))}</p>
+                <div style="margin-top:auto;padding-top:4px;font-size:11.5px;color:var(--accent-bright);">
+                  ${lang === "fr" ? "Ouvrir la presentation ->" : "Open role guide ->"}
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        `;
+      }
+
+      function renderForgeSimulatorHtml(container) {
+        const lang = W.getLang();
+        const total = Math.round(0.35 * state.simHeat + 0.65 * state.simStrike);
+        let rawRating = 1;
+        if (total >= 94) rawRating = 5;
+        else if (total >= 80) rawRating = 4;
+        else if (total >= 64) rawRating = 3;
+        else if (total >= 45) rawRating = 2;
+        const rating = state.simMasterSeal ? rawRating : Math.min(4, rawRating);
+        const th = JS.forgeStats.thresholds.find((t) => t.rating === rating) || JS.forgeStats.thresholds[0];
+        const pool = JS.forgeStats.pools[state.simCat] || [];
+        const defs = JS.forgeStats.defs || {};
+        const idx = rating - 1;
+        const statCount = rating <= 2 ? 1 : rating <= 4 ? 2 : 3;
+
+        function formatStatLine(id) {
+          const d = defs[id];
+          if (!d) return id;
+          const v = d.vals[idx] || 0;
+          const l = d.lvls[idx] || 0;
+          const lbl = W.t(STAT_LABELS[id] || { en: id, fr: id });
+          if (id === "lifesteal") return `${lbl}: +${v} HP / kill`;
+          if (v > 0 && l > 0) return `${lbl}: ${v}% + Tier ${l}`;
+          if (v > 0) return `${lbl}: ${id.includes("defense") || id === "feather" || id === "fireproof" ? "-" : "+"}${v}%`;
+          if (l > 0) return `${lbl}: Level ${l}`;
+          return lbl;
+        }
+
+        const eligibleStats = pool.filter((id) => (defs[id]?.minRating || 1) <= rating);
+        const barsStr = "|".repeat(rating) + ".".repeat(5 - rating);
+
+        container.innerHTML = `
+          <div class="forge-sim-box">
+            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px;">
+              <strong style="color:var(--accent-bright);font-family:'MinecraftTen',sans-serif;font-size:17px;">
+                ${lang === "fr" ? "SIMULATEUR DE QUALITE & STATS DE FORGE" : "FORGE QUALITY & STAT ROLL SIMULATOR"}
+              </strong>
+              <span class="badge badge-gold">Total = round(0.35 * ${state.simHeat} + 0.65 * ${state.simStrike}) = <strong>${total}/100</strong></span>
+            </div>
+
+            <div class="tax-inputs-grid">
+              <div class="tax-field">
+                <label>${lang === "fr" ? "Categorie Equipement" : "Equipment Category"}</label>
+                <select class="ore-select" id="simCatSel">
+                  <option value="weapon" ${state.simCat === "weapon" ? "selected" : ""}>${lang === "fr" ? "Arme Melee (Epee / Masse / Lance)" : "Weapon (Sword / Mace / Spear)"}</option>
+                  <option value="axe" ${state.simCat === "axe" ? "selected" : ""}>${lang === "fr" ? "Hache / Poleaxe / Bardiche" : "Axe / Poleaxe / Bardiche"}</option>
+                  <option value="armor_heavy" ${state.simCat === "armor_heavy" ? "selected" : ""}>${lang === "fr" ? "Armure Lourde (Casque / Plastron)" : "Heavy Armor (Helmet / Chest)"}</option>
+                  <option value="armor_agile" ${state.simCat === "armor_agile" ? "selected" : ""}>${lang === "fr" ? "Armure Agile (Jambieres / Bottes)" : "Agile Armor (Legs / Boots)"}</option>
+                  <option value="tool" ${state.simCat === "tool" ? "selected" : ""}>${lang === "fr" ? "Outils (Pioche / Pelle / Houe)" : "Tool (Pick / Shovel / Hoe)"}</option>
+                </select>
+              </div>
+              <div class="tax-field">
+                <label>${lang === "fr" ? `Chauffe Fourneau (35%): ${state.simHeat}` : `Furnace Heat (35%): ${state.simHeat}`}</label>
+                <input type="range" min="15" max="100" value="${state.simHeat}" id="simHeatRange" style="width:100%;" />
+              </div>
+              <div class="tax-field">
+                <label>${lang === "fr" ? `Frappe Enclume (65%): ${state.simStrike}` : `Anvil Strike (65%): ${state.simStrike}`}</label>
+                <input type="range" min="15" max="100" value="${state.simStrike}" id="simStrikeRange" style="width:100%;" />
+              </div>
+              <div class="tax-field">
+                <label>${lang === "fr" ? "Sceau de Maitre ([5/5])" : "Master Seal Unlocked"}</label>
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--text-main);text-transform:none;">
+                  <input type="checkbox" id="simMasterChk" ${state.simMasterSeal ? "checked" : ""} />
+                  <span>${state.simMasterSeal ? (lang === "fr" ? "Oui (Cap [5/5])" : "Yes (Cap [5/5])") : (lang === "fr" ? "Non (Cap [4/5])" : "No (Cap [4/5])")}</span>
+                </label>
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;align-items:start;">
+              <div class="mc-lore-box">
+                <div class="mc-line-muted">--- [Forge] ---</div>
+                <div style="color:${th.hex};font-weight:700;">Quality: [${rating}/5] ${barsStr} (${lang === "fr" ? th.fr : th.en})</div>
+                <div class="mc-line-muted">Forged by: <span style="color:#fff;">ArtisanBlacksmith</span></div>
+                ${eligibleStats.map((id, i) => `<div style="color:${i === 0 ? "#ffd978" : "#87e8de"};">${i === 0 ? "[Guaranteed]" : "[Pool]"} ${W.escapeHtml(formatStatLine(id))}</div>`).join("")}
+                <div class="mc-line-muted">---------------</div>
+              </div>
+              <div class="oreui-card" style="padding:12px;">
+                <div style="font-family:'MinecraftTen',sans-serif;font-size:15px;color:${th.hex};margin-bottom:6px;">
+                  ${lang === "fr" ? `Tirage : ${statCount} statistique(s) sur ${eligibleStats.length} eligibles` : `Roll Result: ${statCount} stat(s) from ${eligibleStats.length} eligible`}
+                </div>
+                <p style="margin:0;font-size:12.5px;color:var(--text-secondary);">
+                  ${lang === "fr"
+                    ? "La 1re stat de la categorie est TOUJOURS garantie. Les suivantes sont tirees sans doublon parmi les stats dont le rang min est atteint."
+                    : "The category Primary Stat is ALWAYS guaranteed. Remaining slots pick randomly without duplicates from stats unlocked at this rating."}
+                </p>
+                ${rawRating === 5 && !state.simMasterSeal ? `<p style="margin:6px 0 0;font-size:12px;color:#ffca63;">${lang === "fr" ? "Score suffisant pour [5/5], mais plafonne a [4/5] sans smith_master_seal !" : "Score qualified for [5/5], but capped at [4/5] without smith_master_seal!"}</p>` : ""}
+              </div>
+            </div>
+          </div>
+        `;
+
+        container.querySelector("#simCatSel").addEventListener("change", (e) => { state.simCat = e.target.value; renderForgeSimulatorHtml(container); });
+        container.querySelector("#simHeatRange").addEventListener("input", (e) => { state.simHeat = Number(e.target.value); renderForgeSimulatorHtml(container); });
+        container.querySelector("#simStrikeRange").addEventListener("input", (e) => { state.simStrike = Number(e.target.value); renderForgeSimulatorHtml(container); });
+        container.querySelector("#simMasterChk").addEventListener("change", (e) => { state.simMasterSeal = e.target.checked; renderForgeSimulatorHtml(container); });
+      }
+
+      function renderSectionHtml(sec) {
+        let body = "";
+        if (sec.lead) body += `<p>${W.t(sec.lead)}</p>`;
+        if (sec.roleHero) body += renderRoleHeroHtml(sec.roleHero);
+
+        if (sec.recipeId) {
+          const it = (JS.items || []).find((x) => x.id === sec.recipeId);
+          if (it && it.recipes?.length) {
+            body += `
+              <div class="recipe-row" style="margin:10px 0 14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+                ${it.recipes.map((r) => W.renderRecipeHtml(r, JS, "")).join("")}
+                <div>
+                  <strong style="color:var(--accent-bright);">${W.escapeHtml(W.t(it.name))}</strong><br/>
+                  <span style="font-size:12px;color:var(--text-secondary);">${W.escapeHtml(W.t(it.desc))}</span>
+                </div>
+              </div>
+            `;
+          }
+        }
+
+        if (sec.entityShowcase) {
+          const ents = sec.entityShowcase.map((id) => (JS.entities || []).find((e) => e.id === id)).filter(Boolean);
+          body += `
+            <div class="gallery-grid" style="margin:12px 0 16px;">
+              ${ents.map((ent) => `
+                <div class="gallery-card" data-inspect-kind="entity" data-inspect-id="${W.escapeHtml(ent.id)}">
+                  <div class="render-stage" style="height:120px;"><img src="${ent.render3d}" alt="${W.escapeHtml(W.t(ent.name))}" style="max-width:100%;max-height:110px;" /></div>
+                  <div class="gallery-body">
+                    <div class="gallery-name">${W.escapeHtml(W.t(ent.name))}</div>
+                    <div class="gallery-desc" style="font-size:12px;color:var(--text-secondary);">${W.escapeHtml(W.t(ent.desc))}</div>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          `;
+        }
+
+        if (sec.pipeline) body += renderPipelineHtml(sec.pipeline);
+        if (sec.customHtml) body += W.t(sec.customHtml);
+        if (sec.widget === "jobs-overview-cards") body += renderJobsOverviewCardsHtml();
+        if (sec.widget === "forge-simulator") body += `<div class="js-forge-sim-mount"></div>`;
+
+        if (sec.table) {
+          const headers = W.t(sec.table.headers);
+          body += `
+            <div class="table-wrap">
+              <table class="wiki-table">
+                <thead><tr>${headers.map((h) => `<th>${W.escapeHtml(h)}</th>`).join("")}</tr></thead>
+                <tbody>
+                  ${sec.table.rows.map((row) => `<tr>${row.map((cell) => `<td>${typeof cell === "string" ? cell : W.t(cell)}</td>`).join("")}</tr>`).join("")}
+                </tbody>
+              </table>
+            </div>
+          `;
+        }
+
+        if (sec.callouts) {
+          for (const c of sec.callouts) {
+            const cls = c.kind === "warn" ? "callout-warn" : c.kind === "danger" ? "callout-danger" : c.kind === "info" ? "callout-info" : "callout-success";
+            body += `
+              <div class="callout ${cls}">
+                <div class="callout-title">${W.escapeHtml(W.t(c.title))}</div>
+                <ul>${(W.t(c.items) || []).map((li) => `<li>${li}</li>`).join("")}</ul>
+              </div>
+            `;
+          }
+        }
+
+        return `
+          <section class="wiki-section">
+            <h2><span class="sec-num">${sec.num}</span> ${W.escapeHtml(W.t(sec.title))}</h2>
+            ${body}
+          </section>
+        `;
+      }
+
+      function renderChapterNavFooter() {
+        const idx = PAGE_ORDER.indexOf(currentPageId);
+        const lang = W.getLang();
+        const prevId = idx > 0 ? PAGE_ORDER[idx - 1] : null;
+        const nextId = idx >= 0 && idx < PAGE_ORDER.length - 1 ? PAGE_ORDER[idx + 1] : null;
+        return `
+          <div class="chapter-nav-footer">
+            ${prevId ? `<button class="oreui-btn" data-nav-page="${prevId}" type="button">&larr; ${lang === "fr" ? "Chapitre Precedent" : "Previous Chapter"}</button>` : "<span></span>"}
+            ${nextId ? `<button class="oreui-btn oreui-btn-gold" data-nav-page="${nextId}" type="button">${lang === "fr" ? "Chapitre Suivant" : "Next Chapter"} &rarr;</button>` : "<span></span>"}
+          </div>
+        `;
+      }
+
+      function renderSkillTreesEncyclopedia(main) {
+        const lang = W.getLang();
+        const job = jobById[state.activeTreeJob] || JS.jobs[0];
+        if (!job) return;
+        const skills = job.skills || [];
+        if (!state.selectedSkillId || !skills.some((s) => s.id === state.selectedSkillId)) {
+          state.selectedSkillId = skills[0]?.id || null;
+        }
+        const selected = skills.find((s) => s.id === state.selectedSkillId) || skills[0];
+        const prereqSet = new Set(selected?.requires || []);
+        const childSet = new Set(selected?.unlocks || []);
+        const skillByCoord = new Map(skills.map((s) => [`${s.x},${s.y}`, s]));
+        const connByCoord = new Map((job.connectors || []).map((c) => [`${c.x},${c.y}`, c]));
+        const q = state.treeSearch.trim().toLowerCase();
+
+        let cellsHtml = "";
+        for (let y = 0; y < 9; y++) {
+          for (let x = 0; x < 13; x++) {
+            const key = `${x},${y}`;
+            const sk = skillByCoord.get(key);
+            const conn = connByCoord.get(key);
+            let inner = "";
+            if (conn) {
+              if (conn.u) inner += `<span class="dag-arm dag-arm-u"></span>`;
+              if (conn.d) inner += `<span class="dag-arm dag-arm-d"></span>`;
+              if (conn.l) inner += `<span class="dag-arm dag-arm-l"></span>`;
+              if (conn.r) inner += `<span class="dag-arm dag-arm-r"></span>`;
+              if (conn.hub) inner += `<span class="dag-arm-hub"></span>`;
+            }
+            if (sk) {
+              const nm = W.t(sk.name).toLowerCase();
+              const ds = W.t(sk.desc).toLowerCase();
+              const dimmed = q && !nm.includes(q) && !ds.includes(q) && !sk.id.toLowerCase().includes(q);
+              const cls = [
+                "dag-node",
+                sk.fr === "goal" ? "dag-goal" : "",
+                sk.id === selected?.id ? "is-selected" : "",
+                prereqSet.has(sk.id) ? "is-prereq" : "",
+                childSet.has(sk.id) ? "is-child" : "",
+                dimmed ? "is-dimmed" : "",
+              ].filter(Boolean).join(" ");
+              inner += `
+                <button type="button" class="${cls}" data-skill-id="${W.escapeHtml(sk.id)}" title="${W.escapeHtml(W.t(sk.name))}">
+                  <img src="${sk.icon}" alt="" />
+                  ${sk.fr === "goal" ? `<span class="dag-node-badge">GOAL</span>` : ""}
+                </button>
+              `;
+            }
+            cellsHtml += `<div class="dag-cell">${inner}</div>`;
+          }
+        }
+
+        const inspectorHtml = selected ? `
+          <div class="dag-inspector">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+              <img src="${selected.icon}" alt="" style="width:42px;height:42px;image-rendering:pixelated;background:var(--bg-input);border:2px solid var(--border-dark);border-radius:5px;padding:4px;" />
+              <div>
+                <div class="chapter-kicker">${selected.fr === "goal" ? (lang === "fr" ? "NOEUD MAJEUR (GOAL)" : "KEYSTONE NODE (GOAL)") : (lang === "fr" ? "NOEUD STANDARD (TASK)" : "STANDARD NODE (TASK)")} • ${(selected.type || "passive").toUpperCase()}</div>
+                <h3 style="margin:0;font-family:'MinecraftTen',sans-serif;color:var(--accent-bright);font-size:18px;">${W.escapeHtml(W.t(selected.name))}</h3>
+              </div>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;">
+              <span class="badge badge-gold">ID: <code>${W.escapeHtml(selected.id)}</code></span>
+              <span class="badge">${lang === "fr" ? "Cout : 10 XP Vanilla" : "Cost: 10 Vanilla XP"}</span>
+              <span class="badge">(${selected.x}, ${selected.y})</span>
+            </div>
+            <p style="font-size:13px;color:var(--text-secondary);margin:0 0 12px;">${W.escapeHtml(W.t(selected.desc))}</p>
+
+            <div style="margin-bottom:10px;">
+              <div style="font-size:11px;font-family:'MinecraftRegular',monospace;text-transform:uppercase;color:#57c5d8;margin-bottom:5px;">
+                ${lang === "fr" ? "Prerequis (Cyan)" : "Prerequisites (Cyan)"}
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                ${selected.requires.length === 0
+                  ? `<span style="font-size:12px;color:var(--text-muted);">${lang === "fr" ? "Aucun — Racine de l'arbre" : "None — Tree Root"}</span>`
+                  : selected.requires.map((rid) => {
+                      const rs = skills.find((s) => s.id === rid);
+                      return rs ? `<button type="button" class="dag-link-pill" data-jump-skill="${rs.id}"><img src="${rs.icon}" style="width:16px;height:16px;image-rendering:pixelated;" />${W.escapeHtml(W.t(rs.name))}</button>` : "";
+                    }).join("")}
+              </div>
+            </div>
+
+            <div>
+              <div style="font-size:11px;font-family:'MinecraftRegular',monospace;text-transform:uppercase;color:#7be356;margin-bottom:5px;">
+                ${lang === "fr" ? "Debloque ensuite (Vert)" : "Unlocks Next (Green)"}
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                ${selected.unlocks.length === 0
+                  ? `<span style="font-size:12px;color:var(--text-muted);">${lang === "fr" ? "Sommet de branche" : "Branch Capstone"}</span>`
+                  : selected.unlocks.map((cid) => {
+                      const cs = skills.find((s) => s.id === cid);
+                      return cs ? `<button type="button" class="dag-link-pill" data-jump-skill="${cs.id}"><img src="${cs.icon}" style="width:16px;height:16px;image-rendering:pixelated;" />${W.escapeHtml(W.t(cs.name))}</button>` : "";
+                    }).join("")}
+              </div>
+            </div>
+          </div>
+        ` : "";
+
+        main.innerHTML = `
+          <div class="oreui-panel chapter-header">
+            <span class="chapter-kicker">${lang === "fr" ? "ENCYCLOPEDIE DAG • 8 ARBRES • 156 NOEUDS" : "DAG ENCYCLOPEDIA • 8 TREES • 156 NODES"}</span>
+            <h1>${lang === "fr" ? "Explorateur des Arbres de Competences (13x9)" : "Interactive 13x9 Skill Trees Explorer"}</h1>
+            <p>${lang === "fr" ? "Selectionnez un metier et cliquez sur n'importe quel noeud de la grille 13x9 pour afficher ses prerequis, ses suites et ses effets exacts." : "Select any profession and click any node in the 13x9 DAG grid to inspect its prerequisites, children, cost, and exact in-game behavior."}</p>
+          </div>
+
+          <div class="toolbar">
+            <div class="filter-tabs">
+              ${JS.jobs.map((j) => `
+                <button class="filter-tab ${j.id === job.id ? "active" : ""}" data-tree-job="${j.id}" type="button">
+                  ${W.escapeHtml(W.t(j.name))} (${j.skillCount})
+                </button>
+              `).join("")}
+            </div>
+            <input class="ore-input" id="treeSearchInput" type="search" value="${W.escapeHtml(state.treeSearch)}" placeholder="${lang === "fr" ? "Filtrer dans cet arbre..." : "Highlight skills in tree..."}" />
+          </div>
+
+          <div class="dag-shell">
+            <div class="dag-viewport">
+              <div class="dag-grid">${cellsHtml}</div>
+            </div>
+            ${inspectorHtml}
+          </div>
+          ${renderChapterNavFooter()}
+        `;
+
+        main.querySelectorAll("[data-tree-job]").forEach((b) => {
+          b.addEventListener("click", () => {
+            state.activeTreeJob = b.getAttribute("data-tree-job");
+            state.selectedSkillId = null;
+            renderCurrentPage();
+          });
+        });
+        main.querySelector("#treeSearchInput").addEventListener("input", (e) => {
+          state.treeSearch = e.target.value;
+          renderSkillTreesEncyclopedia(main);
+          main.querySelector("#treeSearchInput").focus();
+        });
+        main.querySelectorAll("[data-skill-id], [data-jump-skill]").forEach((b) => {
+          b.addEventListener("click", () => {
+            state.selectedSkillId = b.getAttribute("data-skill-id") || b.getAttribute("data-jump-skill");
+            renderSkillTreesEncyclopedia(main);
+          });
+        });
+        bindFooterNav(main);
+      }
+
+      function renderItemsEncyclopedia(main) {
+        const lang = W.getLang();
+        main.innerHTML = `
+          <div class="oreui-panel chapter-header">
+            <span class="chapter-kicker">${lang === "fr" ? "OBJETS, RECETTES & ENTITE 3D" : "ITEMS, RECIPES & 3D ENTITY"}</span>
+            <h1>${lang === "fr" ? "Objets Speciaux, Alliages & Barre de Forge 3D" : "Addon Items, Recipes & 3D Forge Bar"}</h1>
+            <p>${lang === "fr" ? "Cliquez sur n'importe quelle carte pour ouvrir la vue detaillee et les recettes de fabrication." : "Click any item or 3D bar card to inspect recipes, metadata, and visual triggers."}</p>
+          </div>
+
+          <section class="wiki-section">
+            <h2><span class="sec-num">01</span> ${lang === "fr" ? "Objets du Systeme & Intermediaires Artisanaux" : "System Items & Artisan Intermediates"}</h2>
+            <div class="gallery-grid">
+              ${(JS.items || []).map((it) => `
+                <div class="gallery-card" data-inspect-kind="item" data-inspect-id="${W.escapeHtml(it.id)}">
+                  <div class="render-stage" style="height:105px;"><img src="${it.icon}" alt="" style="width:64px;height:64px;image-rendering:pixelated;" /></div>
+                  <div class="gallery-body">
+                    <div class="gallery-name">${W.escapeHtml(W.t(it.name))}</div>
+                    <div class="gallery-id"><code>${W.escapeHtml(it.id)}</code></div>
+                    <p style="font-size:12px;color:var(--text-secondary);margin:6px 0 0;">${W.escapeHtml(W.t(it.desc))}</p>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          </section>
+
+          <section class="wiki-section">
+            <h2><span class="sec-num">02</span> ${lang === "fr" ? "Rendus 3D de jobskills:forge_bar (3 Modes)" : "3D Renders of jobskills:forge_bar (3 Modes)"}</h2>
+            <div class="gallery-grid">
+              ${(JS.entities || []).map((ent) => `
+                <div class="gallery-card" data-inspect-kind="entity" data-inspect-id="${W.escapeHtml(ent.id)}">
+                  <div class="render-stage" style="height:125px;"><img src="${ent.render3d}" alt="" style="max-width:100%;max-height:110px;image-rendering:pixelated;" /></div>
+                  <div class="gallery-body">
+                    <div class="gallery-name">${W.escapeHtml(W.t(ent.name))}</div>
+                    <p style="font-size:12px;color:var(--text-secondary);margin:6px 0 0;">${W.escapeHtml(W.t(ent.desc))}</p>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          </section>
+          ${renderChapterNavFooter()}
+        `;
+        bindInspectors(main);
+        bindFooterNav(main);
+      }
+
+      function renderConsumablesLab(main) {
+        const lang = W.getLang();
+        const r = state.consRating;
+        const jobOpts = {
+          farmer: [
+            { id: "v", label: { en: "Vitality (Cooked Meat / Rabbit Stew)", fr: "Vitalite (Viandes Cuites / Ragout Lapin)" } },
+            { id: "s", label: { en: "Speed (Bread / Baked Potato / Pie / Golden Carrot)", fr: "Celerite (Pain / Patate / Tarte / Carotte Doree)" } },
+            { id: "w", label: { en: "Work (Salmon / Cod / Beetroot / Mushroom Stew)", fr: "Labeur (Saumon / Morue / Soupes / Kelp Seche)" } },
+          ],
+          fisher: [
+            { id: "c", label: { en: "Deep-Diver Ration (Cod -> Cod)", fr: "Ration Plongee Profonde (Morue)" } },
+            { id: "s", label: { en: "Tidal Surge Fillet (Salmon -> Salmon)", fr: "Filet Maree Montante (Saumon)" } },
+            { id: "t", label: { en: "Ocean Guard Delicacy (Kelp/Puffer/Tropical -> Dried Kelp)", fr: "Mets Garde des Oceans (Kelp Seche)" } },
+          ],
+          hunter: [
+            { id: "v", label: { en: "Tracker's Agility Talisman (Rabbit Foot)", fr: "Talisman d'Agilite du Pisteur (Patte de Lapin)" } },
+            { id: "f", label: { en: "Fury Hunting Balm (Blaze Powder / Rod)", fr: "Baume de Chasse Furieux (Poudre/Baton Blaze)" } },
+            { id: "s", label: { en: "Lynx-Eye Ward Elixir (Phantom Membrane)", fr: "Elixir Lynx Vigilant (Membrane Phantom)" } },
+          ],
+          knight: [
+            { id: "a", label: { en: "Assault War Seal (Gold Ingot)", fr: "Sceau d'Assaut (Lingot d'Or)" } },
+            { id: "d", label: { en: "Bulwark Defense Seal (Iron Nugget)", fr: "Sceau du Rempart (Pepite de Fer)" } },
+            { id: "c", label: { en: "Vanguard Charge Seal (Sugar)", fr: "Sceau de Charge (Sucre)" } },
+          ],
+          rancher: [
+            { id: "m", label: { en: "Artisan Rich Milk (Milk Bucket)", fr: "Lait Riche Artisanal (Seau de Lait)" } },
+            { id: "h", label: { en: "Royal Jelly Honey (Honey Bottle)", fr: "Miel Gelee Royale (Fiole de Miel)" } },
+          ],
+        };
+
+        const cats = jobOpts[state.consJob] || jobOpts.farmer;
+        if (!cats.some((c) => c.id === state.consCategory)) state.consCategory = cats[0].id;
+
+        const bars = "|".repeat(r) + ".".repeat(5 - r);
+        const colors = { 1: "#aaaaaa", 2: "#ffffff", 3: "#55ff55", 4: "#55ffff", 5: "#ffaa00" };
+        let loreLines = [];
+
+        if (state.consJob === "rancher") {
+          loreLines = state.consCategory === "m"
+            ? ["--- [Ranch] ---", "Artisan Rich Milk", "Crafted by: MasterRancher", "Regeneration II (12s)", "Absorption I (45s)", "---------------"]
+            : ["--- [Ranch] ---", "Royal Jelly Honey", "Harvested by: MasterRancher", "Speed II (20s)", "Haste I (30s) + Saturation", "---------------"];
+        } else if (state.consJob === "farmer") {
+          const secRegen = (120 + (r - 1) * 60) / 20;
+          const secAbs = (400 + (r - 1) * 200) / 20;
+          const secSpd = (240 + (r - 1) * 120) / 20;
+          const secHst = (300 + (r - 1) * 150) / 20;
+          loreLines = ["--- [Cuisine] ---", `Quality: [${r}/5] ${bars}`, "Cooked by: MasterChef"];
+          if (state.consCategory === "v") {
+            loreLines.push(`Regeneration ${r >= 4 ? "II" : "I"} (${secRegen}s)`);
+            loreLines.push(`Absorption ${r >= 5 ? "II" : "I"} (${secAbs}s)`);
+          } else if (state.consCategory === "s") {
+            loreLines.push(`Speed ${r >= 4 ? "II" : "I"} (${secSpd}s)`);
+            loreLines.push("Instant Saturation");
+            if (r >= 5) loreLines.push("Jump Boost I (20s)");
+          } else {
+            loreLines.push(`Haste ${r >= 4 ? "II" : "I"} (${secHst}s)`);
+            if (r >= 4) loreLines.push(`Night Vision (${r >= 5 ? 60 : 30}s)`);
+          }
+          loreLines.push("-----------------");
+        } else if (state.consJob === "fisher") {
+          const title = W.t(cats.find((c) => c.id === state.consCategory).label);
+          loreLines = ["--- [Fishery] ---", title.split(" (")[0], `Quality: [${r}/5] ${bars}`, "Cured by: MasterAngler"];
+          if (state.consCategory === "c") {
+            const d = 60 + (r - 1) * 45;
+            loreLines.push(`Water Breathing (${d}s)`, `Night Vision (${d}s)`);
+          } else if (state.consCategory === "s") {
+            loreLines.push(`Speed ${r >= 4 ? "II" : "I"} (${30 + (r - 1) * 20}s)`, `Regeneration ${r >= 5 ? "II" : "I"} (${8 + (r - 1) * 4}s) + Saturation`);
+          } else {
+            loreLines.push(`Conduit Power (${30 + (r - 1) * 30}s)`, `Resistance I (${30 + (r - 1) * 20}s)`);
+          }
+          loreLines.push("-----------------");
+        } else if (state.consJob === "hunter") {
+          const title = W.t(cats.find((c) => c.id === state.consCategory).label);
+          loreLines = ["--- [Hunter] ---", title.split(" (")[0], `Quality: [${r}/5] ${bars}`, "Crafted by: MasterHunter"];
+          if (state.consCategory === "v") {
+            const d = 40 + (r - 1) * 20;
+            loreLines.push(`Speed ${r >= 4 ? "II" : "I"} (${d}s)`, `Jump Boost I (${d}s)`);
+          } else if (state.consCategory === "f") {
+            loreLines.push(`Strength ${r >= 5 ? "II" : "I"} (${30 + (r - 1) * 20}s)`, `Fire Resistance (${30 + (r - 1) * 15}s)`);
+          } else {
+            loreLines.push(`Night Vision & Resistance I (${45 + (r - 1) * 25}s)`, `Regeneration I (${8 + (r - 1) * 4}s)`);
+          }
+          loreLines.push("----------------");
+        } else if (state.consJob === "knight") {
+          const title = W.t(cats.find((c) => c.id === state.consCategory).label);
+          loreLines = ["--- [Knight] ---", title.split(" (")[0], `Quality: [${r}/5] ${bars}`, "Forged by: GrandChampion"];
+          if (state.consCategory === "a") {
+            const d = 35 + (r - 1) * 15;
+            loreLines.push(`Strength ${r >= 5 ? "II" : "I"} (${d}s)`, `Haste I (${d}s)`);
+          } else if (state.consCategory === "d") {
+            const d = 35 + (r - 1) * 15;
+            loreLines.push(`Resistance ${r >= 5 ? "II" : "I"} (${d}s)`, `Absorption ${r >= 4 ? "II" : "I"} (${d}s)`);
+          } else {
+            loreLines.push(`Speed ${r >= 4 ? "II" : "I"} (${40 + (r - 1) * 15}s)`, `Regeneration I (${8 + (r - 1) * 4}s)`);
+          }
+          loreLines.push("----------------");
+        }
+
+        main.innerHTML = `
+          <div class="oreui-panel chapter-header">
+            <span class="chapter-kicker">${lang === "fr" ? "CONSOMMABLES PARTAGEABLES MULTIJOUEUR" : "SHAREABLE MULTIPLAYER CONSUMABLES"}</span>
+            <h1>${lang === "fr" ? "Laboratoire des Buffs Artisanaux [1/5]–[5/5]" : "Artisan Consumables & Buffs Simulator [1/5]–[5/5]"}</h1>
+            <p>${lang === "fr" ? "Visualisez exactement les effets et la duree des items produits par les Eleveurs, Fermiers, Pecheurs, Chasseurs et Chevaliers." : "Preview exact tooltips, durations, and amplifier scaling for shareable buffs crafted by Ranchers, Farmers, Fishers, Hunters, and Knights."}</p>
+          </div>
+
+          <div class="forge-sim-box">
+            <div class="tax-inputs-grid">
+              <div class="tax-field">
+                <label>${lang === "fr" ? "Metier Producteur" : "Crafting Profession"}</label>
+                <select class="ore-select" id="consJobSel">
+                  <option value="farmer" ${state.consJob === "farmer" ? "selected" : ""}>${lang === "fr" ? "Fermier (Fumoir 3D)" : "Farmer (3D Smoker)"}</option>
+                  <option value="fisher" ${state.consJob === "fisher" ? "selected" : ""}>${lang === "fr" ? "Pecheur (Tonneau 3D)" : "Fisher (3D Barrel)"}</option>
+                  <option value="hunter" ${state.consJob === "hunter" ? "selected" : ""}>${lang === "fr" ? "Chasseur (Archerie 3D)" : "Hunter (3D Fletching)"}</option>
+                  <option value="knight" ${state.consJob === "knight" ? "selected" : ""}>${lang === "fr" ? "Chevalier (Meule 3D)" : "Knight (3D Grindstone)"}</option>
+                  <option value="rancher" ${state.consJob === "rancher" ? "selected" : ""}>${lang === "fr" ? "Eleveur (Lait / Ruche)" : "Rancher (Milk / Honey)"}</option>
+                </select>
+              </div>
+              <div class="tax-field">
+                <label>${lang === "fr" ? "Produit / Categorie" : "Product / Category"}</label>
+                <select class="ore-select" id="consCatSel">
+                  ${cats.map((c) => `<option value="${c.id}" ${c.id === state.consCategory ? "selected" : ""}>${W.escapeHtml(W.t(c.label))}</option>`).join("")}
+                </select>
+              </div>
+              ${state.consJob !== "rancher" ? `
+                <div class="tax-field">
+                  <label>${lang === "fr" ? `Qualite Obtenue : [${r}/5]` : `Rolled Quality: [${r}/5]`}</label>
+                  <input type="range" min="1" max="5" value="${r}" id="consRatingRange" style="width:100%;" />
+                </div>
+              ` : ""}
+            </div>
+
+            <div class="mc-lore-box">
+              ${loreLines.map((ln, idx) => {
+                if (idx === 0 || idx === loreLines.length - 1 || ln.startsWith("Cooked by") || ln.startsWith("Crafted by") || ln.startsWith("Cured by") || ln.startsWith("Forged by") || ln.startsWith("Harvested by")) {
+                  return `<div class="mc-line-muted">${W.escapeHtml(ln)}</div>`;
+                }
+                if (ln.startsWith("Quality:")) return `<div style="color:${colors[r]};font-weight:700;">${W.escapeHtml(ln)}</div>`;
+                if (idx === 1) return `<div class="mc-line-title">${W.escapeHtml(ln)}</div>`;
+                return `<div style="color:#87e8de;">${W.escapeHtml(ln)}</div>`;
+              }).join("")}
+            </div>
+          </div>
+          ${renderChapterNavFooter()}
+        `;
+
+        main.querySelector("#consJobSel").addEventListener("change", (e) => { state.consJob = e.target.value; renderConsumablesLab(main); });
+        main.querySelector("#consCatSel").addEventListener("change", (e) => { state.consCategory = e.target.value; renderConsumablesLab(main); });
+        const rr = main.querySelector("#consRatingRange");
+        if (rr) rr.addEventListener("input", (e) => { state.consRating = Number(e.target.value); renderConsumablesLab(main); });
+        bindFooterNav(main);
+      }
+
+      function bindInspectors(scope) {
+        scope.querySelectorAll("[data-inspect-kind]").forEach((el) => {
+          el.addEventListener("click", () => {
+            openInspectorModal(el.getAttribute("data-inspect-kind"), el.getAttribute("data-inspect-id"));
+          });
+        });
+      }
+
+      function bindFooterNav(scope) {
+        scope.querySelectorAll("[data-nav-page]").forEach((b) => {
+          b.addEventListener("click", () => navigateTo(b.getAttribute("data-nav-page")));
+        });
+      }
+
+      function renderCurrentPage() {
+        renderSidebar();
+        const main = document.getElementById("wikiMain");
+
+        if (currentPageId === "enc-trees") return renderSkillTreesEncyclopedia(main);
+        if (currentPageId === "enc-items") return renderItemsEncyclopedia(main);
+        if (currentPageId === "enc-consumables") return renderConsumablesLab(main);
+
+        const mod = MODULES.find((m) => m.id === currentPageId) || MODULES[0];
+        if (!mod) return;
+
+        main.innerHTML = `
+          <div class="oreui-panel chapter-header">
+            <span class="chapter-kicker">${W.escapeHtml(W.t(mod.kicker))}</span>
+            <h1>${W.escapeHtml(W.t(mod.title))}</h1>
+            <p>${W.escapeHtml(W.t(mod.subtitle))}</p>
+          </div>
+          ${mod.sections.map((s) => renderSectionHtml(s)).join("")}
+          ${renderChapterNavFooter()}
+        `;
+
+        main.querySelectorAll(".js-forge-sim-mount").forEach((m) => renderForgeSimulatorHtml(m));
+        main.querySelectorAll("[data-jump-page]").forEach((c) => {
+          c.addEventListener("click", () => navigateTo(c.getAttribute("data-jump-page")));
+        });
+        main.querySelectorAll(".js-open-tree-btn").forEach((b) => {
+          b.addEventListener("click", () => {
+            state.activeTreeJob = b.getAttribute("data-job");
+            state.selectedSkillId = null;
+            navigateTo("enc-trees");
+          });
+        });
+        bindInspectors(main);
+        bindFooterNav(main);
+      }
+
+      function navigateTo(pageId, skillId) {
+        if (!PAGE_ORDER.includes(pageId)) return;
+        currentPageId = pageId;
+        if (skillId) state.selectedSkillId = skillId;
+        location.hash = pageId;
+        document.getElementById("wikiSidebar")?.classList.remove("open");
+        renderCurrentPage();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function buildSearchIndex() {
+        const docs = [];
+        for (const m of MODULES) {
+          docs.push({
+            cat: { en: "Chapter", fr: "Chapitre" },
+            title: m.title,
+            desc: m.subtitle,
+            hay: `${m.id} ${m.title.en} ${m.title.fr} ${m.subtitle.en} ${m.subtitle.fr}`.toLowerCase(),
+            go: () => navigateTo(m.id),
+          });
+        }
+        for (const j of JS.jobs || []) {
+          for (const sk of j.skills || []) {
+            docs.push({
+              cat: { en: `Skill • ${j.name.en}`, fr: `Competence • ${j.name.fr}` },
+              title: sk.name,
+              desc: sk.desc,
+              hay: `${j.id} ${j.name.en} ${j.name.fr} ${sk.id} ${sk.name.en} ${sk.name.fr} ${sk.desc.en} ${sk.desc.fr}`.toLowerCase(),
+              go: () => {
+                state.activeTreeJob = j.id;
+                state.selectedSkillId = sk.id;
+                navigateTo("enc-trees", sk.id);
+              },
+            });
+          }
+        }
+        for (const it of JS.items || []) {
+          docs.push({
+            cat: { en: "Item", fr: "Objet" },
+            title: it.name,
+            desc: it.desc,
+            hay: `${it.id} ${it.name.en} ${it.name.fr} ${it.desc.en} ${it.desc.fr}`.toLowerCase(),
+            go: () => {
+              navigateTo("enc-items");
+              setTimeout(() => openInspectorModal("item", it.id), 120);
+            },
+          });
+        }
+        return docs;
+      }
+
+      function initSearch() {
+        const input = document.getElementById("globalSearch");
+        const dd = document.getElementById("searchDropdown");
+        const docs = buildSearchIndex();
+
+        input.addEventListener("input", () => {
+          const q = input.value.trim().toLowerCase();
+          if (!q) {
+            dd.classList.remove("open");
+            dd.innerHTML = "";
+            return;
+          }
+          const hits = docs.filter((d) => d.hay.includes(q)).slice(0, 14);
+          if (hits.length === 0) {
+            dd.innerHTML = `<div class="search-hit"><div class="search-hit-desc">${W.getLang() === "fr" ? "Aucun resultat." : "No matching results."}</div></div>`;
+          } else {
+            dd.innerHTML = hits.map((h, i) => `
+              <div class="search-hit" data-hit-idx="${i}">
+                <span class="search-hit-cat">${W.escapeHtml(W.t(h.cat))}</span>
+                <span class="search-hit-title">${W.escapeHtml(W.t(h.title))}</span>
+                <span class="search-hit-desc">${W.escapeHtml(W.t(h.desc).slice(0, 110))}</span>
+              </div>
+            `).join("");
+            dd.querySelectorAll(".search-hit[data-hit-idx]").forEach((row) => {
+              row.addEventListener("click", () => {
+                const idx = Number(row.getAttribute("data-hit-idx"));
+                dd.classList.remove("open");
+                hits[idx]?.go();
+              });
+            });
+          }
+          dd.classList.add("open");
+        });
+
+        document.addEventListener("click", (e) => {
+          if (!e.target.closest(".topbar-search")) dd.classList.remove("open");
+        });
+        document.addEventListener("keydown", (e) => {
+          if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+            e.preventDefault();
+            input.focus();
+          }
+        });
+      }
+
+      document.getElementById("btnMobileMenu")?.addEventListener("click", () => {
+        document.getElementById("wikiSidebar")?.classList.toggle("open");
+      });
+      document.getElementById("btnCloseModal")?.addEventListener("click", () => {
+        document.getElementById("wikiModal")?.classList.remove("open");
+      });
+      document.getElementById("wikiModal")?.addEventListener("click", (e) => {
+        if (e.target.id === "wikiModal") e.currentTarget.classList.remove("open");
+      });
+      window.addEventListener("hashchange", () => {
+        const next = (location.hash || "").replace(/^#/, "");
+        if (PAGE_ORDER.includes(next) && next !== currentPageId) {
+          currentPageId = next;
+          renderCurrentPage();
+        }
+      });
+      window.addEventListener("frontier:langchange", renderCurrentPage);
+
+      W.initThemeAndLangControls();
+      initSearch();
+      renderCurrentPage();
+    })();
+  </script>
 </body>
 </html>

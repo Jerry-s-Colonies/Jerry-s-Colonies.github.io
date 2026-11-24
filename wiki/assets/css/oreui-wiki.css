@@ -390,6 +390,9 @@ code {
 .portal-card.portal-live.portal-frontier {
   border-top-color: var(--crimson-bright);
 }
+.portal-card.portal-live.portal-jobs {
+  border-top-color: var(--gold);
+}
 .portal-card.portal-soon {
   border-top-color: var(--gold);
   opacity: 0.92;
@@ -423,9 +426,11 @@ code {
 }
 .status-live { background: #101c11; border: 1px solid var(--ok); color: #96f274; font-weight: 700; text-shadow: var(--text-outline-sm); }
 .status-crimson { background: #1c1013; border: 1px solid var(--crimson-bright); color: #ff949e; font-weight: 700; text-shadow: var(--text-outline-sm); }
+.status-gold { background: #1c170d; border: 1px solid var(--gold); color: #ffd978; font-weight: 700; text-shadow: var(--text-outline-sm); }
 .status-soon { background: #1c170d; border: 1px solid var(--gold); color: #ffd166; font-weight: 700; text-shadow: var(--text-outline-sm); }
 [data-theme="light"] .status-live { background: #e9f8e5; color: #14570d; text-shadow: none; }
 [data-theme="light"] .status-crimson { background: #fdecef; color: #8f0d1b; text-shadow: none; }
+[data-theme="light"] .status-gold { background: #fff6df; color: #8a5500; text-shadow: none; }
 [data-theme="light"] .status-soon { background: #fff6df; color: #8a5500; text-shadow: none; }
 
 .portal-title {
@@ -1548,3 +1553,428 @@ body.theme-frontier .search-hit-title { color: var(--accent-bright); }
 .mc-chat-line .rank-badge-img {
   height: 24px;
 }
+
+/* ============================================================================
+ * JOBS & SKILL TREES GOLD THEME (Scoped to body.theme-jobs)
+ * ========================================================================== */
+body.theme-jobs {
+  --accent: #f0ad28;
+  --accent-bright: #ffd978;
+  --accent-deep: #9c6306;
+  --accent-soft: rgba(240, 173, 40, 0.16);
+  --accent-glow: rgba(240, 173, 40, 0.12);
+}
+[data-theme="light"] body.theme-jobs {
+  --accent: #9c5d00;
+  --accent-bright: #7a4700;
+  --accent-deep: #6e3f00;
+  --accent-soft: rgba(156, 93, 0, 0.12);
+  --accent-glow: rgba(156, 93, 0, 0.08);
+}
+
+body.theme-jobs .brand-sub { color: var(--accent-bright); }
+body.theme-jobs a { color: var(--accent-bright); text-shadow: var(--text-outline-sm); }
+body.theme-jobs code {
+  color: #ffe18d;
+  background: #111318;
+  border-color: rgba(240, 173, 40, 0.42);
+  text-shadow: var(--text-outline-sm);
+}
+[data-theme="light"] body.theme-jobs code {
+  color: #7a4700;
+  background: #fff8e6;
+  border-color: rgba(156, 93, 0, 0.35);
+  font-weight: 600;
+  text-shadow: none;
+}
+
+body.theme-jobs .topbar-search input:focus { border-color: var(--accent); }
+body.theme-jobs .sidebar-group-title { color: var(--accent-bright); text-shadow: var(--text-outline-sm); }
+body.theme-jobs .nav-item.active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-bright);
+  text-shadow: var(--text-outline-sm);
+}
+body.theme-jobs .chapter-header {
+  border-left: 5px solid var(--accent);
+  background: linear-gradient(135deg, rgba(240, 173, 40, 0.15) 0%, rgba(39, 41, 46, 0.96) 55%);
+}
+[data-theme="light"] body.theme-jobs .chapter-header {
+  background: linear-gradient(135deg, rgba(156, 93, 0, 0.12) 0%, #eef1f6 55%);
+}
+body.theme-jobs .chapter-kicker { color: var(--accent-bright); text-shadow: var(--text-outline-sm); }
+body.theme-jobs .wiki-section > h2 {
+  color: var(--accent-bright);
+  border-left-color: var(--accent);
+  text-shadow: var(--text-outline-lg);
+}
+body.theme-jobs .sec-num {
+  color: var(--accent-bright);
+  background: var(--accent-soft);
+  border-color: rgba(240, 173, 40, 0.38);
+  text-shadow: var(--text-outline-sm);
+}
+[data-theme="light"] body.theme-jobs .sec-num {
+  border-color: rgba(156, 93, 0, 0.35);
+}
+body.theme-jobs .wiki-table th { color: var(--accent-bright); text-shadow: var(--text-outline-sm); }
+body.theme-jobs .wiki-table tr:hover td { background: var(--accent-glow); }
+body.theme-jobs .filter-tab.active {
+  background: var(--accent-deep);
+  border-color: var(--accent-bright);
+  color: #fff;
+  text-shadow: var(--text-outline-sm);
+}
+body.theme-jobs .block-mini-card:hover,
+body.theme-jobs .gallery-card:hover { border-color: var(--accent); }
+body.theme-jobs .render-stage {
+  background: radial-gradient(circle at center, var(--accent-glow) 0%, transparent 72%);
+}
+body.theme-jobs .craft-arrow { color: var(--accent-bright); text-shadow: var(--text-outline-sm); }
+body.theme-jobs .callout-title { color: var(--accent-bright); text-shadow: var(--text-outline-sm); }
+body.theme-jobs .callout-warn .callout-title { color: #ffca63; }
+body.theme-jobs .callout-danger .callout-title { color: var(--crimson-bright); }
+body.theme-jobs .callout-info .callout-title { color: #7db4f0; }
+body.theme-jobs .search-dropdown { border-color: var(--accent); }
+body.theme-jobs .search-hit-title { color: var(--accent-bright); }
+body.theme-jobs .search-hit-cat { color: var(--accent); }
+
+/* ---------- Jobs & Skills Workflow Pipelines, Role Cards & 13x9 DAG ---------- */
+.role-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(235px, 1fr));
+  gap: 12px;
+  margin: 14px 0 18px;
+}
+.role-mini-card {
+  background: var(--bg-card-alt);
+  border: 2px solid var(--border-dark);
+  border-top: 4px solid var(--accent);
+  border-radius: 6px;
+  padding: 13px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+  transition: transform 0.12s ease, border-color 0.12s ease;
+}
+.role-mini-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-bright);
+}
+.role-mini-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.role-mini-head img {
+  width: 34px;
+  height: 34px;
+  image-rendering: pixelated;
+  background: var(--bg-input);
+  border: 1px solid var(--border-soft);
+  border-radius: 4px;
+  padding: 3px;
+}
+.role-mini-title {
+  font-family: "MinecraftTen", sans-serif;
+  font-size: 16px;
+  color: var(--accent-bright);
+  text-shadow: var(--text-outline-lg);
+  line-height: 1.15;
+}
+.role-mini-sub {
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+.role-hero-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 10px;
+  margin: 12px 0 16px;
+}
+.role-stat-tile {
+  background: var(--bg-card-alt);
+  border: 2px solid var(--border-dark);
+  border-radius: 5px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.role-stat-tile img {
+  width: 28px;
+  height: 28px;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+}
+.role-stat-lbl {
+  font-family: "MinecraftRegular", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  display: block;
+}
+.role-stat-val {
+  font-family: "MinecraftTen", sans-serif;
+  font-size: 15px;
+  color: var(--accent-bright);
+  text-shadow: var(--text-outline-sm);
+}
+
+.workflow-pipeline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 10px;
+  margin: 14px 0 18px;
+}
+.workflow-step {
+  flex: 1 1 215px;
+  min-width: 205px;
+  background: var(--bg-card-alt);
+  border: 2px solid var(--border-dark);
+  border-top: 4px solid var(--accent);
+  border-radius: 6px;
+  padding: 13px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.workflow-step-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.workflow-step-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background: var(--accent-deep);
+  border: 1px solid var(--accent-bright);
+  color: #fff;
+  font-family: "MinecraftTen", sans-serif;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.workflow-step-icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-soft);
+  border-radius: 4px;
+  padding: 6px 8px;
+}
+.workflow-step-icons img {
+  width: 28px;
+  height: 28px;
+  image-rendering: pixelated;
+}
+.workflow-step-title {
+  font-family: "MinecraftTen", sans-serif;
+  font-size: 15px;
+  color: var(--accent-bright);
+  text-shadow: var(--text-outline-sm);
+  line-height: 1.2;
+}
+.workflow-step p {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.workflow-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: var(--accent-bright);
+  text-shadow: var(--text-outline-sm);
+  padding: 0 2px;
+}
+@media (max-width: 780px) {
+  .workflow-arrow { transform: rotate(90deg); width: 100%; height: 22px; }
+}
+
+.zone-bar-box {
+  background: var(--bg-input);
+  border: 2px solid var(--border-dark);
+  border-radius: 6px;
+  padding: 12px 14px;
+  margin: 12px 0 16px;
+}
+.zone-bar-track {
+  display: grid;
+  grid-template-columns: 36fr 16fr 12fr 16fr 20fr;
+  height: 22px;
+  border: 2px solid #0c0d0f;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 8px 0;
+}
+.zb-cool { background: #2d3540; }
+.zb-yellow { background: #d69820; }
+.zb-green { background: #3ec946; }
+.zb-red { background: #c93038; }
+
+.forge-sim-box {
+  background: var(--bg-card-alt);
+  border: 2px solid var(--border-dark);
+  border-left: 4px solid var(--accent);
+  border-radius: 6px;
+  padding: 16px;
+  margin: 14px 0;
+}
+.mc-lore-box {
+  background: linear-gradient(180deg, rgba(16, 4, 22, 0.96) 0%, rgba(10, 2, 14, 0.98) 100%);
+  border: 2px solid #441678;
+  box-shadow: inset 0 0 0 1px #20063b, 0 6px 16px rgba(0, 0, 0, 0.55);
+  border-radius: 4px;
+  padding: 10px 13px;
+  font-family: "MinecraftRegular", Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #e4e6eb;
+}
+.mc-lore-box .mc-line-muted { color: #9c9ea6; }
+.mc-lore-box .mc-line-title { color: #ffd978; font-weight: 700; }
+
+/* 13x9 Interactive DAG Tree Explorer */
+.dag-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 16px;
+  align-items: start;
+  margin-top: 12px;
+}
+@media (max-width: 1080px) {
+  .dag-shell { grid-template-columns: 1fr; }
+}
+.dag-viewport {
+  background: radial-gradient(circle at top center, rgba(240, 173, 40, 0.08) 0%, #101216 70%);
+  border: 2px solid var(--border-dark);
+  border-radius: 6px;
+  padding: 14px;
+  overflow-x: auto;
+}
+.dag-grid {
+  display: grid;
+  grid-template-columns: repeat(13, 46px);
+  grid-template-rows: repeat(9, 46px);
+  gap: 0;
+  width: 598px;
+  margin: 0 auto;
+  position: relative;
+}
+.dag-cell {
+  width: 46px;
+  height: 46px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dag-arm {
+  position: absolute;
+  background: #6c7382;
+  z-index: 1;
+}
+.dag-arm-u { left: 50%; top: 0; width: 4px; height: 50%; transform: translateX(-50%); }
+.dag-arm-d { left: 50%; bottom: 0; width: 4px; height: 50%; transform: translateX(-50%); }
+.dag-arm-l { top: 50%; left: 0; height: 4px; width: 50%; transform: translateY(-50%); }
+.dag-arm-r { top: 50%; right: 0; height: 4px; width: 50%; transform: translateY(-50%); }
+.dag-arm-hub {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 8px; height: 8px;
+  transform: translate(-50%, -50%);
+  background: #9aa2b2;
+  border-radius: 2px;
+  z-index: 2;
+}
+.dag-node {
+  position: relative;
+  z-index: 3;
+  width: 38px;
+  height: 38px;
+  border: 2px solid #0e1014;
+  border-radius: 5px;
+  background: linear-gradient(180deg, #3a3f48 0%, #262930 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.1s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+}
+.dag-node.dag-goal {
+  border-color: #d4961a;
+  background: linear-gradient(180deg, #523b12 0%, #30220a 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 217, 120, 0.35);
+}
+.dag-node:hover {
+  transform: scale(1.1);
+  border-color: #ffd978;
+  z-index: 5;
+}
+.dag-node.is-selected {
+  border-color: #ffd978;
+  box-shadow: 0 0 0 2px #ffd978, 0 0 14px rgba(245, 185, 66, 0.65);
+  z-index: 6;
+}
+.dag-node.is-prereq {
+  border-color: #57c5d8;
+  box-shadow: 0 0 0 2px #57c5d8;
+}
+.dag-node.is-child {
+  border-color: #7be356;
+  box-shadow: 0 0 0 2px #7be356;
+}
+.dag-node.is-dimmed {
+  opacity: 0.25;
+}
+.dag-node img {
+  width: 24px;
+  height: 24px;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+.dag-node-badge {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  background: #141518;
+  border: 1px solid #ffd978;
+  color: #ffd978;
+  font-family: "MinecraftRegular", monospace;
+  font-size: 8.5px;
+  padding: 0 3px;
+  border-radius: 3px;
+  line-height: 1.25;
+}
+.dag-inspector {
+  background: var(--bg-card-alt);
+  border: 2px solid var(--border-dark);
+  border-top: 4px solid var(--accent);
+  border-radius: 6px;
+  padding: 15px;
+}
+.dag-link-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-soft);
+  color: var(--text-main);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11.5px;
+  cursor: pointer;
+}
+.dag-link-pill:hover { border-color: var(--accent); }
