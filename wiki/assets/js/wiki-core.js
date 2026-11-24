@@ -66,6 +66,17 @@
     "minecraft:blaze_powder": "BlazeP",
     "minecraft:dye": "Dye",
     "minecraft:fence": "Fence",
+    "minecraft:iron_block": "IronBlk",
+    "minecraft:stone": "Stone",
+    "minecraft:bedrock": "Bedrock",
+    "minecraft:string": "String",
+    "minecraft:gunpowder": "Powder",
+    "minecraft:clay_ball": "Clay",
+    "minecraft:ender_pearl": "Pearl",
+    "minecraft:stone_button": "Button",
+    "minecraft:flint": "Flint",
+    "minecraft:redstone": "Redstn",
+    "minecraft:white_wool": "W.Wool",
   };
 
   const MEM_STORE = {};
@@ -201,6 +212,17 @@
       const badge = count && count > 1 ? `<span class="craft-count">${count}</span>` : "";
       return `<div class="craft-slot ${extraClass || ""}" title="${escapeHtml(itemId)}">${inner}${badge}</div>`;
     };
+
+    if (recipe.type === "stonecutter") {
+      const ing = recipe.ingredients?.[0] || "";
+      return `
+        <div class="recipe-box">
+          ${renderSlot(ing, 1)}
+          <span class="craft-arrow" title="Stonecutter">&#10142;</span>
+          ${renderSlot(recipe.resultItem, recipe.resultCount || 1, "craft-output")}
+        </div>
+      `;
+    }
 
     return `
       <div class="recipe-box">

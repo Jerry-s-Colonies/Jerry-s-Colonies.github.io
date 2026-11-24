@@ -373,6 +373,9 @@ code {
 .portal-card.portal-live {
   border-top-color: var(--green-bot);
 }
+.portal-card.portal-live.portal-frontier {
+  border-top-color: var(--crimson-bright);
+}
 .portal-card.portal-soon {
   border-top-color: var(--gold);
   opacity: 0.92;
@@ -405,6 +408,7 @@ code {
   margin-bottom: 4px;
 }
 .status-live { background: rgba(79, 168, 50, 0.22); border: 1px solid var(--ok); color: var(--ok); }
+.status-crimson { background: rgba(230, 57, 70, 0.18); border: 1px solid var(--crimson-bright); color: var(--crimson-bright); }
 .status-soon { background: rgba(245, 185, 66, 0.16); border: 1px solid var(--gold); color: var(--gold); }
 
 .portal-title {
@@ -1247,4 +1251,230 @@ body.theme-jn .callout-info .callout-title {
   .customizer-grid { grid-template-columns: 1fr; }
   .ctrl-toggles, .ctrl-grid-2, .ctrl-military-box { grid-template-columns: 1fr; }
   .entity-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ============================================================================
+ * FRONTIER ENGINE & EXTENSION RED THEME (Scoped to body.theme-frontier)
+ * ========================================================================== */
+body.theme-frontier {
+  --accent: #e63946;
+  --accent-bright: #ff6b78;
+  --accent-deep: #9b1322;
+  --accent-soft: rgba(230, 57, 70, 0.16);
+  --accent-glow: rgba(230, 57, 70, 0.12);
+}
+[data-theme="light"] body.theme-frontier {
+  --accent: #b91c2b;
+  --accent-bright: #991321;
+  --accent-deep: #7f101c;
+  --accent-soft: rgba(185, 28, 43, 0.11);
+  --accent-glow: rgba(185, 28, 43, 0.08);
+}
+
+body.theme-frontier .brand-sub { color: var(--accent-bright); }
+body.theme-frontier a { color: var(--accent-bright); }
+body.theme-frontier code {
+  color: var(--accent-bright);
+  background: rgba(230, 57, 70, 0.1);
+  border-color: rgba(230, 57, 70, 0.3);
+}
+[data-theme="light"] body.theme-frontier code {
+  color: var(--accent-bright);
+  background: rgba(185, 28, 43, 0.09);
+  border-color: rgba(185, 28, 43, 0.28);
+}
+
+body.theme-frontier .topbar-search input:focus { border-color: var(--accent); }
+body.theme-frontier .sidebar-group-title { color: var(--accent-bright); }
+body.theme-frontier .nav-item.active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-bright);
+}
+body.theme-frontier .chapter-header {
+  border-left: 5px solid var(--accent);
+  background: linear-gradient(135deg, rgba(230, 57, 70, 0.14) 0%, rgba(39, 41, 46, 0.96) 55%);
+}
+[data-theme="light"] body.theme-frontier .chapter-header {
+  background: linear-gradient(135deg, rgba(185, 28, 43, 0.12) 0%, #eef1f6 55%);
+}
+body.theme-frontier .chapter-kicker { color: var(--accent-bright); }
+body.theme-frontier .wiki-section > h2 {
+  color: var(--accent-bright);
+  border-left-color: var(--accent);
+}
+body.theme-frontier .sec-num {
+  color: var(--accent-bright);
+  background: var(--accent-soft);
+  border-color: rgba(230, 57, 70, 0.35);
+}
+[data-theme="light"] body.theme-frontier .sec-num {
+  border-color: rgba(185, 28, 43, 0.35);
+}
+body.theme-frontier .wiki-table th { color: var(--accent-bright); }
+body.theme-frontier .wiki-table tr:hover td { background: var(--accent-glow); }
+body.theme-frontier .filter-tab.active {
+  background: var(--accent-deep);
+  border-color: var(--accent-bright);
+  color: #fff;
+}
+body.theme-frontier .block-mini-card:hover,
+body.theme-frontier .gallery-card:hover { border-color: var(--accent); }
+body.theme-frontier .render-stage {
+  background: radial-gradient(circle at center, var(--accent-glow) 0%, transparent 72%);
+}
+body.theme-frontier .craft-arrow { color: var(--accent-bright); }
+body.theme-frontier .callout-title { color: var(--accent-bright); }
+body.theme-frontier .callout-warn .callout-title { color: var(--gold); }
+body.theme-frontier .callout-danger .callout-title { color: var(--crimson-bright); }
+body.theme-frontier .callout-info .callout-title { color: var(--blue-top); }
+body.theme-frontier .search-dropdown { border-color: var(--accent); }
+body.theme-frontier .search-hit-title { color: var(--accent-bright); }
+
+/* ---------- Frontier Custom Widgets (Commands, Tax Calc, Lootboxes, Preview) ---------- */
+.cmd-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 12px;
+  margin: 12px 0 18px;
+}
+.cmd-card {
+  background: var(--bg-card-alt);
+  border: 2px solid var(--border-dark);
+  border-left: 4px solid var(--accent);
+  border-radius: 5px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.cmd-syntax {
+  font-family: Consolas, monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent-bright);
+}
+
+.loot-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+  margin: 14px 0;
+}
+.loot-card {
+  background: var(--bg-card-alt);
+  border: 2px solid var(--border-dark);
+  border-radius: 6px;
+  padding: 14px;
+}
+.loot-card.loot-tier-common { border-top: 4px solid #f5b942; }
+.loot-card.loot-tier-rare { border-top: 4px solid #d47ef5; }
+.loot-card.loot-tier-epic { border-top: 4px solid #57c5d8; }
+.loot-card.loot-tier-legendary { border-top: 4px solid #ff5555; }
+.loot-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.loot-head img {
+  width: 64px;
+  height: 64px;
+  image-rendering: pixelated;
+  background: var(--bg-input);
+  border: 1px solid var(--border-soft);
+  border-radius: 5px;
+  padding: 4px;
+}
+.prob-row {
+  display: grid;
+  grid-template-columns: 1fr 48px;
+  gap: 4px 10px;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 12.5px;
+}
+.prob-bar-track {
+  grid-column: 1 / -1;
+  height: 7px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-soft);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.prob-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-deep), var(--accent-bright));
+}
+
+.tax-calc-box, .custom-preview-box {
+  background: var(--bg-card-alt);
+  border: 2px solid var(--border-dark);
+  border-left: 4px solid var(--accent);
+  border-radius: 6px;
+  padding: 16px;
+  margin: 14px 0;
+}
+.tax-inputs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.tax-field label {
+  display: block;
+  font-family: "MinecraftRegular", monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.tax-field input, .tax-field select { width: 100%; }
+.tax-result-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.custom-preview-stage {
+  background: linear-gradient(180deg, #1b2430 0%, #111419 100%);
+  border: 2px solid var(--border-dark);
+  border-radius: 6px;
+  padding: 18px 16px;
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+.mc-nametag-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 4px 10px;
+  border-radius: 3px;
+  font-family: "MinecraftRegular", Consolas, monospace;
+  font-size: 15px;
+  letter-spacing: 0.4px;
+}
+.mc-chat-line {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid #2b2f38;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-family: "MinecraftRegular", Consolas, monospace;
+  font-size: 13.5px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.rank-badge-img {
+  height: 16px;
+  width: auto;
+  image-rendering: pixelated;
+  vertical-align: middle;
 }

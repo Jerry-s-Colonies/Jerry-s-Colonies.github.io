@@ -3,43 +3,889 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Frontier Extension Wiki — The Frontier</title>
+  <title>Frontier Engine &amp; Extension Wiki — The Frontier</title>
   <link rel="icon" href="../assets/img/frontier_extension_icon.png" type="image/png" />
   <link rel="stylesheet" href="../assets/css/oreui-wiki.css" />
 </head>
-<body>
+<body class="theme-frontier">
   <header class="topbar">
     <div class="topbar-left">
+      <button class="oreui-btn oreui-btn-sm mobile-menu-btn" id="btnMobileMenu" type="button">Menu</button>
       <a class="brand-link" href="../index.html">
-        <img class="brand-icon" src="../assets/img/frontier_extension_icon.png" alt="Frontier Extension" />
+        <img class="brand-icon" src="../assets/img/frontier_extension_icon.png" alt="Frontier Engine &amp; Extension" />
         <div>
-          <div class="brand-title">FRONTIER EXTENSION</div>
-          <span class="brand-sub" data-en="Wiki Hub Bridge" data-fr="Portail Wiki">Wiki Hub Bridge</span>
+          <div class="brand-title">FRONTIER ENGINE &amp; EXT</div>
+          <span class="brand-sub" data-en="The Frontier Wiki • v1.0.1 / v1.0.4" data-fr="Wiki The Frontier • v1.0.1 / v1.0.4">The Frontier Wiki • v1.0.1 / v1.0.4</span>
         </div>
       </a>
     </div>
+
+    <div class="topbar-search">
+      <input
+        id="globalSearch"
+        type="search"
+        autocomplete="off"
+        data-ph-en="Search commands, Nether beams, pass tiers, quests, ranks, cannons..."
+        data-ph-fr="Rechercher commandes, Nether beams, paliers, quetes, rangs, canons..."
+        placeholder="Search commands, Nether beams, pass tiers, quests, ranks, cannons..."
+      />
+      <span class="search-kbd">Ctrl+K</span>
+      <div class="search-dropdown" id="searchDropdown"></div>
+    </div>
+
     <div class="topbar-actions">
-      <a class="oreui-btn oreui-btn-sm" href="../index.html" data-en="All Wikis" data-fr="Tous les Wikis">All Wikis</a>
+      <a class="oreui-btn oreui-btn-sm" href="../index.html" data-en="Hub" data-fr="Hub">Hub</a>
       <button class="oreui-btn oreui-btn-sm" id="btnLangToggle" type="button">EN / FR [EN]</button>
       <button class="oreui-btn oreui-btn-sm oreui-btn-info" id="btnThemeToggle" type="button">Light</button>
     </div>
   </header>
 
-  <main class="hub-wrap">
-    <section class="oreui-panel hub-hero">
-      <span class="hub-hero-badge" data-en="COMING NEXT" data-fr="BIENTOT DISPONIBLE">COMING NEXT</span>
-      <h1>Frontier Extension Wiki</h1>
-      <p data-en="This portal is reserved for the complete Frontier Extension documentation (recipes, custom items, blocks with 3D renders, and server mechanics). It will be populated right after Jerry's Nations." data-fr="Ce portail est reserve a la documentation complete de Frontier Extension (recettes, items custom, blocs en 3D et mecaniques serveur). Il sera redige juste apres Jerry's Nations.">
-        This portal is reserved for the complete Frontier Extension documentation (recipes, custom items, blocks with 3D renders, and server mechanics). It will be populated right after Jerry's Nations.
-      </p>
-      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;">
-        <a class="oreui-btn oreui-btn-primary" href="../jerry-nations/index.html" data-en="Read Jerry's Nations Wiki" data-fr="Lire le Wiki Jerry's Nations">Read Jerry's Nations Wiki</a>
-        <a class="oreui-btn" href="../index.html" data-en="Back to Wiki Hub" data-fr="Retour au Hub">Back to Wiki Hub</a>
-      </div>
-    </section>
-  </main>
+  <div class="wiki-shell">
+    <aside class="sidebar" id="wikiSidebar"></aside>
+    <main class="wiki-main">
+      <div class="wiki-content-inner" id="wikiMain"></div>
+    </main>
+  </div>
 
+  <!-- 3D Render + Recipe Lightbox Modal -->
+  <div class="modal-backdrop" id="wikiModal">
+    <div class="oreui-panel modal-dialog">
+      <button class="oreui-btn oreui-btn-sm oreui-btn-crimson modal-close" id="btnCloseModal" type="button">X</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <script src="../assets/js/vanilla-icons.js"></script>
   <script src="../assets/js/wiki-core.js"></script>
-  <script>window.FrontierWiki.initThemeAndLangControls();</script>
+  <script src="data/catalog-frontier.js"></script>
+  <script src="data/battlepass-data.js"></script>
+  <script src="data/guide-commands-world.js"></script>
+  <script src="data/guide-battlepass-custom.js"></script>
+
+  <script>
+    (function () {
+      const W = window.FrontierWiki;
+      const CAT = window.FE_CATALOG || { blocks: [], items: [], entities: [], commands: [], ranks: [], cosmetics: {}, lootboxes: [], byId: {} };
+      const BP = window.FE_BP_DATA || { xpPerTier: 100, maxTier: 112, tiers: [], quests: [] };
+      const MODULES = window.FE_GUIDE_MODULES || [];
+
+      const NAV_GROUPS = [
+        { id: "commands-world", label: { en: "Commands, Portals & World", fr: "Commandes, Portails & Monde" } },
+        { id: "battlepass-progress", label: { en: "FrontierPass & Quests", fr: "FrontierPass & Quetes" } },
+        { id: "identity-loot", label: { en: "Ranks, Custom, HUD & Lootboxes", fr: "Rangs, Custom, HUD & Lootboxes" } },
+        { id: "survival-siege", label: { en: "Death Chests & Siege Warfare", fr: "Coffres de Mort & Canons" } },
+      ];
+
+      const ENCYCLOPEDIAS = [
+        { id: "enc-blocks", label: { en: "3D Blocks Gallery", fr: "Galerie Blocs 3D" }, count: CAT.blocks.length },
+        { id: "enc-items", label: { en: "Items & Recipes", fr: "Objets & Recettes" }, count: CAT.items.length },
+        { id: "enc-entities", label: { en: "Entities & Lootboxes 3D", fr: "Entites & Lootboxes 3D" }, count: CAT.entities.length },
+      ];
+
+      const PAGE_ORDER = [...MODULES.map((m) => m.id), ...ENCYCLOPEDIAS.map((e) => e.id)];
+      let currentPageId = (location.hash || "").replace(/^#/, "");
+      if (!PAGE_ORDER.includes(currentPageId)) currentPageId = PAGE_ORDER[0] || "commands-hub";
+
+      const state = {
+        cmdFilter: "all",
+        cmdQuery: "",
+        tierFilter: "all",
+        tierQuery: "",
+        questFilter: "all",
+        questQuery: "",
+        blockFilter: "all",
+        itemFilter: "all",
+        entityFilter: "all",
+        taxTier: 2,
+        taxConn: 6,
+        taxDisc: 2,
+        taxDist: 1000,
+        prevRank: "noble",
+        prevColor: "gold",
+        prevChat: "emerald",
+        prevAura: "flames",
+        prevKill: "thunder",
+        prevName: "FrontierPlayer",
+      };
+
+      const blockByShort = Object.fromEntries(CAT.blocks.map((b) => [b.shortId, b]));
+
+      function openInspectorModal(kind, id) {
+        const modal = document.getElementById("wikiModal");
+        const body = document.getElementById("modalBody");
+        const lang = W.getLang();
+
+        if (kind === "entity") {
+          const ent = CAT.entities.find((e) => e.id === id);
+          if (!ent) return;
+          const title = W.t(ent.name);
+          body.innerHTML = `
+            <div style="display:flex;flex-wrap:wrap;gap:18px;align-items:center;">
+              <div style="width:190px;height:190px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at center, rgba(230,57,70,0.16) 0%, var(--bg-input) 78%);border:2px solid var(--border-dark);border-radius:6px;">
+                ${ent.render3d ? `<img src="${ent.render3d}" alt="${W.escapeHtml(title)}" style="max-width:170px;max-height:170px;image-rendering:pixelated;" />` : ""}
+              </div>
+              <div style="flex:1;min-width:220px;">
+                <div class="chapter-kicker">${W.escapeHtml(ent.category)}</div>
+                <h2 style="margin:0 0 8px;font-family:'MinecraftTen',sans-serif;color:var(--accent-bright);">${W.escapeHtml(title)}</h2>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;">
+                  <span class="badge badge-crimson">ID: <code>${W.escapeHtml(ent.id)}</code></span>
+                  <span class="badge">${W.escapeHtml(String(ent.hp || "—"))}</span>
+                </div>
+                <p style="margin:8px 0 0;font-size:13px;color:var(--text-secondary);">${W.escapeHtml(W.t(ent.desc))}</p>
+              </div>
+            </div>
+          `;
+          modal.classList.add("open");
+          return;
+        }
+
+        let obj = kind === "block"
+          ? CAT.blocks.find((b) => b.id === id || b.shortId === id)
+          : CAT.items.find((it) => it.id === id || it.shortId === id);
+        if (!obj) obj = CAT.blocks.find((b) => b.id === id) || CAT.items.find((it) => it.id === id);
+        if (!obj) return;
+
+        const imgSrc = obj.render3d || obj.icon || "";
+        const title = W.t(obj.name);
+        const recipes = obj.recipes || [];
+
+        let metaHtml = `<span class="badge badge-crimson">ID: <code>${W.escapeHtml(obj.id)}</code></span> `;
+        if (obj.light) metaHtml += `<span class="badge badge-gold">Light: ${obj.light}</span> `;
+        if (obj.mineSeconds !== undefined) metaHtml += `<span class="badge">${lang === "fr" ? "Minage" : "Mine"}: ${obj.mineSeconds}</span> `;
+        if (obj.blastRes !== undefined) metaHtml += `<span class="badge">${lang === "fr" ? "Explosion" : "Blast"}: ${obj.blastRes}</span> `;
+        if (obj.maxStack !== undefined) metaHtml += `<span class="badge">Stack: ${obj.maxStack}</span> `;
+
+        let recipeHtml = "";
+        if (recipes.length > 0) {
+          recipeHtml = `
+            <h3 style="margin-top:16px;">${lang === "fr" ? "Recette(s) de Fabrication" : "Crafting Recipe(s)"}</h3>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;">
+              ${recipes.map((r) => W.renderRecipeHtml(r, CAT, "")).join("")}
+            </div>
+          `;
+        } else {
+          recipeHtml = `<p style="margin-top:14px;color:var(--text-muted);font-size:12.5px;">${
+            lang === "fr"
+              ? "Aucune recette en table de craft (obtenu via FrontierPass, commande, monde ou staff)."
+              : "No crafting table recipe (obtained via FrontierPass, command, world system, or staff)."
+          }</p>`;
+        }
+
+        body.innerHTML = `
+          <div style="display:flex;flex-wrap:wrap;gap:18px;align-items:center;">
+            <div style="width:180px;height:180px;display:flex;align-items:center;justify-content:center;background:var(--bg-input);border:2px solid var(--border-dark);border-radius:6px;">
+              ${imgSrc ? `<img src="${imgSrc}" alt="${W.escapeHtml(title)}" style="max-width:156px;max-height:156px;image-rendering:pixelated;" />` : ""}
+            </div>
+            <div style="flex:1;min-width:220px;">
+              <div class="chapter-kicker">${obj.render3d ? "3D Isometric Render" : "Item Sprite"}</div>
+              <h2 style="margin:0 0 8px;font-family:'MinecraftTen',sans-serif;color:var(--accent-bright);">${W.escapeHtml(title)}</h2>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;">${metaHtml}</div>
+              ${obj.desc ? `<p style="margin:6px 0 0;font-size:13px;color:var(--text-secondary);">${W.escapeHtml(W.t(obj.desc))}</p>` : ""}
+            </div>
+          </div>
+          ${recipeHtml}
+        `;
+        modal.classList.add("open");
+      }
+
+      window.__openInspector = openInspectorModal;
+
+      function renderCommandsWidget(container) {
+        const lang = W.getLang();
+        const isFr = lang === "fr";
+        const cats = [
+          { id: "all", label: isFr ? "Toutes" : "All" },
+          { id: "player_ext", label: "FrontierExtension (Joueurs)" },
+          { id: "player_engine", label: "FrontierEngine (Joueurs)" },
+          { id: "staff", label: isFr ? "Staff / Admin" : "Staff / Admin" },
+        ];
+        const filtered = CAT.commands.filter((c) => {
+          if (state.cmdFilter === "player_ext" && !(c.scope === "ext" && c.role === "player")) return false;
+          if (state.cmdFilter === "player_engine" && !(c.scope === "engine" && c.role === "player")) return false;
+          if (state.cmdFilter === "staff" && c.role !== "staff") return false;
+          if (state.cmdQuery) {
+            const q = state.cmdQuery.toLowerCase();
+            if (!`${c.cmd} ${c.args} ${c.en} ${c.fr}`.toLowerCase().includes(q)) return false;
+          }
+          return true;
+        });
+
+        container.innerHTML = `
+          <div class="filter-bar">
+            ${cats.map((c) => `<button class="filter-tab ${state.cmdFilter === c.id ? "active" : ""}" data-cf="${c.id}">${W.escapeHtml(c.label)}</button>`).join("")}
+            <input class="ore-input" id="cmdSearchInput" type="search" value="${W.escapeHtml(state.cmdQuery)}" placeholder="${isFr ? "Filtrer une commande..." : "Filter commands..."}" style="max-width:230px;" />
+          </div>
+          <div class="cmd-card-grid">
+            ${filtered.map((c) => `
+              <div class="cmd-card">
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
+                  <span class="cmd-syntax">${W.escapeHtml(c.cmd)}</span>
+                  <div>
+                    <span class="badge ${c.role === "staff" ? "badge-crimson" : "badge-green"}">${c.role === "staff" ? "Staff" : (isFr ? "Joueur" : "Player")}</span>
+                    <span class="badge badge-gold">${c.scope === "engine" ? "Engine" : "Extension"}</span>
+                  </div>
+                </div>
+                <div style="font-size:11.5px;color:var(--text-muted);"><strong>${isFr ? "Parametres :" : "Args:"}</strong> <code>${W.escapeHtml(c.args)}</code></div>
+                <div style="font-size:12.5px;color:var(--text-secondary);">${W.escapeHtml(isFr ? c.fr : c.en)}</div>
+              </div>
+            `).join("")}
+          </div>
+        `;
+        container.querySelectorAll("[data-cf]").forEach((b) =>
+          b.addEventListener("click", () => {
+            state.cmdFilter = b.getAttribute("data-cf");
+            renderCommandsWidget(container);
+          })
+        );
+        const inp = container.querySelector("#cmdSearchInput");
+        if (inp) {
+          inp.addEventListener("input", () => {
+            state.cmdQuery = inp.value;
+            renderCommandsWidget(container);
+          });
+        }
+      }
+
+      function renderTaxCalcWidget(container) {
+        const isFr = W.getLang() === "fr";
+        const capMax = state.taxTier === 0 ? 1 : state.taxTier === 1 ? 5 : 9;
+        const connCost = Math.max(0, state.taxConn) * 10;
+        const unitDisc = Math.ceil(10 * Math.pow(2, Math.max(0, state.taxDist) / 1000));
+        const discCost = Math.max(0, state.taxDisc) * unitDisc;
+        const rawTotal = connCost + discCost;
+        const cappedTotal = Math.min(9999, rawTotal);
+
+        container.innerHTML = `
+          <div class="tax-calc-box">
+            <h3 style="margin:0 0 10px;">${isFr ? "Calculateur Interactif de Taxes (Dimanche 18h UTC)" : "Interactive Weekly Land Tax Calculator (Sunday 18:00 UTC)"}</h3>
+            <div class="tax-inputs-grid">
+              <div class="tax-field">
+                <label>${isFr ? "Palier Nation (0-9)" : "Nation Tier (0-9)"}</label>
+                <input class="ore-input" id="txTier" type="number" min="0" max="9" value="${state.taxTier}" />
+              </div>
+              <div class="tax-field">
+                <label>${isFr ? "Parcelles Connectees (10c)" : "Connected Cells (10c)"}</label>
+                <input class="ore-input" id="txConn" type="number" min="0" max="200" value="${state.taxConn}" />
+              </div>
+              <div class="tax-field">
+                <label>${isFr ? "Parcelles Isolees" : "Disconnected Cells"}</label>
+                <input class="ore-input" id="txDisc" type="number" min="0" max="100" value="${state.taxDisc}" />
+              </div>
+              <div class="tax-field">
+                <label>${isFr ? "Distance Capitale (blocs)" : "Distance from Capital"}</label>
+                <input class="ore-input" id="txDist" type="number" min="100" max="15000" step="100" value="${state.taxDist}" />
+              </div>
+            </div>
+            <div class="tax-result-grid">
+              <div class="entity-stat-box"><div class="es-lbl">${isFr ? "Capitale Gratuite Max" : "Free Capital Cap"}</div><div class="es-val">${capMax}</div></div>
+              <div class="entity-stat-box"><div class="es-lbl">${isFr ? "Tarif / Exclave" : "Rate / Exclave"}</div><div class="es-val">${unitDisc} c</div></div>
+              <div class="entity-stat-box"><div class="es-lbl">${isFr ? "Sous-total Brut" : "Raw Subtotal"}</div><div class="es-val">${rawTotal} c</div></div>
+              <div class="entity-stat-box"><div class="es-lbl">${isFr ? "Facture Plafonnee" : "Final Weekly Bill"}</div><div class="es-val">${cappedTotal} c</div></div>
+            </div>
+          </div>
+        `;
+        const bind = (sel, key) => {
+          const el = container.querySelector(sel);
+          if (el) {
+            el.addEventListener("input", () => {
+              state[key] = Number(el.value) || 0;
+              renderTaxCalcWidget(container);
+            });
+          }
+        };
+        bind("#txTier", "taxTier");
+        bind("#txConn", "taxConn");
+        bind("#txDisc", "taxDisc");
+        bind("#txDist", "taxDist");
+      }
+
+      function renderBpTiersWidget(container) {
+        const isFr = W.getLang() === "fr";
+        const filters = [
+          { id: "all", label: isFr ? `Tous (${BP.tiers.length})` : `All (${BP.tiers.length})` },
+          { id: "coins", label: "Coins (400)" },
+          { id: "nationXp", label: "Nation XP (4,200)" },
+          { id: "keys", label: isFr ? "Cles & Rangs" : "Keys & Ranks" },
+          { id: "item", label: "Items" },
+        ];
+        const filtered = BP.tiers.filter((t) => {
+          if (state.tierFilter === "coins" && t.type !== "coins") return false;
+          if (state.tierFilter === "nationXp" && t.type !== "nationXp") return false;
+          if (state.tierFilter === "keys" && !(String(t.itemId || "").startsWith("fe:key_") || t.unlocksRank)) return false;
+          if (state.tierFilter === "item" && (t.type !== "item" || String(t.itemId || "").startsWith("fe:key_"))) return false;
+          if (state.tierQuery) {
+            const q = state.tierQuery.toLowerCase();
+            if (!`${t.tier} ${t.itemId || ""} ${t.en} ${t.fr}`.toLowerCase().includes(q)) return false;
+          }
+          return true;
+        });
+
+        container.innerHTML = `
+          <div class="filter-bar">
+            ${filters.map((f) => `<button class="filter-tab ${state.tierFilter === f.id ? "active" : ""}" data-tf="${f.id}">${W.escapeHtml(f.label)}</button>`).join("")}
+            <input class="ore-input" id="tierSearchInput" type="search" value="${W.escapeHtml(state.tierQuery)}" placeholder="${isFr ? "Filtrer palier ou item..." : "Filter tier or item..."}" style="max-width:220px;" />
+          </div>
+          <div class="table-wrap"><table class="wiki-table">
+            <thead><tr><th>Tier</th><th>${isFr ? "XP Cumulee" : "Total XP"}</th><th>Type</th><th>${isFr ? "Recompense" : "Reward"}</th><th>ID</th></tr></thead>
+            <tbody>
+              ${filtered.map((t) => `<tr>
+                <td><strong>#${t.tier}</strong></td>
+                <td>${(t.tier * BP.xpPerTier).toLocaleString()} XP</td>
+                <td><span class="badge ${t.type === "coins" ? "badge-gold" : t.type === "nationXp" ? "badge-green" : "badge-crimson"}">${W.escapeHtml(t.type)}</span></td>
+                <td><strong>${W.escapeHtml(isFr ? t.fr : t.en)}</strong> ${t.unlocksRank ? `<span class="badge badge-purple">+ ${W.escapeHtml(t.unlocksRank)}</span>` : ""}</td>
+                <td>${t.itemId ? `<code>${W.escapeHtml(t.itemId)}</code>` : "—"}</td>
+              </tr>`).join("")}
+            </tbody>
+          </table></div>
+        `;
+        container.querySelectorAll("[data-tf]").forEach((b) =>
+          b.addEventListener("click", () => {
+            state.tierFilter = b.getAttribute("data-tf");
+            renderBpTiersWidget(container);
+          })
+        );
+        const inp = container.querySelector("#tierSearchInput");
+        if (inp) {
+          inp.addEventListener("input", () => {
+            state.tierQuery = inp.value;
+            renderBpTiersWidget(container);
+          });
+        }
+      }
+
+      function renderBpQuestsWidget(container) {
+        const isFr = W.getLang() === "fr";
+        const filters = [
+          { id: "all", label: isFr ? `Toutes (${BP.quests.length})` : `All (${BP.quests.length})` },
+          { id: "daily-easy", label: "Daily Easy (+25)" },
+          { id: "daily-medium", label: "Daily Med (+50)" },
+          { id: "daily-hard", label: "Daily Hard (+100)" },
+          { id: "weekly", label: "Weekly (10)" },
+        ];
+        const filtered = BP.quests.filter((q) => {
+          if (state.questFilter === "weekly" && q.cadence !== "weekly") return false;
+          if (state.questFilter.startsWith("daily-") && `${q.cadence}-${q.difficulty}` !== state.questFilter) return false;
+          if (state.questQuery) {
+            const s = state.questQuery.toLowerCase();
+            if (!`${q.id} ${q.type} ${q.en} ${q.fr}`.toLowerCase().includes(s)) return false;
+          }
+          return true;
+        });
+
+        container.innerHTML = `
+          <div class="filter-bar">
+            ${filters.map((f) => `<button class="filter-tab ${state.questFilter === f.id ? "active" : ""}" data-qf="${f.id}">${W.escapeHtml(f.label)}</button>`).join("")}
+            <input class="ore-input" id="questSearchInput" type="search" value="${W.escapeHtml(state.questQuery)}" placeholder="${isFr ? "Filtrer quetes..." : "Filter quests..."}" style="max-width:220px;" />
+          </div>
+          <div class="table-wrap"><table class="wiki-table">
+            <thead><tr><th>ID</th><th>Pool</th><th>${isFr ? "Quete" : "Quest"}</th><th>${isFr ? "Type / Cible" : "Action / Target"}</th><th>XP</th></tr></thead>
+            <tbody>
+              ${filtered.map((q) => `<tr>
+                <td><code>${W.escapeHtml(q.id)}</code></td>
+                <td><span class="badge ${q.difficulty === "hard" ? "badge-crimson" : q.difficulty === "medium" ? "badge-gold" : "badge-blue"}">${q.cadence} / ${q.difficulty}</span></td>
+                <td><strong>${W.escapeHtml(isFr ? q.fr : q.en)}</strong></td>
+                <td><code>${W.escapeHtml(q.type)}</code> &bull; <strong>${q.target}</strong></td>
+                <td><strong>+${q.xp} XP</strong></td>
+              </tr>`).join("")}
+            </tbody>
+          </table></div>
+        `;
+        container.querySelectorAll("[data-qf]").forEach((b) =>
+          b.addEventListener("click", () => {
+            state.questFilter = b.getAttribute("data-qf");
+            renderBpQuestsWidget(container);
+          })
+        );
+        const inp = container.querySelector("#questSearchInput");
+        if (inp) {
+          inp.addEventListener("input", () => {
+            state.questQuery = inp.value;
+            renderBpQuestsWidget(container);
+          });
+        }
+      }
+
+      function renderRanksTableWidget(container) {
+        const isFr = W.getLang() === "fr";
+        container.innerHTML = `
+          <div class="table-wrap"><table class="wiki-table">
+            <thead><tr><th>Badge</th><th>ID &amp; Label</th><th>${isFr ? "Plafond Coffre" : "Safe Vault Cap"}</th><th>${isFr ? "Code Cadeau" : "Gift Code"}</th><th>${isFr ? "Obtention" : "How to Unlock"}</th></tr></thead>
+            <tbody>
+              ${CAT.ranks.map((r) => `<tr>
+                <td><img class="rank-badge-img" src="${r.img}" alt="${W.escapeHtml(r.id)}" /></td>
+                <td><strong>${W.escapeHtml(isFr ? r.fr : r.en)}</strong><br><code>${W.escapeHtml(r.id)}</code> ${r.staff ? `<span class="badge badge-crimson">Staff</span>` : ""}</td>
+                <td><strong>${r.limit} Coins</strong></td>
+                <td>${r.redeemable ? `<span class="badge badge-green">${isFr ? "Oui" : "Yes"}</span>` : `<span class="badge">${isFr ? "Non" : "No"}</span>`}</td>
+                <td>${W.escapeHtml(isFr ? r.obtainFr : r.obtainEn)}</td>
+              </tr>`).join("")}
+            </tbody>
+          </table></div>
+        `;
+      }
+
+      function renderCustomPreviewWidget(container) {
+        const isFr = W.getLang() === "fr";
+        const C = CAT.cosmetics;
+        const rk = CAT.ranks.find((r) => r.id === state.prevRank) || CAT.ranks[0];
+        const col = C.nameColors.find((x) => x.id === state.prevColor) || C.nameColors[0];
+        const ch = C.chatStyles.find((x) => x.id === state.prevChat) || C.chatStyles[0];
+        const au = C.auras.find((x) => x.id === state.prevAura) || C.auras[0];
+        const kf = C.killFx.find((x) => x.id === state.prevKill) || C.killFx[0];
+        const totalCost = col.cost + ch.cost + au.cost + kf.cost;
+
+        container.innerHTML = `
+          <div class="custom-preview-box">
+            <div class="custom-preview-stage">
+              <div class="mc-nametag-pill">
+                <img class="rank-badge-img" src="${rk.img}" alt="${W.escapeHtml(rk.id)}" />
+                <span style="color:#cccccc;">[Frontier]</span>
+                <span style="color:${col.hex};font-weight:700;">${W.escapeHtml(state.prevName || "Player")}</span>
+              </div>
+              <div class="mc-chat-line">
+                <img class="rank-badge-img" src="${rk.img}" alt="" />
+                <span style="color:${col.hex};">${W.escapeHtml(state.prevName || "Player")}</span>
+                <span style="color:#777;">:</span>
+                <span style="color:${ch.hex};font-weight:${ch.bold ? "700" : "400"};">${isFr ? "Pret a defendre notre nation !" : "Ready to defend our nation!"}</span>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
+                <span class="badge badge-crimson">${isFr ? "Cout total Combo :" : "Total Unlock Cost:"} ${totalCost} Tokens</span>
+                <span class="badge badge-gold">Aura: ${W.escapeHtml(isFr ? au.fr : au.en)} (${au.cost}T)</span>
+                <span class="badge badge-blue">Kill FX: ${W.escapeHtml(isFr ? kf.fr : kf.en)} (${kf.cost}T)</span>
+              </div>
+            </div>
+
+            <div class="tax-inputs-grid">
+              <div class="tax-field">
+                <label>${isFr ? "Pseudo apercu" : "Preview Name"}</label>
+                <input class="ore-input" id="pvName" type="text" maxlength="16" value="${W.escapeHtml(state.prevName)}" />
+              </div>
+              <div class="tax-field">
+                <label>${isFr ? "Badge de Rang" : "Rank Badge"}</label>
+                <select class="ore-select" id="pvRank">
+                  ${CAT.ranks.map((r) => `<option value="${r.id}" ${r.id === state.prevRank ? "selected" : ""}>${W.escapeHtml(isFr ? r.fr : r.en)}</option>`).join("")}
+                </select>
+              </div>
+              <div class="tax-field">
+                <label>${isFr ? "Couleur Pseudo" : "Name Color"}</label>
+                <select class="ore-select" id="pvColor">
+                  ${C.nameColors.map((x) => `<option value="${x.id}" ${x.id === state.prevColor ? "selected" : ""}>${W.escapeHtml(isFr ? x.fr : x.en)} (${x.cost}T)</option>`).join("")}
+                </select>
+              </div>
+              <div class="tax-field">
+                <label>${isFr ? "Style de Chat" : "Chat Style"}</label>
+                <select class="ore-select" id="pvChat">
+                  ${C.chatStyles.map((x) => `<option value="${x.id}" ${x.id === state.prevChat ? "selected" : ""}>${W.escapeHtml(isFr ? x.fr : x.en)} (${x.cost}T)</option>`).join("")}
+                </select>
+              </div>
+              <div class="tax-field">
+                <label>Aura (0.5s)</label>
+                <select class="ore-select" id="pvAura">
+                  ${C.auras.map((x) => `<option value="${x.id}" ${x.id === state.prevAura ? "selected" : ""}>${W.escapeHtml(isFr ? x.fr : x.en)} (${x.cost}T)</option>`).join("")}
+                </select>
+              </div>
+              <div class="tax-field">
+                <label>Kill FX</label>
+                <select class="ore-select" id="pvKill">
+                  ${C.killFx.map((x) => `<option value="${x.id}" ${x.id === state.prevKill ? "selected" : ""}>${W.escapeHtml(isFr ? x.fr : x.en)} (${x.cost}T)</option>`).join("")}
+                </select>
+              </div>
+            </div>
+          </div>
+        `;
+        const bind = (sel, key) => {
+          const el = container.querySelector(sel);
+          if (el) el.addEventListener(el.tagName === "INPUT" ? "input" : "change", () => { state[key] = el.value; renderCustomPreviewWidget(container); });
+        };
+        bind("#pvName", "prevName");
+        bind("#pvRank", "prevRank");
+        bind("#pvColor", "prevColor");
+        bind("#pvChat", "prevChat");
+        bind("#pvAura", "prevAura");
+        bind("#pvKill", "prevKill");
+      }
+
+      function renderLootboxTablesWidget(container) {
+        const isFr = W.getLang() === "fr";
+        container.innerHTML = `
+          <div class="loot-card-grid">
+            ${CAT.lootboxes.map((lb) => `
+              <div class="loot-card loot-tier-${lb.id}">
+                <div class="loot-head">
+                  <img src="${lb.render3d}" alt="${W.escapeHtml(isFr ? lb.fr : lb.en)}" />
+                  <div>
+                    <h4 style="margin:0 0 4px;font-family:'MinecraftTen',sans-serif;font-size:17px;">${W.escapeHtml(isFr ? lb.fr : lb.en)}</h4>
+                    <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                      <span class="badge badge-crimson">Pass #${W.escapeHtml(lb.passTiers)}</span>
+                      <span class="badge">${W.escapeHtml(lb.keyId)}</span>
+                      ${lb.glint ? `<span class="badge badge-purple">Glint</span>` : ""}
+                    </div>
+                  </div>
+                </div>
+                ${lb.drops.map((d) => `
+                  <div class="prob-row">
+                    <span>${W.escapeHtml(isFr ? d.fr : d.en)}</span>
+                    <strong style="text-align:right;">${d.chance}%</strong>
+                    <div class="prob-bar-track"><div class="prob-bar-fill" style="width:${d.chance * 2.5}%;"></div></div>
+                  </div>
+                `).join("")}
+              </div>
+            `).join("")}
+          </div>
+        `;
+      }
+
+      function renderSidebar() {
+        const el = document.getElementById("wikiSidebar");
+        const lang = W.getLang();
+        let html = "";
+
+        for (const g of NAV_GROUPS) {
+          const items = MODULES.filter((m) => m.group === g.id);
+          if (!items.length) continue;
+          html += `<div class="sidebar-group"><div class="sidebar-group-title">${W.escapeHtml(W.t(g.label))}</div>`;
+          for (const m of items) {
+            const active = m.id === currentPageId ? "active" : "";
+            html += `<button class="nav-item ${active}" data-page="${m.id}"><span>${W.escapeHtml(W.t(m.kicker).replace(/^\d+\.\s*/, ""))} — ${W.escapeHtml(W.t(m.title))}</span></button>`;
+          }
+          html += `</div>`;
+        }
+
+        html += `<div class="sidebar-group"><div class="sidebar-group-title">${lang === "fr" ? "Encyclopedies" : "Encyclopedias"}</div>`;
+        for (const enc of ENCYCLOPEDIAS) {
+          const active = enc.id === currentPageId ? "active" : "";
+          html += `<button class="nav-item ${active}" data-page="${enc.id}"><span>${W.escapeHtml(W.t(enc.label))}</span><span class="nav-count">${enc.count}</span></button>`;
+        }
+        html += `</div>`;
+
+        el.innerHTML = html;
+        el.querySelectorAll(".nav-item").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            navigateTo(btn.getAttribute("data-page"));
+            el.classList.remove("open");
+          });
+        });
+      }
+
+      function renderEncyclopedia(id) {
+        const main = document.getElementById("wikiMain");
+        const isFr = W.getLang() === "fr";
+
+        if (id === "enc-blocks") {
+          main.innerHTML = `
+            <div class="oreui-panel chapter-header">
+              <div class="chapter-kicker">3D BLOCKS ENCYCLOPEDIA</div>
+              <h1>${isFr ? `Blocs 3D Frontier (${CAT.blocks.length})` : `Frontier 3D Blocks Gallery (${CAT.blocks.length})`}</h1>
+              <p>${isFr ? "Cliquez sur n'importe quel bloc 3D pour voir ses statistiques et sa recette de fabrication." : "Click any 3D block render to inspect block metadata and crafting recipes."}</p>
+            </div>
+            <div class="gallery-grid">
+              ${CAT.blocks.map((b) => `
+                <div class="gallery-card" onclick="window.__openInspector('block','${W.escapeHtml(b.shortId)}')">
+                  <div class="render-stage"><img src="${b.render3d}" alt="${W.escapeHtml(W.t(b.name))}" /></div>
+                  <div class="block-mini-title">${W.escapeHtml(W.t(b.name))}</div>
+                  <div class="block-mini-id">${W.escapeHtml(b.id)}</div>
+                  <div style="margin-top:8px;display:flex;gap:5px;flex-wrap:wrap;">
+                    <span class="badge">${W.escapeHtml(b.category)}</span>
+                    ${b.recipes.length ? `<span class="badge badge-green">Craftable</span>` : ""}
+                    ${b.light ? `<span class="badge badge-gold">Light ${b.light}</span>` : ""}
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          `;
+          return;
+        }
+
+        if (id === "enc-items") {
+          const filters = [
+            { id: "all", label: isFr ? `Tous (${CAT.items.length})` : `All (${CAT.items.length})` },
+            { id: "siege", label: isFr ? "Armement & Canons" : "Siege & Cannons" },
+            { id: "keys", label: isFr ? "Cles Lootbox (4)" : "Lootbox Keys (4)" },
+            { id: "world", label: isFr ? "Monde & Moulins" : "World & Windmills" },
+            { id: "restricted", label: isFr ? "Restreints" : "Restricted" },
+          ];
+          const list = CAT.items.filter((it) => state.itemFilter === "all" || it.category === state.itemFilter);
+          main.innerHTML = `
+            <div class="oreui-panel chapter-header">
+              <div class="chapter-kicker">ITEMS &amp; RECIPES</div>
+              <h1>${isFr ? `Objets & Recettes (${CAT.items.length})` : `Items & Crafting Recipes (${CAT.items.length})`}</h1>
+              <p>${isFr ? "Cliquez sur un objet pour ouvrir sa fiche et sa grille de craft officielle." : "Click any item card to inspect its sprite/3D render and crafting recipe."}</p>
+            </div>
+            <div class="filter-bar">
+              ${filters.map((f) => `<button class="filter-tab ${state.itemFilter === f.id ? "active" : ""}" data-if="${f.id}">${W.escapeHtml(f.label)}</button>`).join("")}
+            </div>
+            <div class="gallery-grid">
+              ${list.map((it) => {
+                const img = it.render3d || it.icon;
+                const cls = it.render3d ? "" : "item-sprite";
+                return `
+                  <div class="gallery-card" onclick="window.__openInspector('item','${W.escapeHtml(it.id)}')">
+                    <div class="render-stage">${img ? `<img class="${cls}" src="${img}" alt="${W.escapeHtml(W.t(it.name))}" />` : ""}</div>
+                    <div class="block-mini-title">${W.escapeHtml(W.t(it.name))}</div>
+                    <div class="block-mini-id">${W.escapeHtml(it.id)}</div>
+                    <div style="margin-top:8px;display:flex;gap:5px;flex-wrap:wrap;">
+                      <span class="badge">${W.escapeHtml(it.category)}</span>
+                      ${it.recipes.length ? `<span class="badge badge-green">Recipe</span>` : ""}
+                    </div>
+                  </div>
+                `;
+              }).join("")}
+            </div>
+          `;
+          main.querySelectorAll("[data-if]").forEach((btn) =>
+            btn.addEventListener("click", () => {
+              state.itemFilter = btn.getAttribute("data-if");
+              renderEncyclopedia("enc-items");
+            })
+          );
+          return;
+        }
+
+        if (id === "enc-entities") {
+          const filters = [
+            { id: "all", label: isFr ? `Toutes (${CAT.entities.length})` : `All (${CAT.entities.length})` },
+            { id: "lootbox", label: "Lootboxes (4)" },
+            { id: "siege", label: isFr ? "Canons (3)" : "Cannons (3)" },
+            { id: "world", label: isFr ? "Monde & PNJ" : "World & NPCs" },
+          ];
+          const list = CAT.entities.filter((e) => state.entityFilter === "all" || e.category === state.entityFilter);
+          main.innerHTML = `
+            <div class="oreui-panel chapter-header">
+              <div class="chapter-kicker">ENTITIES &amp; 3D LOOTBOXES</div>
+              <h1>${isFr ? `Entites 3D, Lootboxes & Canons (${CAT.entities.length})` : `3D Entities, Lootboxes & Siege (${CAT.entities.length})`}</h1>
+              <p>${isFr ? "Cliquez sur n'importe quelle entite pour afficher ses details complets et son modele 3D." : "Click any entity card to open its full 3D model view and behavior summary."}</p>
+            </div>
+            <div class="filter-bar">
+              ${filters.map((f) => `<button class="filter-tab ${state.entityFilter === f.id ? "active" : ""}" data-ef="${f.id}">${W.escapeHtml(f.label)}</button>`).join("")}
+            </div>
+            <div class="gallery-grid">
+              ${list.map((e) => `
+                <div class="gallery-card" onclick="window.__openInspector('entity','${W.escapeHtml(e.id)}')">
+                  <div class="render-stage">${e.render3d ? `<img src="${e.render3d}" alt="${W.escapeHtml(W.t(e.name))}" />` : ""}</div>
+                  <div class="block-mini-title">${W.escapeHtml(W.t(e.name))}</div>
+                  <div class="block-mini-id">${W.escapeHtml(e.id)}</div>
+                  <div style="margin-top:8px;display:flex;gap:5px;flex-wrap:wrap;">
+                    <span class="badge">${W.escapeHtml(e.category)}</span>
+                    <span class="badge badge-crimson">${W.escapeHtml(String(e.hp || "—"))}</span>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          `;
+          main.querySelectorAll("[data-ef]").forEach((btn) =>
+            btn.addEventListener("click", () => {
+              state.entityFilter = btn.getAttribute("data-ef");
+              renderEncyclopedia("enc-entities");
+            })
+          );
+        }
+      }
+
+      function renderPage(id) {
+        const main = document.getElementById("wikiMain");
+        const lang = W.getLang();
+        if (id.startsWith("enc-")) {
+          renderEncyclopedia(id);
+          return;
+        }
+
+        const mod = MODULES.find((m) => m.id === id) || MODULES[0];
+        if (!mod) return;
+
+        let featuredHtml = "";
+        const blocks = (mod.featuredBlocks || []).map((sid) => blockByShort[sid]).filter(Boolean);
+        const fItems = (mod.featuredItems || []).map((iid) => CAT.items.find((x) => x.id === iid)).filter(Boolean);
+        if (blocks.length || fItems.length) {
+          featuredHtml = `
+            <div class="wiki-section">
+              <h2><span class="sec-num">3D</span>${lang === "fr" ? "Blocs 3D & Objets Cles (cliquez pour recettes)" : "Featured 3D Blocks & Items (click for recipes)"}</h2>
+              <div class="block-strip">
+                ${blocks.map((b) => `
+                  <div class="block-mini-card" onclick="window.__openInspector('block','${W.escapeHtml(b.shortId)}')">
+                    <img src="${b.render3d}" alt="${W.escapeHtml(W.t(b.name))}" />
+                    <div class="block-mini-title">${W.escapeHtml(W.t(b.name))}</div>
+                    <div class="block-mini-id">${W.escapeHtml(b.id)}</div>
+                  </div>
+                `).join("")}
+                ${fItems.map((it) => `
+                  <div class="block-mini-card" onclick="window.__openInspector('item','${W.escapeHtml(it.id)}')">
+                    <img src="${it.render3d || it.icon}" alt="${W.escapeHtml(W.t(it.name))}" style="${it.render3d ? "" : "width:64px;height:64px;margin:16px 0;"}" />
+                    <div class="block-mini-title">${W.escapeHtml(W.t(it.name))}</div>
+                    <div class="block-mini-id">${W.escapeHtml(it.id)}</div>
+                  </div>
+                `).join("")}
+              </div>
+            </div>
+          `;
+        }
+
+        const sectionsHtml = mod.sections
+          .map((sec, idx) => `
+            <section class="wiki-section" id="sec-${idx}">
+              <h2><span class="sec-num">${String(idx + 1).padStart(2, "0")}</span>${W.escapeHtml(W.t(sec.heading))}</h2>
+              ${W.t(sec.html)}
+              ${sec.dynamicWidget ? `<div id="widget-${sec.dynamicWidget}-${idx}"></div>` : ""}
+            </section>
+          `)
+          .join("");
+
+        const pIdx = PAGE_ORDER.indexOf(mod.id);
+        const prevId = pIdx > 0 ? PAGE_ORDER[pIdx - 1] : null;
+        const nextId = pIdx >= 0 && pIdx < PAGE_ORDER.length - 1 ? PAGE_ORDER[pIdx + 1] : null;
+
+        main.innerHTML = `
+          <div class="oreui-panel chapter-header">
+            <div class="chapter-kicker">${W.escapeHtml(W.t(mod.kicker))}</div>
+            <h1>${W.escapeHtml(W.t(mod.title))}</h1>
+            <p>${W.escapeHtml(W.t(mod.subtitle))}</p>
+          </div>
+          ${featuredHtml}
+          ${sectionsHtml}
+          <div class="chapter-pager">
+            <div>${prevId ? `<button class="oreui-btn oreui-btn-sm" id="btnPrevPage">&larr; ${lang === "fr" ? "Chapitre Precedent" : "Previous Chapter"}</button>` : ""}</div>
+            <div>${nextId ? `<button class="oreui-btn oreui-btn-sm oreui-btn-crimson" id="btnNextPage">${lang === "fr" ? "Chapitre Suivant" : "Next Chapter"} &rarr;</button>` : ""}</div>
+          </div>
+        `;
+
+        mod.sections.forEach((sec, idx) => {
+          if (!sec.dynamicWidget) return;
+          const slot = document.getElementById(`widget-${sec.dynamicWidget}-${idx}`);
+          if (!slot) return;
+          if (sec.dynamicWidget === "commands_table") renderCommandsWidget(slot);
+          else if (sec.dynamicWidget === "tax_calc") renderTaxCalcWidget(slot);
+          else if (sec.dynamicWidget === "bp_tiers") renderBpTiersWidget(slot);
+          else if (sec.dynamicWidget === "bp_quests") renderBpQuestsWidget(slot);
+          else if (sec.dynamicWidget === "ranks_table") renderRanksTableWidget(slot);
+          else if (sec.dynamicWidget === "custom_preview") renderCustomPreviewWidget(slot);
+          else if (sec.dynamicWidget === "lootbox_tables") renderLootboxTablesWidget(slot);
+        });
+
+        const prevBtn = document.getElementById("btnPrevPage");
+        if (prevBtn && prevId) prevBtn.addEventListener("click", () => navigateTo(prevId));
+        const nextBtn = document.getElementById("btnNextPage");
+        if (nextBtn && nextId) nextBtn.addEventListener("click", () => navigateTo(nextId));
+      }
+
+      function navigateTo(pageId) {
+        if (!PAGE_ORDER.includes(pageId)) return;
+        currentPageId = pageId;
+        if (location.hash !== `#${pageId}`) {
+          history.replaceState(null, "", `#${pageId}`);
+        }
+        renderSidebar();
+        renderPage(pageId);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function setupSearch() {
+        const input = document.getElementById("globalSearch");
+        const drop = document.getElementById("searchDropdown");
+
+        const runSearch = () => {
+          const q = input.value.trim().toLowerCase();
+          if (!q) {
+            drop.classList.remove("open");
+            drop.innerHTML = "";
+            return;
+          }
+          const lang = W.getLang();
+          const hits = [];
+
+          for (const m of MODULES) {
+            if (`${m.id} ${m.title.en} ${m.title.fr} ${m.subtitle.en} ${m.subtitle.fr} ${m.searchKeywords || ""}`.toLowerCase().includes(q)) {
+              hits.push({ cat: lang === "fr" ? "Chapitre" : "Chapter", title: W.t(m.title), desc: W.t(m.subtitle), action: () => navigateTo(m.id) });
+            }
+          }
+          for (const c of CAT.commands) {
+            if (`${c.cmd} ${c.args} ${c.en} ${c.fr}`.toLowerCase().includes(q)) {
+              hits.push({ cat: "Command", title: c.cmd, desc: lang === "fr" ? c.fr : c.en, action: () => { state.cmdQuery = c.cmd; state.cmdFilter = "all"; navigateTo("commands-hub"); } });
+            }
+          }
+          for (const r of CAT.ranks) {
+            if (`${r.id} ${r.en} ${r.fr}`.toLowerCase().includes(q)) {
+              hits.push({ cat: "Rank", title: `${r.fr} / ${r.en}`, desc: `Vault limit: ${r.limit} Coins`, action: () => navigateTo("ranks-economy") });
+            }
+          }
+          for (const t of BP.tiers) {
+            if (`${t.tier} ${t.itemId || ""} ${t.en} ${t.fr}`.toLowerCase().includes(q)) {
+              hits.push({ cat: `Pass #${t.tier}`, title: lang === "fr" ? t.fr : t.en, desc: `${t.tier * 100} XP`, action: () => { state.tierQuery = String(t.tier); state.tierFilter = "all"; navigateTo("frontier-pass"); } });
+            }
+          }
+          for (const qu of BP.quests) {
+            if (`${qu.id} ${qu.en} ${qu.fr} ${qu.type}`.toLowerCase().includes(q)) {
+              hits.push({ cat: `Quest (+${qu.xp} XP)`, title: lang === "fr" ? qu.fr : qu.en, desc: `${qu.cadence} / ${qu.difficulty}`, action: () => { state.questQuery = qu.id; state.questFilter = "all"; navigateTo("pass-quests"); } });
+            }
+          }
+          for (const b of CAT.blocks) {
+            if (`${b.id} ${b.name.en} ${b.name.fr}`.toLowerCase().includes(q)) {
+              hits.push({ cat: "3D Block", title: W.t(b.name), desc: b.id, action: () => { navigateTo("enc-blocks"); openInspectorModal("block", b.shortId); } });
+            }
+          }
+          for (const it of CAT.items) {
+            if (`${it.id} ${it.name.en} ${it.name.fr}`.toLowerCase().includes(q)) {
+              hits.push({ cat: "Item", title: W.t(it.name), desc: it.id, action: () => { navigateTo("enc-items"); openInspectorModal("item", it.id); } });
+            }
+          }
+          for (const ent of CAT.entities) {
+            if (`${ent.id} ${ent.name.en} ${ent.name.fr}`.toLowerCase().includes(q)) {
+              hits.push({ cat: "3D Entity", title: W.t(ent.name), desc: ent.id, action: () => { navigateTo("enc-entities"); openInspectorModal("entity", ent.id); } });
+            }
+          }
+
+          if (hits.length === 0) {
+            drop.innerHTML = `<div class="search-hit"><span class="search-hit-desc">${lang === "fr" ? "Aucun resultat." : "No results found."}</span></div>`;
+          } else {
+            drop.innerHTML = hits.slice(0, 14).map((h, i) => `
+              <div class="search-hit" data-hit="${i}">
+                <span class="search-hit-cat">${W.escapeHtml(h.cat)}</span>
+                <span class="search-hit-title">${W.escapeHtml(h.title)}</span>
+                <span class="search-hit-desc">${W.escapeHtml(h.desc).slice(0, 120)}</span>
+              </div>
+            `).join("");
+            drop.querySelectorAll("[data-hit]").forEach((el) => {
+              el.addEventListener("click", () => {
+                const idx = Number(el.getAttribute("data-hit"));
+                drop.classList.remove("open");
+                hits[idx]?.action();
+              });
+            });
+          }
+          drop.classList.add("open");
+        };
+
+        input.addEventListener("input", runSearch);
+        document.addEventListener("click", (e) => {
+          if (!input.contains(e.target) && !drop.contains(e.target)) drop.classList.remove("open");
+        });
+        document.addEventListener("keydown", (e) => {
+          if ((e.ctrlKey && e.key.toLowerCase() === "k") || (e.key === "/" && document.activeElement !== input && document.activeElement.tagName !== "INPUT")) {
+            e.preventDefault();
+            input.focus();
+          } else if (e.key === "Escape") {
+            drop.classList.remove("open");
+            document.getElementById("wikiModal").classList.remove("open");
+          }
+        });
+      }
+
+      W.initThemeAndLangControls();
+      document.getElementById("btnMobileMenu").addEventListener("click", () => {
+        document.getElementById("wikiSidebar").classList.toggle("open");
+      });
+      document.getElementById("btnCloseModal").addEventListener("click", () => {
+        document.getElementById("wikiModal").classList.remove("open");
+      });
+      document.getElementById("wikiModal").addEventListener("click", (e) => {
+        if (e.target.id === "wikiModal") e.target.classList.remove("open");
+      });
+      window.addEventListener("frontier:langchange", () => {
+        renderSidebar();
+        renderPage(currentPageId);
+      });
+
+      setupSearch();
+      renderSidebar();
+      renderPage(currentPageId);
+    })();
+  </script>
 </body>
 </html>
