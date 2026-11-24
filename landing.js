@@ -1,6 +1,5 @@
 const SERVER_ADDRESS = 'play.thefrontiermc.net';
 const SERVER_PORT = 19132;
-const STATS_ENDPOINT = `https://api.mcsrvstat.us/bedrock/3/${SERVER_ADDRESS}:${SERVER_PORT}`;
 
 const DISCORD_SERVER_ID = '1202257363747213343';
 const DISCORD_WIDGET_ENDPOINT = `https://discord.com/api/guilds/${DISCORD_SERVER_ID}/widget.json`;
@@ -147,47 +146,6 @@ function setStatValue(id, value) {
     if (el) el.textContent = value;
 }
 
-async function refreshServerStats() {
-    const statusDot = document.getElementById('status-dot');
-    const statusLabel = document.getElementById('status-label');
-    const playerBarFill = document.getElementById('player-bar-fill');
-
-    try {
-        const response = await fetch(STATS_ENDPOINT, { cache: 'no-store' });
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const data = await response.json();
-
-        if (!data || !data.online) throw new Error('offline');
-
-        statusDot.classList.remove('is-offline');
-        statusDot.classList.add('is-online');
-        statusLabel.textContent = 'Online';
-
-        const online = data.players?.online ?? 0;
-        const max = data.players?.max ?? 0;
-
-        setStatValue('stat-players', `${online} / ${max}`);
-        setStatValue('stat-version', data.version || 'Unknown');
-        setStatValue('stat-gamemode', data.gamemode || 'Survival');
-        setStatValue('stat-map', data.map?.clean || 'New World');
-
-        if (playerBarFill && max > 0) {
-            playerBarFill.style.width = `${Math.min(100, (online / max) * 100)}%`;
-        }
-    } catch (err) {
-        statusDot.classList.remove('is-online');
-        statusDot.classList.add('is-offline');
-        statusLabel.textContent = 'Offline';
-
-        setStatValue('stat-players', '--');
-        setStatValue('stat-version', '--');
-        setStatValue('stat-gamemode', '--');
-        setStatValue('stat-map', '--');
-
-        if (playerBarFill) playerBarFill.style.width = '0%';
-    }
-}
-
 async function refreshDiscordStats() {
     const statusDot = document.getElementById('discord-status-dot');
     const statusLabel = document.getElementById('discord-status-label');
@@ -218,8 +176,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setupNavToggle();
     setupHeroBackground();
     setupScreenshotCarousel();
-    refreshServerStats();
     refreshDiscordStats();
-    setInterval(refreshServerStats, 60000);
     setInterval(refreshDiscordStats, 60000);
 });
