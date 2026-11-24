@@ -407,13 +407,20 @@
 
       function renderRanksTableWidget(container) {
         const isFr = W.getLang() === "fr";
+        const statusBadge = (r) => {
+          if (r.status === "staff") return `<span class="badge badge-crimson">Staff</span>`;
+          if (r.status === "command") return `<span class="badge badge-gold">${isFr ? "Commande" : "Command Only"}</span>`;
+          if (r.status === "unavailable") return `<span class="badge">${isFr ? "Indisponible" : "Unavailable"}</span>`;
+          return `<span class="badge badge-green">${isFr ? "Actif" : "Active"}</span>`;
+        };
         container.innerHTML = `
           <div class="table-wrap"><table class="wiki-table">
-            <thead><tr><th>Badge</th><th>ID &amp; Label</th><th>${isFr ? "Plafond Coffre" : "Safe Vault Cap"}</th><th>${isFr ? "Code Cadeau" : "Gift Code"}</th><th>${isFr ? "Obtention" : "How to Unlock"}</th></tr></thead>
+            <thead><tr><th>Badge</th><th>ID &amp; Label</th><th>${isFr ? "Statut" : "Status"}</th><th>${isFr ? "Plafond Coffre" : "Safe Vault Cap"}</th><th>${isFr ? "Code Cadeau" : "Gift Code"}</th><th>${isFr ? "Obtention" : "How to Unlock"}</th></tr></thead>
             <tbody>
               ${CAT.ranks.map((r) => `<tr>
-                <td><img class="rank-badge-img" src="${r.img}" alt="${W.escapeHtml(r.id)}" /></td>
-                <td><strong>${W.escapeHtml(isFr ? r.fr : r.en)}</strong><br><code>${W.escapeHtml(r.id)}</code> ${r.staff ? `<span class="badge badge-crimson">Staff</span>` : ""}</td>
+                <td><span class="rank-badge-wrap"><img class="rank-badge-img" src="${r.img}" alt="${W.escapeHtml(r.id)}" /></span></td>
+                <td><strong>${W.escapeHtml(isFr ? r.fr : r.en)}</strong><br><code>${W.escapeHtml(r.id)}</code></td>
+                <td>${statusBadge(r)}</td>
                 <td><strong>${r.limit} Coins</strong></td>
                 <td>${r.redeemable ? `<span class="badge badge-green">${isFr ? "Oui" : "Yes"}</span>` : `<span class="badge">${isFr ? "Non" : "No"}</span>`}</td>
                 <td>${W.escapeHtml(isFr ? r.obtainFr : r.obtainEn)}</td>

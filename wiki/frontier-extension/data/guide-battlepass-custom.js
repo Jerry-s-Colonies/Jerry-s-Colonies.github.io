@@ -139,8 +139,8 @@ window.FE_GUIDE_MODULES.push(
       {
         heading: { en: "All 14 Server Ranks & Badges", fr: "Tableau Complet des 14 Rangs & Badges" },
         html: {
-          en: `<p>Every badge below is extracted directly from <code>FrontierExtensionRP/textures/ui/ranks/</code> &amp; <code>font/glyph_E5.png</code>:</p>`,
-          fr: `<p>Chaque badge ci-dessous provient directement des assets officiels <code>FrontierExtensionRP</code> :</p>`,
+          en: `<p>Every badge below is extracted directly from the live server's <code>FrontierExtensionRP/font/glyph_E5.png</code> (<code>\\uE500</code>–<code>\\uE511</code>). Note that <strong>CONQUEROR</strong>, <strong>SOVEREIGN</strong>, and <strong>EMPEROR</strong> are currently marked <em>Unavailable</em> in-game, while <strong>FRE-OG</strong> and <strong>FROST</strong> are command-unlock specials.</p>`,
+          fr: `<p>Chaque badge ci-dessous est extrait directement du fichier actif du serveur <code>FrontierExtensionRP/font/glyph_E5.png</code> (<code>\\uE500</code>–<code>\\uE511</code>). A noter que <strong>CONQUEROR</strong>, <strong>SOVEREIGN</strong> et <strong>EMPEROR</strong> sont actuellement marques <em>Indisponibles</em> en jeu, tandis que <strong>FRE-OG</strong> et <strong>FROST</strong> sont des rangs speciaux deblocables par commande.</p>`,
         },
         dynamicWidget: "ranks_table",
       },
