@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Frontier Extension Wiki — The Frontier</title>
+  <link rel="icon" href="../assets/img/frontier_extension_icon.png" type="image/png" />
+  <link rel="stylesheet" href="../assets/css/oreui-wiki.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <a class="brand-link" href="../index.html">
+        <img class="brand-icon" src="../assets/img/frontier_extension_icon.png" alt="Frontier Extension" />
+        <div>
+          <div class="brand-title">FRONTIER EXTENSION</div>
+          <span class="brand-sub" data-en="Wiki Hub Bridge" data-fr="Portail Wiki">Wiki Hub Bridge</span>
+        </div>
+      </a>
+    </div>
+    <div class="topbar-actions">
+      <a class="oreui-btn oreui-btn-sm" href="../index.html" data-en="All Wikis" data-fr="Tous les Wikis">All Wikis</a>
+      <button class="oreui-btn oreui-btn-sm" id="btnLangToggle" type="button">EN / FR [EN]</button>
+      <button class="oreui-btn oreui-btn-sm oreui-btn-info" id="btnThemeToggle" type="button">Light</button>
+    </div>
+  </header>
+
+  <main class="hub-wrap">
+    <section class="oreui-panel hub-hero">
+      <span class="hub-hero-badge" data-en="COMING NEXT" data-fr="BIENTOT DISPONIBLE">COMING NEXT</span>
+      <h1>Frontier Extension Wiki</h1>
+      <p data-en="This portal is reserved for the complete Frontier Extension documentation (recipes, custom items, blocks with 3D renders, and server mechanics). It will be populated right after Jerry's Nations." data-fr="Ce portail est reserve a la documentation complete de Frontier Extension (recettes, items custom, blocs en 3D et mecaniques serveur). Il sera redige juste apres Jerry's Nations.">
+        This portal is reserved for the complete Frontier Extension documentation (recipes, custom items, blocks with 3D renders, and server mechanics). It will be populated right after Jerry's Nations.
+      </p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;">
+        <a class="oreui-btn oreui-btn-primary" href="../jerry-nations/index.html" data-en="Read Jerry's Nations Wiki" data-fr="Lire le Wiki Jerry's Nations">Read Jerry's Nations Wiki</a>
+        <a class="oreui-btn" href="../index.html" data-en="Back to Wiki Hub" data-fr="Retour au Hub">Back to Wiki Hub</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="../assets/js/wiki-core.js"></script>
+  <script>window.FrontierWiki.initThemeAndLangControls();</script>
+</body>
+</html>

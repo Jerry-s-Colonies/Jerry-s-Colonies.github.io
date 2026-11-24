@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jerry's Nations Wiki — The Frontier</title>
+  <link rel="icon" href="../assets/img/jerry_nations_icon.png" type="image/png" />
+  <link rel="stylesheet" href="../assets/css/oreui-wiki.css" />
+</head>
+<body class="theme-jn">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="oreui-btn oreui-btn-sm mobile-menu-btn" id="btnMobileMenu" type="button">Menu</button>
+      <a class="brand-link" href="../index.html">
+        <img class="brand-icon" src="../assets/img/jerry_nations_icon.png" alt="Jerry's Nations" />
+        <div>
+          <div class="brand-title">JERRY'S NATIONS</div>
+          <span class="brand-sub" data-en="The Frontier Wiki • v1.0.4" data-fr="Wiki The Frontier • v1.0.4">The Frontier Wiki • v1.0.4</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="topbar-search">
+      <input
+        id="globalSearch"
+        type="search"
+        autocomplete="off"
+        data-ph-en="Search guides, 3D blocks, items, techs, blueprints, quests..."
+        data-ph-fr="Rechercher guides, blocs 3D, items, recherches, plans, quetes..."
+        placeholder="Search guides, 3D blocks, items, techs, blueprints, quests..."
+      />
+      <span class="search-kbd">Ctrl+K</span>
+      <div class="search-dropdown" id="searchDropdown"></div>
+    </div>
+
+    <div class="topbar-actions">
+      <a class="oreui-btn oreui-btn-sm" href="../index.html" data-en="Hub" data-fr="Hub">Hub</a>
+      <button class="oreui-btn oreui-btn-sm" id="btnLangToggle" type="button">EN / FR [EN]</button>
+      <button class="oreui-btn oreui-btn-sm oreui-btn-info" id="btnThemeToggle" type="button">Light</button>
+    </div>
+  </header>
+
+  <div class="wiki-shell">
+    <aside class="sidebar" id="wikiSidebar"></aside>
+    <main class="wiki-main">
+      <div class="wiki-content-inner" id="wikiMain"></div>
+    </main>
+  </div>
+
+  <!-- 3D Render + Recipe Lightbox Modal -->
+  <div class="modal-backdrop" id="wikiModal">
+    <div class="oreui-panel modal-dialog">
+      <button class="oreui-btn oreui-btn-sm oreui-btn-crimson modal-close" id="btnCloseModal" type="button">X</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <script src="../assets/js/vanilla-icons.js"></script>
+  <script src="../assets/js/wiki-core.js"></script>
+  <script src="data/catalog-generated.js"></script>
+  <script src="data/nation-quests-data.js"></script>
+  <script src="data/guide-nations.js"></script>
+  <script src="data/guide-diplomacy.js"></script>
+  <script src="data/guide-citizens.js"></script>
+  <script src="data/guide-economy.js"></script>
+  <script src="data/guide-warfare.js"></script>
+  <script src="data/entities-rich-data.js"></script>
+  <script src="data/customizer-sheets-b64.js"></script>
+  <script src="js/entity-customizer-3d.js"></script>
+
+  <script>
+    (function () {
+      const W = window.FrontierWiki;
+      const CAT = window.JN_CATALOG || { blocks: [], items: [], entities: [], research: [], structures: [], byId: {} };
+      const ENT_EXTRA = window.JN_ENTITY_EXTRA || {};
+      const MIL_DATA = window.JN_MILITARY_DATA || { grades: [], classes: [], trainingRanks: [], combatStats: [] };
+      const MODULES = window.JN_GUIDE_MODULES || [];
+      const QUESTS = window.JN_NATION_QUESTS || [];
+      let custInitialOpts = { mode: "citizen", gender: "male" };
+
+      const NAV_GROUPS = [
+        { id: "foundations", label: { en: "Nation Foundations", fr: "Fondations de Nation" } },
+        { id: "governance", label: { en: "Diplomacy & Governance", fr: "Diplomatie & Gouvernance" } },
+        { id: "society", label: { en: "Citizens & Society", fr: "Citoyens & Societe" } },
+        { id: "economy", label: { en: "Workstations, Building & Tech", fr: "Stations, Construction & Science" } },
+        { id: "warfare", label: { en: "Military, Raids & Quests", fr: "Armee, Raids & Quetes" } },
+      ];
+
+      const ENCYCLOPEDIAS = [
+        { id: "enc-blocks", label: { en: "3D Blocks Gallery", fr: "Galerie Blocs 3D" }, count: CAT.blocks.length },
+        { id: "enc-items", label: { en: "Items & Crafting", fr: "Objets & Recettes" }, count: CAT.items.length },
+        { id: "enc-entities", label: { en: "Entities & Bestiary", fr: "Entites & Bestiaire" }, count: CAT.entities.length },
+      ];
+
+      const PAGE_ORDER = [...MODULES.map((m) => m.id), ...ENCYCLOPEDIAS.map((e) => e.id)];
+      let currentPageId = (location.hash || "").replace(/^#/, "");
+      if (!PAGE_ORDER.includes(currentPageId)) currentPageId = PAGE_ORDER[0] || "founding-flags";
+
+      // State for interactive filters
+      const state = {
+        blockFilter: "all",
+        itemFilter: "all",
+        entityFilter: "all",
+        structFilter: "all",
+        structQuery: "",
+        resFilter: "all",
+        resQuery: "",
+        questFilter: "all",
+      };
+
+      const blockByShort = Object.fromEntries(CAT.blocks.map((b) => [b.shortId, b]));
+
+      function openInspectorModal(kind, id) {
+        const modal = document.getElementById("wikiModal");
+        const body = document.getElementById("modalBody");
+        const lang = W.getLang();
+
+        if (kind === "entity") {
+          const ent = CAT.entities.find((e) => e.id === id);
+          if (!ent) return;
+          const extra = ENT_EXTRA[ent.id] || {};
+          const title = W.t(ent.name);
+          const roleTxt = extra.roleBadge ? W.t(extra.roleBadge) : ent.category;
+          const traits = extra.traits ? (extra.traits[lang] || extra.traits.en || []) : [];
+          const isKnight = ent.id === "jn:knight_male" || ent.id === "jn:knight_female";
+
+          body.innerHTML = `
+            <div style="display:flex;flex-wrap:wrap;gap:18px;align-items:center;">
+              <div style="width:190px;height:190px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at center, rgba(99,199,77,0.14) 0%, var(--bg-input) 78%);border:2px solid var(--border-dark);border-radius:6px;">
+                ${extra.render3d ? `<img src="${extra.render3d}" alt="${W.escapeHtml(title)}" style="max-width:172px;max-height:172px;image-rendering:pixelated;" />` : ""}
+              </div>
+              <div style="flex:1;min-width:220px;">
+                <div class="chapter-kicker">${W.escapeHtml(roleTxt)}</div>
+                <h2 style="margin:0 0 8px;font-family:'MinecraftTen',sans-serif;color:var(--accent-bright);">${W.escapeHtml(title)}</h2>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;">
+                  <span class="badge badge-green">ID: <code>${W.escapeHtml(ent.id)}</code></span>
+                  <span class="badge">${W.escapeHtml(ent.category)}</span>
+                </div>
+                ${extra.desc ? `<p style="margin:6px 0 0;font-size:13px;color:var(--text-secondary);">${W.escapeHtml(W.t(extra.desc))}</p>` : ""}
+              </div>
+            </div>
+            <div class="entity-stat-grid">
+              <div class="entity-stat-box"><div class="es-lbl">HP</div><div class="es-val">${ent.hp ?? "—"}</div></div>
+              <div class="entity-stat-box"><div class="es-lbl">${lang === "fr" ? "Atq Base" : "Base Atk"}</div><div class="es-val">${ent.attack ?? "—"}</div></div>
+              <div class="entity-stat-box"><div class="es-lbl">${lang === "fr" ? "Vitesse" : "Speed"}</div><div class="es-val">${ent.speed ?? "—"}</div></div>
+              <div class="entity-stat-box"><div class="es-lbl">${lang === "fr" ? "Res. Recul" : "KB Res"}</div><div class="es-val">${ent.knockbackRes ? Math.round(ent.knockbackRes * 100) + "%" : "—"}</div></div>
+            </div>
+            ${traits.length ? `<ul style="margin:8px 0 12px 18px;font-size:13px;color:var(--text-secondary);">${traits.map((tr) => `<li>${W.escapeHtml(tr)}</li>`).join("")}</ul>` : ""}
+            ${ent.loots?.length ? `<div style="margin-bottom:12px;"><strong>${lang === "fr" ? "Butin (Loot) :" : "Loot Drops:"}</strong> ${ent.loots.map((l) => `<code>${W.escapeHtml(l)}</code>`).join(" ")}</div>` : ""}
+            ${isKnight ? `
+              <div class="callout callout-info" style="margin-top:10px;">
+                <div class="callout-title">${lang === "fr" ? "4 Grades & 9 Classes Disponibles" : "4 Military Grades & 9 Available Classes"}</div>
+                <div style="font-size:12.5px;">
+                  <strong>Grades:</strong> ${MIL_DATA.grades.map((g) => `${W.escapeHtml(W.t(g.name))} (${g.hp} HP)`).join(" • ")}<br/>
+                  <strong>Classes:</strong> ${MIL_DATA.classes.map((c) => W.escapeHtml(W.t(c.name))).join(" • ")}
+                </div>
+              </div>
+            ` : ""}
+            ${extra.customizable ? `
+              <div style="margin-top:14px;">
+                <button class="oreui-btn oreui-btn-sm oreui-btn-primary" id="btnLaunchCustModal" type="button">
+                  ${lang === "fr" ? "Ouvrir dans le Configurateur 3D Interactif" : "Open in Live 3D Appearance Customizer"}
+                </button>
+              </div>
+            ` : ""}
+          `;
+          const launchBtn = document.getElementById("btnLaunchCustModal");
+          if (launchBtn && extra.customizable) {
+            launchBtn.addEventListener("click", () => {
+              custInitialOpts = { ...extra.customizable };
+              modal.classList.remove("open");
+              navigateTo("enc-entities");
+              setTimeout(() => {
+                document.getElementById("entityCustomizerSection")?.scrollIntoView({ behavior: "smooth" });
+              }, 80);
+            });
+          }
+          modal.classList.add("open");
+          return;
+        }
+
+        let obj = kind === "block"
+          ? CAT.blocks.find((b) => b.id === id || b.shortId === id)
+          : CAT.items.find((it) => it.id === id || it.shortId === id);
+        if (!obj) obj = CAT.blocks.find((b) => b.id === id) || CAT.items.find((it) => it.id === id);
+        if (!obj) return;
+
+        const imgSrc = obj.render3d || obj.icon || "";
+        const title = W.t(obj.name);
+        const recipes = obj.recipes || [];
+
+        let metaHtml = `<span class="badge badge-gold">ID: <code>${W.escapeHtml(obj.id)}</code></span> `;
+        if (obj.light) metaHtml += `<span class="badge badge-blue">Light: ${obj.light}</span> `;
+        if (obj.mineSeconds !== undefined) metaHtml += `<span class="badge">${lang === "fr" ? "Minage" : "Mine"}: ${obj.mineSeconds}s</span> `;
+        if (obj.blastRes !== undefined) metaHtml += `<span class="badge">${lang === "fr" ? "Res. Explosion" : "Blast Res"}: ${obj.blastRes}</span> `;
+        if (obj.armor) metaHtml += `<span class="badge badge-green">Armor: +${obj.armor}</span> `;
+        if (obj.maxStack !== undefined) metaHtml += `<span class="badge">Stack: ${obj.maxStack}</span> `;
+
+        let recipeHtml = "";
+        if (recipes.length > 0) {
+          recipeHtml = `
+            <h3 style="margin-top:16px;">${lang === "fr" ? "Recette(s) de Fabrication" : "Crafting Recipe(s)"}</h3>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;">
+              ${recipes.slice(0, 4).map((r) => W.renderRecipeHtml(r, CAT, "")).join("")}
+            </div>
+          `;
+        } else {
+          recipeHtml = `<p style="margin-top:14px;color:var(--text-muted);font-size:12.5px;">${
+            lang === "fr"
+              ? "Aucune recette en table de craft (obtenu via quete, drop, ou assistant)."
+              : "No crafting table recipe (obtained via quest, drop, or creation wizard)."
+          }</p>`;
+        }
+
+        body.innerHTML = `
+          <div style="display:flex;flex-wrap:wrap;gap:18px;align-items:center;">
+            <div style="width:180px;height:180px;display:flex;align-items:center;justify-content:center;background:var(--bg-input);border:2px solid var(--border-dark);border-radius:6px;">
+              ${imgSrc ? `<img src="${imgSrc}" alt="${W.escapeHtml(title)}" style="max-width:160px;max-height:160px;image-rendering:pixelated;" />` : ""}
+            </div>
+            <div style="flex:1;min-width:220px;">
+              <div class="chapter-kicker">${obj.render3d ? "3D Isometric Render" : "Item Sprite"}</div>
+              <h2 style="margin:0 0 8px;font-family:'MinecraftTen',sans-serif;">${W.escapeHtml(title)}</h2>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;">${metaHtml}</div>
+            </div>
+          </div>
+          ${recipeHtml}
+        `;
+        modal.classList.add("open");
+      }
+
+      window.__openInspector = openInspectorModal;
+
+      function renderSidebar() {
+        const el = document.getElementById("wikiSidebar");
+        const lang = W.getLang();
+        let html = "";
+
+        for (const g of NAV_GROUPS) {
+          const items = MODULES.filter((m) => m.group === g.id);
+          if (!items.length) continue;
+          html += `<div class="sidebar-group"><div class="sidebar-group-title">${W.escapeHtml(W.t(g.label))}</div>`;
+          for (const m of items) {
+            const active = m.id === currentPageId ? "active" : "";
+            html += `<button class="nav-item ${active}" data-page="${m.id}"><span>${W.escapeHtml(W.t(m.kicker).replace(/^\d+\.\s*/, ""))} — ${W.escapeHtml(W.t(m.title))}</span></button>`;
+          }
+          html += `</div>`;
+        }
+
+        html += `<div class="sidebar-group"><div class="sidebar-group-title">${lang === "fr" ? "Encyclopedies" : "Encyclopedias"}</div>`;
+        for (const enc of ENCYCLOPEDIAS) {
+          const active = enc.id === currentPageId ? "active" : "";
+          html += `<button class="nav-item ${active}" data-page="${enc.id}"><span>${W.escapeHtml(W.t(enc.label))}</span><span class="nav-count">${enc.count}</span></button>`;
+        }
+        html += `</div>`;
+
+        el.innerHTML = html;
+        el.querySelectorAll(".nav-item").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            navigateTo(btn.getAttribute("data-page"));
+            el.classList.remove("open");
+          });
+        });
+      }
+
+      function renderStructuresWidget(container) {
+        const lang = W.getLang();
+        const cats = [
+          { id: "all", label: { en: "All (52)", fr: "Toutes (52)" } },
+          { id: "house", label: { en: "Houses (13)", fr: "Maisons (13)" } },
+          { id: "small_cottage", label: { en: "Small Cottages (13)", fr: "Chaumieres (13)" } },
+          { id: "smeltery", label: { en: "Smelteries (13)", fr: "Fonderies (13)" } },
+          { id: "townhall", label: { en: "Town Halls (13)", fr: "Hotels de Ville (13)" } },
+        ];
+        const filtered = CAT.structures.filter((s) => {
+          if (state.structFilter !== "all" && s.category !== state.structFilter) return false;
+          if (state.structQuery) {
+            const q = state.structQuery.toLowerCase();
+            if (!s.id.includes(q) && !W.t(s.name).toLowerCase().includes(q)) return false;
+          }
+          return true;
+        });
+
+        container.innerHTML = `
+          <div class="filter-bar">
+            ${cats.map((c) => `<button class="filter-tab ${state.structFilter === c.id ? "active" : ""}" data-sf="${c.id}">${W.escapeHtml(W.t(c.label))}</button>`).join("")}
+            <input class="ore-input" id="structSearchInput" type="search" value="${W.escapeHtml(state.structQuery)}" placeholder="${lang === "fr" ? "Filtrer par couleur / nom..." : "Filter by color / name..."}" style="max-width:240px;" />
+          </div>
+          <div class="table-wrap"><table class="wiki-table">
+            <thead><tr><th>Blueprint</th><th>Category</th><th>Size (WxHxL)</th><th>Solid / Mats</th><th>Base Time</th><th>Exact Material List</th></tr></thead>
+            <tbody>
+              ${filtered.map((s) => {
+                const mins = Math.floor(s.baseSeconds / 60);
+                const secs = s.baseSeconds % 60;
+                const matsStr = Object.entries(s.materials).map(([k, v]) => `<code>${k}:${v}</code>`).join(" ");
+                return `<tr>
+                  <td><strong>${W.escapeHtml(W.t(s.name))}</strong><br><span class="badge">${W.escapeHtml(s.itemId)}</span></td>
+                  <td>${W.escapeHtml(s.category)}</td>
+                  <td>${s.dimensions.width}x${s.dimensions.height}x${s.dimensions.length}</td>
+                  <td>${s.totalSolidBlocks} / <strong>${s.totalMaterials}</strong></td>
+                  <td>${mins}m ${secs}s</td>
+                  <td style="min-width:280px;font-size:11.5px;line-height:1.8;">${matsStr}</td>
+                </tr>`;
+              }).join("")}
+            </tbody>
+          </table></div>
+        `;
+        container.querySelectorAll("[data-sf]").forEach((b) =>
+          b.addEventListener("click", () => {
+            state.structFilter = b.getAttribute("data-sf");
+            renderStructuresWidget(container);
+          }),
+        );
+        const inp = container.querySelector("#structSearchInput");
+        if (inp) {
+          inp.addEventListener("input", () => {
+            state.structQuery = inp.value;
+            renderStructuresWidget(container);
+          });
+        }
+      }
+
+      function renderResearchWidget(container) {
+        const lang = W.getLang();
+        const branches = [
+          { id: "all", label: { en: "All (76)", fr: "Toutes (76)" } },
+          { id: "farming", label: { en: "Farming (10)", fr: "Agriculture (10)" } },
+          { id: "construction", label: { en: "Construction (16)", fr: "Construction (16)" } },
+          { id: "diplomacy", label: { en: "Diplomacy (6)", fr: "Diplomatie (6)" } },
+          { id: "economics", label: { en: "Economics (7)", fr: "Economie (7)" } },
+          { id: "research", label: { en: "Research (3)", fr: "Recherche (3)" } },
+          { id: "defense", label: { en: "Defense / Military (25)", fr: "Defense / Armee (25)" } },
+          { id: "misc", label: { en: "Sanitary / Health (9)", fr: "Sanitaire / Sante (9)" } },
+        ];
+        const filtered = CAT.research.filter((r) => {
+          if (state.resFilter !== "all" && r.category !== state.resFilter) return false;
+          if (state.resQuery) {
+            const q = state.resQuery.toLowerCase();
+            if (!r.id.includes(q) && !W.t(r.name).toLowerCase().includes(q) && !W.t(r.desc).toLowerCase().includes(q)) return false;
+          }
+          return true;
+        });
+
+        container.innerHTML = `
+          <div class="filter-bar">
+            ${branches.map((b) => `<button class="filter-tab ${state.resFilter === b.id ? "active" : ""}" data-rf="${b.id}">${W.escapeHtml(W.t(b.label))}</button>`).join("")}
+            <input class="ore-input" id="resSearchInput" type="search" value="${W.escapeHtml(state.resQuery)}" placeholder="${lang === "fr" ? "Filtrer technologies..." : "Filter technologies..."}" style="max-width:240px;" />
+          </div>
+          <div class="table-wrap"><table class="wiki-table">
+            <thead><tr><th>Technology</th><th>Branch</th><th>Cost</th><th>Min Tier</th><th>Prerequisite</th><th>Status</th><th>Effect</th></tr></thead>
+            <tbody>
+              ${filtered.map((r) => `<tr>
+                <td><strong>${W.escapeHtml(W.t(r.name))}</strong><br><code>${W.escapeHtml(r.id)}</code></td>
+                <td>${W.escapeHtml(r.category)}</td>
+                <td><strong>${r.cost} PR</strong></td>
+                <td>Tier ${r.minTier}</td>
+                <td>${r.prerequisite ? `<code>${W.escapeHtml(r.prerequisite)}</code>` : "—"}</td>
+                <td>${r.implemented ? `<span class="badge badge-green">${lang === "fr" ? "Actif" : "Active"}</span>` : `<span class="badge badge-gold">${lang === "fr" ? "Prevu" : "Planned"}</span>`}</td>
+                <td>${W.escapeHtml(W.t(r.desc))}</td>
+              </tr>`).join("")}
+            </tbody>
+          </table></div>
+        `;
+        container.querySelectorAll("[data-rf]").forEach((b) =>
+          b.addEventListener("click", () => {
+            state.resFilter = b.getAttribute("data-rf");
+            renderResearchWidget(container);
+          }),
+        );
+        const inp = container.querySelector("#resSearchInput");
+        if (inp) {
+          inp.addEventListener("input", () => {
+            state.resQuery = inp.value;
+            renderResearchWidget(container);
+          });
+        }
+      }
+
+      function renderNationQuestsWidget(container) {
+        const ranks = ["all", "F", "E", "D", "C", "B", "A", "S"];
+        const filtered = QUESTS.filter((q) => state.questFilter === "all" || q.rank === state.questFilter);
+        container.innerHTML = `
+          <div class="filter-bar">
+            ${ranks.map((r) => `<button class="filter-tab ${state.questFilter === r ? "active" : ""}" data-qf="${r}">${r === "all" ? "All (30)" : "Rank " + r}</button>`).join("")}
+          </div>
+          <div class="table-wrap"><table class="wiki-table">
+            <thead><tr><th>Rank</th><th>Quest</th><th>Objective</th><th>Coins</th><th>Player XP</th><th>Nation XP</th></tr></thead>
+            <tbody>
+              ${filtered.map((q) => `<tr>
+                <td><span class="badge ${q.rank === "S" ? "badge-crimson" : q.rank === "A" ? "badge-gold" : "badge-blue"}">${q.rank}</span></td>
+                <td><strong>${W.escapeHtml(W.t(q.name))}</strong><br><code>${W.escapeHtml(q.id)}</code></td>
+                <td>${W.escapeHtml(W.t(q.obj))}</td>
+                <td><strong>${q.gold} G</strong></td>
+                <td>${q.pxp} XP</td>
+                <td><strong>${q.nxp} XP</strong></td>
+              </tr>`).join("")}
+            </tbody>
+          </table></div>
+        `;
+        container.querySelectorAll("[data-qf]").forEach((b) =>
+          b.addEventListener("click", () => {
+            state.questFilter = b.getAttribute("data-qf");
+            renderNationQuestsWidget(container);
+          }),
+        );
+      }
+
+      function renderEncyclopedia(id) {
+        const main = document.getElementById("wikiMain");
+        const lang = W.getLang();
+
+        if (id === "enc-blocks") {
+          const filters = [
+            { id: "all", label: { en: `All (${CAT.blocks.length})`, fr: `Tous (${CAT.blocks.length})` } },
+            { id: "workstations", label: { en: "Workstations", fr: "Stations" } },
+            { id: "governance", label: { en: "Governance & Society", fr: "Gouvernance & Societe" } },
+            { id: "flagpoles", label: { en: "Flagpoles (14)", fr: "Mats (14)" } },
+            { id: "mailboxes", label: { en: "Mailboxes (16)", fr: "Boites aux Lettres (16)" } },
+          ];
+          const list = CAT.blocks.filter((b) => state.blockFilter === "all" || b.category === state.blockFilter);
+          main.innerHTML = `
+            <div class="oreui-panel chapter-header">
+              <div class="chapter-kicker">3D BLOCKS ENCYCLOPEDIA</div>
+              <h1>${lang === "fr" ? "Galerie des 50 Blocs en Rendu 3D" : "3D Isometric Gallery — All 50 Blocks"}</h1>
+              <p>${lang === "fr" ? "Cliquez sur n'importe quel bloc 3D pour agrandir le modele et afficher sa recette visuelle." : "Click any 3D block render to inspect enlarged geometry, block metadata, and crafting recipes."}</p>
+            </div>
+            <div class="filter-bar">
+              ${filters.map((f) => `<button class="filter-tab ${state.blockFilter === f.id ? "active" : ""}" data-bf="${f.id}">${W.escapeHtml(W.t(f.label))}</button>`).join("")}
+            </div>
+            <div class="gallery-grid">
+              ${list.map((b) => `
+                <div class="gallery-card" onclick="window.__openInspector('block','${W.escapeHtml(b.shortId)}')">
+                  <div class="render-stage"><img src="${b.render3d}" alt="${W.escapeHtml(W.t(b.name))}" loading="lazy" /></div>
+                  <div class="block-mini-title">${W.escapeHtml(W.t(b.name))}</div>
+                  <div class="block-mini-id">${W.escapeHtml(b.id)}</div>
+                  <div style="margin-top:8px;display:flex;gap:5px;flex-wrap:wrap;">
+                    <span class="badge">${W.escapeHtml(b.category)}</span>
+                    ${b.recipes.length ? `<span class="badge badge-green">${lang === "fr" ? "Craftable" : "Craftable"}</span>` : ""}
+                    ${b.light ? `<span class="badge badge-gold">Light ${b.light}</span>` : ""}
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          `;
+          main.querySelectorAll("[data-bf]").forEach((btn) =>
+            btn.addEventListener("click", () => {
+              state.blockFilter = btn.getAttribute("data-bf");
+              renderEncyclopedia("enc-blocks");
+            }),
+          );
+          return;
+        }
+
+        if (id === "enc-items") {
+          const filters = [
+            { id: "all", label: { en: `All (${CAT.items.length})`, fr: `Tous (${CAT.items.length})` } },
+            { id: "crowns", label: { en: "Royal Crowns (12)", fr: "Couronnes (12)" } },
+            { id: "medical", label: { en: "Medical & Remedies", fr: "Medical & Remedes" } },
+            { id: "governance", label: { en: "Flags & Economy", fr: "Drapeaux & Economie" } },
+            { id: "blueprints", label: { en: "Blueprints (54)", fr: "Plans (54)" } },
+            { id: "special", label: { en: "Special & Eggs", fr: "Speciaux & Oeufs" } },
+          ];
+          const list = CAT.items.filter((it) => {
+            if (state.itemFilter === "all") return true;
+            if (state.itemFilter === "special") return it.category === "special" || it.category === "spawn_eggs";
+            return it.category === state.itemFilter;
+          });
+          main.innerHTML = `
+            <div class="oreui-panel chapter-header">
+              <div class="chapter-kicker">ITEMS &amp; CRAFTING</div>
+              <h1>${lang === "fr" ? "Objets, Couronnes 3D & Recettes (84)" : "Items, 3D Crowns & Crafting Recipes (84)"}</h1>
+              <p>${lang === "fr" ? "Cliquez sur un objet pour inspecter son sprite ou modele 3D et sa recette." : "Click any item to inspect its icon or 3D render and visual crafting recipe."}</p>
+            </div>
+            <div class="filter-bar">
+              ${filters.map((f) => `<button class="filter-tab ${state.itemFilter === f.id ? "active" : ""}" data-if="${f.id}">${W.escapeHtml(W.t(f.label))}</button>`).join("")}
+            </div>
+            <div class="gallery-grid">
+              ${list.map((it) => {
+                const img = it.render3d || it.icon;
+                const cls = it.render3d ? "" : "item-sprite";
+                return `
+                  <div class="gallery-card" onclick="window.__openInspector('item','${W.escapeHtml(it.id)}')">
+                    <div class="render-stage">${img ? `<img class="${cls}" src="${img}" alt="${W.escapeHtml(W.t(it.name))}" loading="lazy" />` : ""}</div>
+                    <div class="block-mini-title">${W.escapeHtml(W.t(it.name))}</div>
+                    <div class="block-mini-id">${W.escapeHtml(it.id)}</div>
+                    <div style="margin-top:8px;display:flex;gap:5px;flex-wrap:wrap;">
+                      <span class="badge">${W.escapeHtml(it.category)}</span>
+                      ${it.armor ? `<span class="badge badge-blue">Armor +${it.armor}</span>` : ""}
+                      ${it.recipes.length ? `<span class="badge badge-green">Recipe</span>` : ""}
+                    </div>
+                  </div>
+                `;
+              }).join("")}
+            </div>
+          `;
+          main.querySelectorAll("[data-if]").forEach((btn) =>
+            btn.addEventListener("click", () => {
+              state.itemFilter = btn.getAttribute("data-if");
+              renderEncyclopedia("enc-items");
+            }),
+          );
+          return;
+        }
+
+        if (id === "enc-entities") {
+          const isFr = lang === "fr";
+          const filters = [
+            { id: "all", label: { en: `All (${CAT.entities.length})`, fr: `Toutes (${CAT.entities.length})` } },
+            { id: "citizens", label: { en: "Citizens (3)", fr: "Citoyens (3)" } },
+            { id: "military", label: { en: "Military & Knights (4)", fr: "Armee & Chevaliers (4)" } },
+            { id: "marauders", label: { en: "Marauders & Raid (8)", fr: "Maraudeurs & Raid (8)" } },
+            { id: "utility", label: { en: "Flags & Technical (8)", fr: "Drapeaux & Technique (8)" } },
+          ];
+          const list = CAT.entities.filter((e) => state.entityFilter === "all" || e.category === state.entityFilter);
+          main.innerHTML = `
+            <div class="oreui-panel chapter-header">
+              <div class="chapter-kicker">ENTITIES, SOLDIER CLASSES &amp; 3D CUSTOMIZER</div>
+              <h1>${isFr ? "Entites 3D, Classes de Soldats & Configurateur (23)" : "3D Entities, Soldier Classes & Customizer (23)"}</h1>
+              <p>${isFr ? "Cliquez sur une entite pour ouvrir sa fiche 3D detaillee, testez toutes les tenues Citoyen/Chevalier en 3D et consultez les 4 Grades et 9 Classes militaires." : "Click any entity card to inspect its 3D model & stats, preview all Citizen & Knight skin/outfit patterns in 3D, and explore all 4 Military Grades & 9 Soldier Classes."}</p>
+            </div>
+
+            <section class="wiki-section" id="entityGallerySection">
+              <h2><span class="sec-num">01</span>${isFr ? "Galerie 3D des Entites & Bestiaire (23)" : "3D Entities & Bestiary Gallery (23)"}</h2>
+              <div class="filter-bar">
+                ${filters.map((f) => `<button class="filter-tab ${state.entityFilter === f.id ? "active" : ""}" data-ef="${f.id}">${W.escapeHtml(W.t(f.label))}</button>`).join("")}
+              </div>
+              <div class="gallery-grid">
+                ${list.map((e) => {
+                  const ex = ENT_EXTRA[e.id] || {};
+                  const roleTxt = ex.roleBadge ? W.t(ex.roleBadge) : e.category;
+                  const isSmallSprite = e.id === "jn:marauder_fireball" || e.id === "jn:marauder_firework_bolt";
+                  return `
+                    <div class="gallery-card" onclick="window.__openInspector('entity','${W.escapeHtml(e.id)}')">
+                      <div class="render-stage">
+                        ${ex.render3d ? `<img class="${isSmallSprite ? "item-sprite" : ""}" src="${ex.render3d}" alt="${W.escapeHtml(W.t(e.name))}" />` : ""}
+                      </div>
+                      <div style="font-weight:700;font-size:14px;">${W.escapeHtml(W.t(e.name))}</div>
+                      <div style="font-family:Consolas,monospace;font-size:11px;color:var(--text-muted);margin:2px 0 8px;">${W.escapeHtml(e.id)}</div>
+                      <div style="margin-top:auto;display:flex;gap:5px;flex-wrap:wrap;">
+                        <span class="badge">${W.escapeHtml(roleTxt)}</span>
+                        ${e.hp ? `<span class="badge badge-green">HP ${e.hp}</span>` : ""}
+                        ${e.attack ? `<span class="badge badge-gold">Atk ${e.attack}</span>` : ""}
+                        ${ex.customizable ? `<span class="badge badge-purple">3D Custom</span>` : ""}
+                      </div>
+                    </div>
+                  `;
+                }).join("")}
+              </div>
+            </section>
+
+            <section class="wiki-section" id="entityCustomizerSection">
+              <h2><span class="sec-num">02</span>${isFr ? "Configurateur 3D : Tenues, Peaux & Coiffures (Homme & Femme)" : "Live 3D Customizer: Outfits, Skins & Hairstyles (Male & Female)"}</h2>
+              <p>${isFr ? "Visualisez en temps reel toutes les combinaisons reelles du pack : Citoyen ou Chevalier, Homme ou Femme, 32 peaux ethniques, 16 yeux, 11 coupes x 35 couleurs (385 variantes), 34 hauts masculins regionaux / 45 robes feminines et 4 paires de chaussures." : "Preview every real in-game appearance layer in interactive 3D: Citizen or Knight, Male or Female, 32 biome skin tones, 16 eyes, 11 hairstyles x 35 colors (385 combos), 34 male regional tops / 45 female dresses, and 4 shoes."}</p>
+              <div id="entityCustomizerMount"></div>
+            </section>
+
+            <section class="wiki-section" id="militaryClassesSection">
+              <h2><span class="sec-num">03</span>${isFr ? "Hierarchie Militaire : 4 Grades & 9 Classes de Soldats" : "Military Hierarchy: 4 Grades & 9 Soldier Classes"}</h2>
+              <h3>${isFr ? "1. Les 4 Grades Militaires (Progression & Auras)" : "1. The 4 Military Grades (Stats & Officer Auras)"}</h3>
+              <div class="table-wrap"><table class="wiki-table">
+                <thead><tr><th>Grade</th><th>HP</th><th>Base Atk</th><th>Min Cmdt</th><th>Research Req.</th><th>${isFr ? "Classes Autorisees / Aura Tactique" : "Allowed Classes / Tactical Aura"}</th></tr></thead>
+                <tbody>
+                  ${MIL_DATA.grades.map((g) => `<tr>
+                    <td><strong>${W.escapeHtml(W.t(g.name))}</strong><br><code>${W.escapeHtml(g.id)}</code></td>
+                    <td><span class="badge badge-green">${g.hp} HP</span></td>
+                    <td><span class="badge badge-gold">${g.atk}</span></td>
+                    <td>${g.minCmdt}</td>
+                    <td>${g.research ? `<code>${W.escapeHtml(g.research)}</code>` : (isFr ? "Base (depart)" : "Default")}</td>
+                    <td>${g.classes.length ? g.classes.map((cid) => `<code>${W.escapeHtml(cid)}</code>`).join(" ") : ""} ${g.aura && W.t(g.aura) !== "None" && W.t(g.aura) !== "Aucune" ? `<div style="margin-top:4px;font-size:12px;color:var(--accent-bright);">${W.escapeHtml(W.t(g.aura))}</div>` : ""}</td>
+                  </tr>`).join("")}
+                </tbody>
+              </table></div>
+
+              <h3>${isFr ? "2. Toutes les 9 Classes Tactiques de Soldats" : "2. All 9 Soldier Tactical Classes"}</h3>
+              <div class="military-cards-grid">
+                ${MIL_DATA.classes.map((c) => `
+                  <div class="military-card">
+                    <h4>${W.escapeHtml(W.t(c.name))}</h4>
+                    <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                      <span class="badge badge-gold">${isFr ? "Cout" : "Cost"}: ${c.cost}</span>
+                      ${c.grades.map((gr) => `<span class="badge badge-green">${W.escapeHtml(gr)}</span>`).join("")}
+                      ${c.research ? `<span class="badge badge-purple">${W.escapeHtml(c.research)}</span>` : `<span class="badge">${isFr ? "Sans recherche" : "Starter"}</span>`}
+                    </div>
+                    <p><strong>${isFr ? "Role :" : "Role:"}</strong> ${W.escapeHtml(W.t(c.desc))}</p>
+                    <p><strong>${isFr ? "Combat :" : "Mechanics:"}</strong> ${W.escapeHtml(W.t(c.combat))}</p>
+                  </div>
+                `).join("")}
+              </div>
+
+              <h3>${isFr ? "3. Rangs d'Entrainement (1-5) & Stats Martiales" : "3. Training Ranks (1-5) & Martial Stats"}</h3>
+              <p>${isFr ? "Chaque regiment compte au maximum 10 soldats. Multiplicateur d'XP d'entrainement : Intelligence 1-10 (x1.0), 11-15 (x1.25), 16-20 (x1.50)." : "Max regiment size: 10 soldiers. Training XP multiplier scales with Intelligence: 1-10 (x1.0), 11-15 (x1.25), 16-20 (x1.50)."}</p>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;">
+                <div class="table-wrap" style="margin:0;"><table class="wiki-table">
+                  <thead><tr><th>${isFr ? "Rang d'entrainement" : "Training Rank"}</th><th>${isFr ? "XP Requise" : "XP Required"}</th></tr></thead>
+                  <tbody>
+                    ${MIL_DATA.trainingRanks.map((tr) => `<tr><td>${W.escapeHtml(W.t(tr.label))}</td><td><strong>${tr.xpReq || "MAX"}</strong></td></tr>`).join("")}
+                  </tbody>
+                </table></div>
+                <div class="table-wrap" style="margin:0;"><table class="wiki-table">
+                  <thead><tr><th>${isFr ? "Stat Martiale" : "Martial Stat"}</th><th>${isFr ? "Formule Initiale (depuis Citoyen)" : "Initial Formula (from Citizen Skills)"}</th></tr></thead>
+                  <tbody>
+                    ${MIL_DATA.combatStats.map((st) => `<tr><td><strong>${W.escapeHtml(W.t(st.name))}</strong></td><td><code>${W.escapeHtml(st.formula)}</code></td></tr>`).join("")}
+                  </tbody>
+                </table></div>
+              </div>
+            </section>
+          `;
+
+          main.querySelectorAll("[data-ef]").forEach((btn) =>
+            btn.addEventListener("click", () => {
+              state.entityFilter = btn.getAttribute("data-ef");
+              renderEncyclopedia("enc-entities");
+            }),
+          );
+          if (window.JNEntityCustomizer) {
+            window.JNEntityCustomizer.mount(document.getElementById("entityCustomizerMount"), custInitialOpts);
+          }
+        }
+      }
+
+      function renderPage(id) {
+        const main = document.getElementById("wikiMain");
+        const lang = W.getLang();
+        if (id.startsWith("enc-")) {
+          renderEncyclopedia(id);
+          return;
+        }
+
+        const mod = MODULES.find((m) => m.id === id) || MODULES[0];
+        if (!mod) return;
+
+        let featuredHtml = "";
+        const blocks = (mod.featuredBlocks || []).map((sid) => blockByShort[sid]).filter(Boolean);
+        const fItems = (mod.featuredItems || []).map((iid) => CAT.items.find((x) => x.id === iid)).filter(Boolean);
+        if (blocks.length || fItems.length) {
+          featuredHtml = `
+            <div class="wiki-section">
+              <h2><span class="sec-num">3D</span>${lang === "fr" ? "Blocs 3D & Objets Cles (cliquez pour recettes)" : "Featured 3D Blocks & Items (click for recipes)"}</h2>
+              <div class="block-strip">
+                ${blocks.map((b) => `
+                  <div class="block-mini-card" onclick="window.__openInspector('block','${W.escapeHtml(b.shortId)}')">
+                    <img src="${b.render3d}" alt="${W.escapeHtml(W.t(b.name))}" />
+                    <div class="block-mini-title">${W.escapeHtml(W.t(b.name))}</div>
+                    <div class="block-mini-id">${W.escapeHtml(b.id)}</div>
+                  </div>
+                `).join("")}
+                ${fItems.map((it) => `
+                  <div class="block-mini-card" onclick="window.__openInspector('item','${W.escapeHtml(it.id)}')">
+                    <img src="${it.render3d || it.icon}" alt="${W.escapeHtml(W.t(it.name))}" style="${it.render3d ? "" : "width:64px;height:64px;margin:16px 0;"}" />
+                    <div class="block-mini-title">${W.escapeHtml(W.t(it.name))}</div>
+                    <div class="block-mini-id">${W.escapeHtml(it.id)}</div>
+                  </div>
+                `).join("")}
+              </div>
+            </div>
+          `;
+        }
+
+        const sectionsHtml = mod.sections
+          .map((sec, idx) => `
+            <section class="wiki-section" id="sec-${idx}">
+              <h2><span class="sec-num">${String(idx + 1).padStart(2, "0")}</span>${W.escapeHtml(W.t(sec.heading))}</h2>
+              ${W.t(sec.html)}
+              ${sec.dynamicWidget ? `<div id="widget-${sec.dynamicWidget}-${idx}"></div>` : ""}
+            </section>
+          `)
+          .join("");
+
+        const pIdx = PAGE_ORDER.indexOf(mod.id);
+        const prevId = pIdx > 0 ? PAGE_ORDER[pIdx - 1] : null;
+        const nextId = pIdx >= 0 && pIdx < PAGE_ORDER.length - 1 ? PAGE_ORDER[pIdx + 1] : null;
+
+        main.innerHTML = `
+          <div class="oreui-panel chapter-header">
+            <div class="chapter-kicker">${W.escapeHtml(W.t(mod.kicker))}</div>
+            <h1>${W.escapeHtml(W.t(mod.title))}</h1>
+            <p>${W.escapeHtml(W.t(mod.subtitle))}</p>
+          </div>
+          ${featuredHtml}
+          ${sectionsHtml}
+          <div class="chapter-pager">
+            <div>${prevId ? `<button class="oreui-btn oreui-btn-sm" id="btnPrevPage">&larr; ${lang === "fr" ? "Chapitre Precedent" : "Previous Chapter"}</button>` : ""}</div>
+            <div>${nextId ? `<button class="oreui-btn oreui-btn-sm oreui-btn-primary" id="btnNextPage">${lang === "fr" ? "Chapitre Suivant" : "Next Chapter"} &rarr;</button>` : ""}</div>
+          </div>
+        `;
+
+        // Hydrate dynamic widgets
+        mod.sections.forEach((sec, idx) => {
+          if (!sec.dynamicWidget) return;
+          const slot = document.getElementById(`widget-${sec.dynamicWidget}-${idx}`);
+          if (!slot) return;
+          if (sec.dynamicWidget === "structures") renderStructuresWidget(slot);
+          else if (sec.dynamicWidget === "research") renderResearchWidget(slot);
+          else if (sec.dynamicWidget === "nation_quests") renderNationQuestsWidget(slot);
+        });
+
+        const prevBtn = document.getElementById("btnPrevPage");
+        if (prevBtn && prevId) prevBtn.addEventListener("click", () => navigateTo(prevId));
+        const nextBtn = document.getElementById("btnNextPage");
+        if (nextBtn && nextId) nextBtn.addEventListener("click", () => navigateTo(nextId));
+      }
+
+      function navigateTo(pageId) {
+        if (!PAGE_ORDER.includes(pageId)) return;
+        currentPageId = pageId;
+        if (location.hash !== `#${pageId}`) {
+          history.replaceState(null, "", `#${pageId}`);
+        }
+        renderSidebar();
+        renderPage(pageId);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      // Global search index across chapters, blocks, items, entities, research, structures, quests
+      function setupSearch() {
+        const input = document.getElementById("globalSearch");
+        const drop = document.getElementById("searchDropdown");
+
+        const runSearch = () => {
+          const q = input.value.trim().toLowerCase();
+          if (!q) {
+            drop.classList.remove("open");
+            drop.innerHTML = "";
+            return;
+          }
+          const lang = W.getLang();
+          const hits = [];
+
+          for (const m of MODULES) {
+            const hay = `${m.id} ${m.title.en} ${m.title.fr} ${m.subtitle.en} ${m.subtitle.fr} ${m.searchKeywords || ""}`.toLowerCase();
+            if (hay.includes(q)) {
+              hits.push({
+                cat: lang === "fr" ? "Chapitre" : "Chapter",
+                title: W.t(m.title),
+                desc: W.t(m.subtitle),
+                action: () => navigateTo(m.id),
+              });
+            }
+          }
+          for (const b of CAT.blocks) {
+            if (`${b.id} ${b.name.en} ${b.name.fr}`.toLowerCase().includes(q)) {
+              hits.push({
+                cat: "3D Block",
+                title: W.t(b.name),
+                desc: b.id,
+                action: () => {
+                  navigateTo("enc-blocks");
+                  openInspectorModal("block", b.shortId);
+                },
+              });
+            }
+          }
+          for (const it of CAT.items) {
+            if (`${it.id} ${it.name.en} ${it.name.fr}`.toLowerCase().includes(q)) {
+              hits.push({
+                cat: "Item",
+                title: W.t(it.name),
+                desc: it.id,
+                action: () => {
+                  navigateTo("enc-items");
+                  openInspectorModal("item", it.id);
+                },
+              });
+            }
+          }
+          for (const ent of CAT.entities) {
+            if (`${ent.id} ${ent.name.en} ${ent.name.fr} ${ent.category}`.toLowerCase().includes(q)) {
+              hits.push({
+                cat: "3D Entity",
+                title: W.t(ent.name),
+                desc: ent.id,
+                action: () => {
+                  navigateTo("enc-entities");
+                  openInspectorModal("entity", ent.id);
+                },
+              });
+            }
+          }
+          for (const sc of MIL_DATA.classes) {
+            if (`${sc.id} ${sc.name.en} ${sc.name.fr} ${sc.desc.en} ${sc.desc.fr}`.toLowerCase().includes(q)) {
+              hits.push({
+                cat: "Soldier Class",
+                title: W.t(sc.name),
+                desc: W.t(sc.desc),
+                action: () => {
+                  navigateTo("enc-entities");
+                  setTimeout(() => document.getElementById("militaryClassesSection")?.scrollIntoView({ behavior: "smooth" }), 80);
+                },
+              });
+            }
+          }
+          for (const r of CAT.research) {
+            if (`${r.id} ${r.name.en} ${r.name.fr} ${r.desc.en} ${r.desc.fr}`.toLowerCase().includes(q)) {
+              hits.push({
+                cat: `Tech (${r.cost} RP)`,
+                title: W.t(r.name),
+                desc: W.t(r.desc),
+                action: () => {
+                  state.resQuery = r.id;
+                  state.resFilter = "all";
+                  navigateTo("research-tree");
+                },
+              });
+            }
+          }
+          for (const s of CAT.structures) {
+            if (`${s.id} ${s.name.en} ${s.name.fr} ${s.category}`.toLowerCase().includes(q)) {
+              hits.push({
+                cat: "Blueprint",
+                title: W.t(s.name),
+                desc: `${s.dimensions.width}x${s.dimensions.height}x${s.dimensions.length} (${s.totalMaterials} mats)`,
+                action: () => {
+                  state.structQuery = s.id;
+                  state.structFilter = "all";
+                  navigateTo("construction-blueprints");
+                },
+              });
+            }
+          }
+
+          if (hits.length === 0) {
+            drop.innerHTML = `<div class="search-hit"><span class="search-hit-desc">${lang === "fr" ? "Aucun resultat." : "No results found."}</span></div>`;
+          } else {
+            drop.innerHTML = hits
+              .slice(0, 14)
+              .map((h, i) => `
+                <div class="search-hit" data-hit="${i}">
+                  <span class="search-hit-cat">${W.escapeHtml(h.cat)}</span>
+                  <span class="search-hit-title">${W.escapeHtml(h.title)}</span>
+                  <span class="search-hit-desc">${W.escapeHtml(h.desc).slice(0, 120)}</span>
+                </div>
+              `)
+              .join("");
+            drop.querySelectorAll("[data-hit]").forEach((el) => {
+              el.addEventListener("click", () => {
+                const idx = Number(el.getAttribute("data-hit"));
+                drop.classList.remove("open");
+                hits[idx]?.action();
+              });
+            });
+          }
+          drop.classList.add("open");
+        };
+
+        input.addEventListener("input", runSearch);
+        document.addEventListener("click", (e) => {
+          if (!input.contains(e.target) && !drop.contains(e.target)) {
+            drop.classList.remove("open");
+          }
+        });
+        document.addEventListener("keydown", (e) => {
+          if ((e.ctrlKey && e.key.toLowerCase() === "k") || (e.key === "/" && document.activeElement !== input && document.activeElement.tagName !== "INPUT")) {
+            e.preventDefault();
+            input.focus();
+          } else if (e.key === "Escape") {
+            drop.classList.remove("open");
+            document.getElementById("wikiModal").classList.remove("open");
+          }
+        });
+      }
+
+      // Wire controls & boot
+      W.initThemeAndLangControls();
+      document.getElementById("btnMobileMenu").addEventListener("click", () => {
+        document.getElementById("wikiSidebar").classList.toggle("open");
+      });
+      document.getElementById("btnCloseModal").addEventListener("click", () => {
+        document.getElementById("wikiModal").classList.remove("open");
+      });
+      document.getElementById("wikiModal").addEventListener("click", (e) => {
+        if (e.target.id === "wikiModal") e.target.classList.remove("open");
+      });
+      window.addEventListener("frontier:langchange", () => {
+        renderSidebar();
+        renderPage(currentPageId);
+      });
+
+      setupSearch();
+      renderSidebar();
+      renderPage(currentPageId);
+    })();
+  </script>
+</body>
+</html>

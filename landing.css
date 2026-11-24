@@ -159,6 +159,15 @@ a {
     background: linear-gradient(#f22959, #b31f44);
 }
 
+.oreui-btn-wiki {
+    background: linear-gradient(#e6b84c, #b3801c);
+    border-color: #543a09;
+}
+
+.oreui-btn-wiki:hover {
+    background: linear-gradient(#f2c85e, #c79228);
+}
+
 /* ---------- Top nav ---------- */
 
 .landing-nav {

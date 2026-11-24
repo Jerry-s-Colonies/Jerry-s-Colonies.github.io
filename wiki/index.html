@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Frontier Wiki — Official Documentation Hub</title>
+  <link rel="icon" href="assets/img/jerry_nations_icon.png" type="image/png" />
+  <link rel="stylesheet" href="assets/css/oreui-wiki.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <a class="brand-link" href="./index.html">
+        <img class="brand-icon" src="assets/img/jerry_nations_icon.png" alt="The Frontier" />
+        <div>
+          <div class="brand-title">THE FRONTIER WIKI</div>
+          <span class="brand-sub" data-en="Server Addon Encyclopedia" data-fr="Encyclopedie Officielle du Serveur">Server Addon Encyclopedia</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="topbar-actions">
+      <a class="oreui-btn oreui-btn-sm" href="../" data-en="Main Site" data-fr="Site Principal">Main Site</a>
+      <button class="oreui-btn oreui-btn-sm" id="btnLangToggle" type="button">EN / FR [EN]</button>
+      <button class="oreui-btn oreui-btn-sm oreui-btn-info" id="btnThemeToggle" type="button">Light</button>
+    </div>
+  </header>
+
+  <main class="hub-wrap">
+    <section class="oreui-panel hub-hero">
+      <span class="hub-hero-badge" data-en="THE FRONTIER MC • WIKI HUB" data-fr="THE FRONTIER MC • PORTAIL WIKI">THE FRONTIER MC • WIKI HUB</span>
+      <h1 data-en="Welcome to The Frontier Knowledge Base" data-fr="Bienvenue dans le Wiki Officiel de The Frontier">Welcome to The Frontier Knowledge Base</h1>
+      <p data-en="Choose an addon portal below to explore complete, code-verified mechanics, exact formulas, crafting grids, 3D block renders, technology trees, and combat stats." data-fr="Choisissez un portail d'addon ci-dessous pour consulter toutes les mecaniques verifiees dans le code, formules exactes, crafts visuels, rendus 3D des blocs et statistiques completes.">
+        Choose an addon portal below to explore complete, code-verified mechanics, exact formulas, crafting grids, 3D block renders, technology trees, and combat stats.
+      </p>
+      <div class="hub-stats">
+        <div class="stat-pill"><strong data-en="Server IP:" data-fr="IP Serveur :">Server IP:</strong> <code>play.thefrontiermc.net</code></div>
+        <div class="stat-pill"><strong data-en="Core Addon:" data-fr="Addon Principal :">Core Addon:</strong> <span>Jerry's Nations v1.0.4</span></div>
+        <div class="stat-pill"><strong data-en="Theme:" data-fr="Theme :">Theme:</strong> <span data-en="OreUI Dark / Light" data-fr="OreUI Sombre / Clair">OreUI Dark / Light</span></div>
+        <div class="stat-pill"><strong data-en="Languages:" data-fr="Langues :">Languages:</strong> <span>EN / FR</span></div>
+      </div>
+    </section>
+
+    <section class="portal-grid">
+      <!-- 1. Jerry's Nations -->
+      <article class="oreui-card portal-card portal-live">
+        <div>
+          <div class="portal-head">
+            <img class="portal-icon" src="assets/img/jerry_nations_icon.png" alt="Jerry's Nations" />
+            <div>
+              <span class="portal-status status-live" data-en="LIVE • COMPLETE (v1.0.4)" data-fr="DISPONIBLE • COMPLET (v1.0.4)">LIVE • COMPLETE (v1.0.4)</span>
+              <h2 class="portal-title">Jerry's Nations</h2>
+            </div>
+          </div>
+          <p class="portal-desc" data-en="The foundational civilization &amp; nation engine of The Frontier. Covers Founding, Tiers 0–9, 100x100 Territory Claims, Taxes &amp; Mood, Diplomacy &amp; Organizations, Citizens, Hearths, Food, Diseases, Workstations, 52 Blueprints, 76 Techs, Military, Raids, Bounties &amp; 163 Quests." data-fr="L'addon central de civilisation et de nations du serveur The Frontier. Couvre Fondation, Paliers 0–9, Parcelles 100x100, Impots &amp; Moral, Diplomatie &amp; Organisations, Citoyens, Foyers, Nourriture, Maladies, Stations, 52 Plans, 76 Recherches, Armee, Raids, Primes &amp; 163 Quetes.">
+            The foundational civilization &amp; nation engine of The Frontier. Covers Founding, Tiers 0–9, 100x100 Territory Claims, Taxes &amp; Mood, Diplomacy &amp; Organizations, Citizens, Hearths, Food, Diseases, Workstations, 52 Blueprints, 76 Techs, Military, Raids, Bounties &amp; 163 Quests.
+          </p>
+          <div class="portal-tags">
+            <span class="portal-tag" data-en="15 Full Chapters" data-fr="15 Chapitres Complets">15 Full Chapters</span>
+            <span class="portal-tag" data-en="50 Blocks (3D)" data-fr="50 Blocs (3D)">50 Blocks (3D)</span>
+            <span class="portal-tag" data-en="84 Items &amp; Recipes" data-fr="84 Objets &amp; Crafts">84 Items &amp; Recipes</span>
+            <span class="portal-tag" data-en="23 Entities" data-fr="23 Entites">23 Entities</span>
+            <span class="portal-tag" data-en="76 Techs" data-fr="76 Technologies">76 Techs</span>
+            <span class="portal-tag" data-en="52 Blueprints" data-fr="52 Plans 3D">52 Blueprints</span>
+          </div>
+        </div>
+        <div>
+          <a class="oreui-btn oreui-btn-primary" href="./jerry-nations/index.html" data-en="Open Jerry's Nations Wiki" data-fr="Ouvrir le Wiki Jerry's Nations">Open Jerry's Nations Wiki</a>
+        </div>
+      </article>
+
+      <!-- 2. Frontier Extension -->
+      <article class="oreui-card portal-card portal-soon">
+        <div>
+          <div class="portal-head">
+            <img class="portal-icon" src="assets/img/frontier_extension_icon.png" alt="Frontier Extension" />
+            <div>
+              <span class="portal-status status-soon" data-en="PORTAL READY • COMING NEXT" data-fr="PORTAIL PRET • BIENTOT">PORTAL READY • COMING NEXT</span>
+              <h2 class="portal-title">Frontier Extension</h2>
+            </div>
+          </div>
+          <p class="portal-desc" data-en="Server gameplay extensions, custom progression hooks, regional systems, and The Frontier world mechanics bridging core civilization addons." data-fr="Extensions de gameplay du serveur, mecaniques exclusives The Frontier et passerelles inter-addons.">
+            Server gameplay extensions, custom progression hooks, regional systems, and The Frontier world mechanics bridging core civilization addons.
+          </p>
+          <div class="portal-tags">
+            <span class="portal-tag" data-en="Server Systems" data-fr="Systemes Serveur">Server Systems</span>
+            <span class="portal-tag" data-en="Extension Content" data-fr="Contenu Extension">Extension Content</span>
+          </div>
+        </div>
+        <div>
+          <a class="oreui-btn oreui-btn-gold" href="./frontier-extension/index.html" data-en="View Portal Status" data-fr="Voir le Portail">View Portal Status</a>
+        </div>
+      </article>
+
+      <!-- 3. Jobs & Skills -->
+      <article class="oreui-card portal-card portal-soon">
+        <div>
+          <div class="portal-head">
+            <img class="portal-icon" src="assets/img/jobs_skills_icon.png" alt="Jobs & Skills" />
+            <div>
+              <span class="portal-status status-soon" data-en="PORTAL READY • COMING NEXT" data-fr="PORTAIL PRET • BIENTOT">PORTAL READY • COMING NEXT</span>
+              <h2 class="portal-title">Jobs &amp; Skill Trees</h2>
+            </div>
+          </div>
+          <p class="portal-desc" data-en="Player profession progression (8 Professions, 156 skills): 3D Forge Hammer, Steel Alloy &amp; Plate forging, Hide Tanning, Knight War Seals, Hunter Talismans, and Epic Knights weapon integration." data-fr="Arbres de competences joueurs (8 Metiers, 156 competences) : Marteau de Forge 3D, Acier &amp; Plaques, Tannage, Sceaux de Chevalier, Talismans Chasseur et liaison Epic Knights.">
+            Player profession progression (8 Professions, 156 skills): 3D Forge Hammer, Steel Alloy &amp; Plate forging, Hide Tanning, Knight War Seals, Hunter Talismans, and Epic Knights weapon integration.
+          </p>
+          <div class="portal-tags">
+            <span class="portal-tag" data-en="8 Professions" data-fr="8 Metiers">8 Professions</span>
+            <span class="portal-tag" data-en="156 Skills" data-fr="156 Competences">156 Skills</span>
+            <span class="portal-tag" data-en="3D Minigames" data-fr="Mini-jeux 3D">3D Minigames</span>
+          </div>
+        </div>
+        <div>
+          <a class="oreui-btn oreui-btn-gold" href="./jobs-skills/index.html" data-en="View Portal Status" data-fr="Voir le Portail">View Portal Status</a>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script src="assets/js/wiki-core.js"></script>
+  <script>
+    window.FrontierWiki.initThemeAndLangControls();
+  </script>
+</body>
+</html>
