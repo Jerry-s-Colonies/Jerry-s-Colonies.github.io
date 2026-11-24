@@ -96,16 +96,19 @@ class NationClaims {
         unmined.olMap.addLayer(this.claimsLayer);
 
         const markerSource = new ol.source.Vector();
-        this.markersLayer = new ol.layer.Vector({ source: markerSource, declutter: true });
+        this.markersLayer = new ol.layer.Vector({ source: markerSource });
         this.markersLayer.setZIndex(9000); // Above the grid, below coordinate labels.
         unmined.olMap.addLayer(this.markersLayer);
+        this.labelMeasure = document.createElement('canvas').getContext('2d');
+        unmined.olMap.getView().on('change:resolution', () => this.layoutMarkers());
         unmined.nationClaims = this;
         unmined.updateNationClaims();
         this.createDetailsDialog();
         unmined.olMap.on('singleclick', event => {
-            const nation = unmined.olMap.forEachFeatureAtPixel(
+            const findNation = hitTolerance => unmined.olMap.forEachFeatureAtPixel(
                 event.pixel, feature => feature.get('nation'),
-                { layerFilter: layer => layer === this.markersLayer, hitTolerance: 6 });
+                { layerFilter: layer => layer === this.markersLayer, hitTolerance });
+            const nation = findNation(0) || findNation(6);
             if (nation) this.showDetails(nation);
         });
 
@@ -209,12 +212,123 @@ class NationClaims {
         }
         this.claimsLayer.changed();
         this.markersLayer.setVisible(settings.showMarkers && (settings.showNationFlags || settings.showNationNames));
-        for (const feature of this.markersLayer.getSource().getFeatures()) {
+        this.layoutMarkers();
+    }
+
+    layoutMarkers() {
+        if (!this.settings) return;
+        const view = this.unmined.olMap.getView();
+        const resolution = view.getResolution();
+        if (!Number.isFinite(resolution) || resolution <= 0) return;
+        const maxScale = 0.65 + 0.35 * Math.min(1, Math.max(0, view.getZoom()) / 4);
+        const maxShift = 8;
+        this.labelMeasure.font = 'bold 14px sans-serif';
+        const { showNationFlags, showNationNames } = this.settings;
+        const features = this.markersLayer.getSource().getFeatures()
+            .sort((a, b) => a.get('nation').id.localeCompare(b.get('nation').id));
+        const markers = [];
+        for (const feature of features) {
+            const flag = showNationFlags && feature.get('flagStyle');
+            const name = showNationNames && feature.get('nameStyle');
+            if (!flag && !name) {
+                feature.setStyle([]);
+                continue;
+            }
+            const coordinate = feature.get('anchorCoordinate');
+            markers.push({
+                feature, flag, name, coordinate,
+                x: coordinate[0] / resolution, y: -coordinate[1] / resolution,
+                width: Math.max(flag ? NationClaims.flagWidth : 0,
+                    name ? this.labelMeasure.measureText(feature.get('nation').name).width + 3 : 0) + 4,
+                top: flag ? -NationClaims.flagHeight - 2 : 3,
+                bottom: name ? 21 : 2,
+                scale: maxScale
+            });
+        }
+
+        const overlaps = (a, b) => a.left < b.right && a.right > b.left &&
+            a.top < b.bottom && a.bottom > b.top;
+        const boxAt = (marker, dx, dy) => ({
+            left: marker.x + dx - marker.width * marker.scale / 2,
+            right: marker.x + dx + marker.width * marker.scale / 2,
+            top: marker.y + dy + marker.top * marker.scale,
+            bottom: marker.y + dy + marker.bottom * marker.scale
+        });
+
+        const findPlacement = (marker, placed) => {
+            const initial = boxAt(marker, 0, 0);
+            const xs = [0], ys = [0];
+            for (const other of placed) {
+                xs.push(other.box.left - initial.right - 0.0001, other.box.right - initial.left + 0.0001);
+                ys.push(other.box.top - initial.bottom - 0.0001, other.box.bottom - initial.top + 0.0001);
+            }
+            let best = null;
+            for (const dx of xs) {
+                if (Math.abs(dx) > maxShift) continue;
+                for (const dy of ys) {
+                    const distance = dx * dx + dy * dy;
+                    if (distance > maxShift * maxShift || (best && distance >= best.distance)) continue;
+                    const box = boxAt(marker, dx, dy);
+                    if (placed.every(other => !overlaps(box, other.box))) best = { dx, dy, box, distance };
+                }
+            }
+            return best;
+        };
+
+        // Shrink only crowded markers; never move one more than eight screen pixels.
+        let placed;
+        while (true) {
+            placed = [];
+            let retry = false;
+            for (const marker of markers) {
+                const initial = boxAt(marker, 0, 0);
+                const best = findPlacement(marker, placed);
+                if (!best) {
+                    marker.scale *= 0.8;
+                    for (const other of placed) {
+                        if (overlaps(initial, other.box)) other.marker.scale *= 0.8;
+                    }
+                    retry = true;
+                    break;
+                }
+                placed.push({ marker, ...best });
+            }
+            if (!retry) break;
+        }
+        // Recover space freed by later reductions, prioritizing the smallest labels.
+        for (const current of [...placed].sort((a, b) => a.marker.scale - b.marker.scale)) {
+            const others = placed.filter(item => item !== current);
+            let low = current.marker.scale, high = maxScale;
+            for (let step = 0; step < 12; step++) {
+                current.marker.scale = (low + high) / 2;
+                const best = findPlacement(current.marker, others);
+                if (best) {
+                    low = current.marker.scale;
+                    Object.assign(current, best);
+                } else {
+                    high = current.marker.scale;
+                }
+            }
+            current.marker.scale = low;
+        }
+        for (const { marker, dx, dy } of placed) {
+            const { feature, flag, name, coordinate, scale } = marker;
+            feature.getGeometry().setCoordinates([
+                coordinate[0] + dx * resolution, coordinate[1] - dy * resolution
+            ]);
             const styles = [];
-            if (settings.showNationFlags && feature.get('flagStyle')) styles.push(feature.get('flagStyle'));
-            if (settings.showNationNames) styles.push(feature.get('nameStyle'));
+            if (flag) {
+                flag.getImage().setScale(scale);
+                styles.push(flag);
+            }
+            if (name) {
+                name.getText().setScale(scale);
+                name.getText().setOffsetY(12 * scale);
+                styles.push(name);
+            }
             feature.setStyle(styles);
         }
+        this.markersLayer.changed();
     }
 
     async render(data) {
@@ -263,8 +377,10 @@ class NationClaims {
                 })
             }));
 
+            const anchorCoordinate = this.toView(anchor[0], anchor[1]);
             const marker = new ol.Feature({
-                geometry: new ol.geom.Point(this.toView(anchor[0], anchor[1])),
+                geometry: new ol.geom.Point(anchorCoordinate),
+                anchorCoordinate,
                 nation,
                 flagStyle: flagUrl ? styles[0] : null,
                 nameStyle: styles[styles.length - 1]

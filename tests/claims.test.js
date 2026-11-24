@@ -18,6 +18,7 @@ async function setup(nation = publishedNation, savedSettings = {}) {
         addEventListener(name, callback) { this.events[name] = callback; }
         showModal() { this.open = true; }
         close() { this.open = false; }
+        getContext() { return { measureText: text => ({ width: text.length * 8 }) }; }
     }
     class VectorSource {
         constructor() { this.features = []; }
@@ -26,7 +27,7 @@ async function setup(nation = publishedNation, savedSettings = {}) {
         getFeatures() { return this.features; }
     }
     class VectorLayer {
-        constructor({ source }) { this.source = source; }
+        constructor({ source, declutter }) { this.source = source; this.declutter = declutter; }
         getSource() { return this.source; }
         setZIndex() {}
         setVisible(value) { this.visible = value; }
@@ -35,10 +36,21 @@ async function setup(nation = publishedNation, savedSettings = {}) {
     class Feature {
         constructor(properties) { this.properties = properties; }
         get(name) { return this.properties[name]; }
+        getGeometry() { return this.properties.geometry; }
         setStyle(style) { this.style = style; }
     }
     class Style {
         constructor(options) { Object.assign(this, options); }
+        getImage() { return this.image; }
+        getText() { return this.text; }
+        setScale(scale) { this.scale = scale; }
+        setFont(font) { this.font = font; }
+        setOffsetY(offset) { this.offsetY = offset; }
+    }
+    class Geometry {
+        constructor(coordinates) { this.coordinates = coordinates; }
+        getCoordinates() { return this.coordinates; }
+        setCoordinates(coordinates) { this.coordinates = coordinates; }
     }
     class Color {
         constructor(options) { Object.assign(this, options); }
@@ -49,12 +61,20 @@ async function setup(nation = publishedNation, savedSettings = {}) {
         showTerritories: true, territoryOpacity: 0.22, ...savedSettings
     };
     const listeners = {};
+    const viewListeners = {};
+    const view = {
+        zoom: 0, resolution: 64,
+        on(name, callback) { viewListeners[name] = callback; },
+        getZoom() { return this.zoom; },
+        getResolution() { return this.resolution; }
+    };
     const storage = new Map();
     let response = { cellSize: 100, nations: [nation] };
     const unmined = {
         updateNationClaims() { this.nationClaims.updateSettings(settings); },
         olMap: {
             addLayer() {},
+            getView() { return view; },
             on(name, callback) { listeners[name] = callback; },
             forEachFeatureAtPixel(pixel, callback, options) {
                 assert.equal(options.layerFilter(unmined.nationClaims.markersLayer), true);
@@ -73,7 +93,7 @@ async function setup(nation = publishedNation, savedSettings = {}) {
         ol: {
             source: { Vector: VectorSource }, layer: { Vector: VectorLayer }, Feature,
             style: { Style, Fill: Color, Stroke: Color, Icon: Style, Text: Style },
-            geom: { Point: Style, Polygon: Style },
+            geom: { Point: Geometry, Polygon: Geometry, LineString: Geometry },
             proj: { transform: coordinates => coordinates }
         }
     });
@@ -81,7 +101,7 @@ async function setup(nation = publishedNation, savedSettings = {}) {
     vm.runInContext("NationClaims.composeFlag = async () => 'data:image/png;base64,test'; var claims = new NationClaims(unmined);", context);
     await new Promise(resolve => setImmediate(resolve));
     return {
-        claims: context.claims, settings, listeners, storage,
+        claims: context.claims, settings, listeners, storage, view, viewListeners, unmined,
         refresh: async next => { response = next; await context.claims.refresh(); }
     };
 }
@@ -169,4 +189,78 @@ test('already bright nation text colors stay unchanged', async () => {
         const marker = claims.markersLayer.getSource().getFeatures()[0];
         assert.equal(marker.get('nameStyle').text.fill.color, color);
     }
+});
+
+test('crowded nations shrink and stay close to their capitals without overlapping', async () => {
+    const { claims, refresh, settings, view, viewListeners } = await setup();
+    const nations = Array.from({ length: 5 }, (_, i) => ({
+        ...publishedNation, id: `nation-${i}`, name: `Nation ${i}`
+    }));
+    await refresh({ cellSize: 100, nations });
+    const markers = claims.markersLayer.getSource().getFeatures();
+    assert.notEqual(claims.markersLayer.declutter, true);
+
+    let initialPositions;
+    for (const [zoom, resolution] of [[0, 64], [4, 4], [6, 1], [0, 64]]) {
+        view.zoom = zoom;
+        view.resolution = resolution;
+        viewListeners['change:resolution']();
+        const rectangles = markers.map(marker => {
+            const flag = marker.get('flagStyle').image;
+            const text = marker.get('nameStyle').text;
+            assert.ok(marker.style.includes(marker.get('flagStyle')));
+            assert.ok(marker.style.includes(marker.get('nameStyle')));
+            assert.equal(text.scale, flag.scale);
+            assert.equal(text.offsetY, 12 * flag.scale);
+            const [x, y] = marker.getGeometry().getCoordinates();
+            const [anchorX, anchorY] = marker.get('anchorCoordinate');
+            const dx = (x - anchorX) / resolution, up = (y - anchorY) / resolution;
+            assert.ok(Math.hypot(dx, up) <= 8);
+            assert.ok(flag.scale > 0 && flag.scale < 1);
+            const width = (Math.max(64, marker.get('nation').name.length * 8 + 3) + 4) * flag.scale;
+            return { left: dx - width / 2, right: dx + width / 2,
+                top: -up - 42 * flag.scale, bottom: -up + 21 * flag.scale };
+        });
+        for (let i = 0; i < rectangles.length; i++) {
+            for (let j = 0; j < i; j++) {
+                const a = rectangles[i], b = rectangles[j];
+                assert.ok(a.right <= b.left || a.left >= b.right || a.bottom <= b.top || a.top >= b.bottom);
+            }
+        }
+        const positions = markers.map(marker => [...marker.getGeometry().getCoordinates()]);
+        if (!initialPositions) initialPositions = positions;
+        else if (zoom === 0) assert.deepEqual(positions, initialPositions);
+    }
+    settings.showNationNames = false;
+    claims.updateSettings(settings);
+    assert.ok(markers.every(marker => marker.style.length === 1 && marker.style[0] === marker.get('flagStyle')));
+    settings.showNationNames = true;
+    settings.showNationFlags = false;
+    claims.updateSettings(settings);
+    assert.ok(markers.every(marker => !marker.style.includes(marker.get('flagStyle'))));
+    settings.showNationNames = false;
+    claims.updateSettings(settings);
+    assert.ok(markers.every(marker => marker.style.length === 0));
+});
+
+test('isolated nations retain their normal size and exact capital position', async () => {
+    const { claims, view, viewListeners } = await setup();
+    view.zoom = 6;
+    view.resolution = 1;
+    viewListeners['change:resolution']();
+    const marker = claims.markersLayer.getSource().getFeatures()[0];
+    assert.equal(marker.get('flagStyle').image.scale, 1);
+    assert.deepEqual(marker.getGeometry().getCoordinates(), marker.get('anchorCoordinate'));
+});
+
+test('clicks prefer an exact marker hit over nearby markers', async () => {
+    const { claims, listeners, unmined } = await setup();
+    const tolerances = [];
+    unmined.olMap.forEachFeatureAtPixel = (pixel, callback, options) => {
+        tolerances.push(options.hitTolerance);
+        return callback({ get: () => ({ ...publishedNation, name: options.hitTolerance ? 'Nearby' : 'Exact' }) });
+    };
+    listeners.singleclick({ pixel: [0, 0] });
+    assert.equal(claims.detailsTitle.textContent, 'Exact');
+    assert.deepEqual(tolerances, [0]);
 });
