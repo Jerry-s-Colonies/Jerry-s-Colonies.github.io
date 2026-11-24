@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Epic Knights Frontier Wiki — The Frontier</title>
+  <link rel="icon" href="../assets/img/epic_knights_icon.png" type="image/png" />
+  <link rel="stylesheet" href="../assets/css/oreui-wiki.css" />
+</head>
+<body class="theme-knights">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="oreui-btn oreui-btn-sm mobile-menu-btn" id="btnMobileMenu" type="button">Menu</button>
+      <a class="brand-link" href="../index.html">
+        <img class="brand-icon" src="../assets/img/epic_knights_icon.png" alt="Epic Knights Frontier" />
+        <div>
+          <div class="brand-title">EPIC KNIGHTS FRONTIER</div>
+          <span class="brand-sub" data-en="The Frontier Edition • Rebalanced v1.0.0" data-fr="Edition The Frontier • Reequilibre v1.0.0">The Frontier Edition • Rebalanced v1.0.0</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="topbar-search">
+      <input
+        id="globalSearch"
+        type="search"
+        autocomplete="off"
+        data-ph-en="Search 58 armor sets, 1,332 armors, 302 weapons, steel plates..."
+        data-ph-fr="Rechercher 58 sets, 1 332 armures, 302 armes, plaques d'acier..."
+        placeholder="Search 58 armor sets, 1,332 armors, 302 weapons, steel plates..."
+      />
+      <span class="search-kbd">Ctrl+K</span>
+      <div class="search-dropdown" id="searchDropdown"></div>
+    </div>
+
+    <div class="topbar-actions">
+      <a class="oreui-btn oreui-btn-sm" href="../index.html" data-en="Hub" data-fr="Hub">Hub</a>
+      <button class="oreui-btn oreui-btn-sm" id="btnLangToggle" type="button">EN / FR [EN]</button>
+      <button class="oreui-btn oreui-btn-sm oreui-btn-info" id="btnThemeToggle" type="button">Light</button>
+    </div>
+  </header>
+
+  <div class="wiki-shell">
+    <aside class="sidebar" id="wikiSidebar"></aside>
+    <main class="wiki-main">
+      <div class="wiki-content-inner" id="wikiMain"></div>
+    </main>
+  </div>
+
+  <!-- 3D Viewer + Multi-Variant Recipe Inspector Modal -->
+  <div class="modal-backdrop" id="wikiModal">
+    <div class="oreui-panel modal-dialog" style="max-width:780px;">
+      <button class="oreui-btn oreui-btn-sm oreui-btn-crimson modal-close" id="btnCloseModal" type="button">X</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <script src="../assets/js/vanilla-icons.js"></script>
+  <script src="../assets/js/wiki-core.js"></script>
+  <script src="data/ek-geometries.js"></script>
+  <script src="data/ek-catalog.js"></script>
+  <script src="data/guide-ek.js"></script>
+  <script src="js/ek-armor-3d.js"></script>
+
+  <script>
+    (function () {
+      const W = window.FrontierWiki;
+      const CAT = window.EK_CATALOG || { stats: {}, sets: [], armorFamilies: [], armorsById: {}, weapons: [], bows: [], materials: [], displayBlocks: [], byId: {} };
+      const MODULES = window.EK_GUIDE_MODULES || [];
+
+      const ENCYCLOPEDIAS = [
+        { id: "enc-sets", label: { en: "Complete Armor Sets 3D", fr: "Sets Complets d'Armures 3D" }, count: CAT.sets.length },
+        { id: "enc-armors", label: { en: "All Individual Armors 3D", fr: "Toutes Armures Individuelles 3D" }, count: CAT.armorFamilies.length },
+        { id: "enc-wardrobe", label: { en: "3D Knight Wardrobe Studio", fr: "Atelier Chevalier 3D" }, count: 4 },
+        { id: "enc-weapons", label: { en: "Weapons, Bows & Materials", fr: "Armes, Arcs & Materiaux" }, count: (CAT.weapons.length + CAT.bows.length + CAT.materials.length) },
+      ];
+
+      const PAGE_ORDER = [...MODULES.map((m) => m.id), ...ENCYCLOPEDIAS.map((e) => e.id)];
+      let currentPageId = (location.hash || "").replace(/^#/, "");
+      if (!PAGE_ORDER.includes(currentPageId)) currentPageId = "ek-overview";
+
+      const TIER_LABEL = {
+        leather: { en: "T1 Leather/Cloth", fr: "T1 Cuir/Tissu", cls: "" },
+        iron: { en: "T2 Iron/Mail", fr: "T2 Fer/Maille", cls: "badge-gold" },
+        diamond: { en: "T3 Diamond Plate", fr: "T3 Plate Diamant", cls: "badge-blue" },
+        netherite: { en: "T4 Netherite", fr: "T4 Netherite", cls: "badge-crimson" },
+      };
+
+      const state = {
+        setCulture: "all",
+        setTier: "all",
+        setSearch: "",
+        armorSlot: "all",
+        armorTier: "all",
+        armorSearch: "",
+        armorPage: 0,
+        weapTab: "weapons",
+        weapTier: "all",
+        weapSearch: "",
+        weapPage: 0,
+        dispSearch: "",
+        wardrobePreset: "gothic",
+        wardrobePieces: { ...(CAT.sets[0]?.pieces || {}) },
+        wardrobeNetherite: false,
+      };
+
+      let modalViewer = null;
+      let wardrobeViewer = null;
+
+      function tierBadge(tier) {
+        const info = TIER_LABEL[tier] || { en: tier, fr: tier, cls: "" };
+        return `<span class="badge ${info.cls}">${W.escapeHtml(W.t(info))}</span>`;
+      }
+
+      function closeModal() {
+        document.getElementById("wikiModal")?.classList.remove("open");
+        if (modalViewer) { modalViewer.destroy(); modalViewer = null; }
+      }
+
+      function openSetModal(setId) {
+        const s = CAT.sets.find((x) => x.id === setId);
+        if (!s) return;
+        const modal = document.getElementById("wikiModal");
+        const body = document.getElementById("modalBody");
+        const lang = W.getLang();
+        if (modalViewer) { modalViewer.destroy(); modalViewer = null; }
+
+        const piecesList = ["head", "chest", "legs", "feet"]
+          .map((sl) => ({ slot: sl, p: s.pieces[sl] ? CAT.armorsById[s.pieces[sl]] : null }))
+          .filter((x) => x.p);
+
+        body.innerHTML = `
+          <div style="display:grid;grid-template-columns:250px minmax(0,1fr);gap:18px;align-items:start;">
+            <div>
+              <div class="ek-viewer-box" id="modalViewerHost" style="min-height:280px;"></div>
+              <div class="ek-viewer-controls">
+                <button class="oreui-btn oreui-btn-sm" data-mv-yaw="28" type="button">3/4</button>
+                <button class="oreui-btn oreui-btn-sm" data-mv-yaw="0" type="button">${lang === "fr" ? "Face" : "Front"}</button>
+                <button class="oreui-btn oreui-btn-sm" data-mv-yaw="90" type="button">${lang === "fr" ? "Profil" : "Side"}</button>
+                <button class="oreui-btn oreui-btn-sm" data-mv-yaw="180" type="button">${lang === "fr" ? "Dos" : "Back"}</button>
+              </div>
+            </div>
+            <div>
+              <div class="chapter-kicker">${W.escapeHtml(s.culture)}</div>
+              <h2 style="margin:0 0 8px;font-family:'MinecraftTen',sans-serif;color:var(--accent-bright);">${W.escapeHtml(W.t(s.name))}</h2>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;">
+                ${tierBadge(s.tier)}
+                <span class="badge">${lang === "fr" ? "Protection Set" : "Set Protection"}: <strong>+${s.totalProtection}</strong></span>
+                <span class="badge">${lang === "fr" ? "Durabilite Totale" : "Total Durability"}: ${s.totalDurability}</span>
+                ${s.hasNetherite ? `<span class="badge badge-crimson">Netherite Upgradeable</span>` : ""}
+              </div>
+              <button class="oreui-btn oreui-btn-sm oreui-btn-steel" id="btnSendSetWardrobe" type="button" style="margin-bottom:12px;">
+                ${lang === "fr" ? "Essayer ce Set dans l'Atelier 3D" : "Load Set in 3D Wardrobe"}
+              </button>
+
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                ${piecesList.map(({ slot, p }) => `
+                  <div class="oreui-card" style="padding:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                    ${p.icon ? `<img src="${p.icon}" style="width:32px;height:32px;image-rendering:pixelated;" />` : ""}
+                    <div style="flex:1;min-width:140px;">
+                      <strong style="color:var(--accent-bright);font-size:13px;">${W.escapeHtml(p.name)}</strong>
+                      <div style="font-size:11px;color:var(--text-muted);">${slot.toUpperCase()} • Prot +${p.prot} • Dur ${p.dur} • <code>${W.escapeHtml(p.id)}</code></div>
+                    </div>
+                  </div>
+                `).join("")}
+              </div>
+            </div>
+          </div>
+
+          <h3 style="margin:16px 0 8px;font-family:'MinecraftTen',sans-serif;color:var(--accent-bright);">
+            ${lang === "fr" ? "Recettes du Set Complet" : "Full Set Crafting Recipes"}
+          </h3>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            ${piecesList.map(({ p }) => `
+              <div>
+                <div style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:4px;">${W.escapeHtml(p.name)}</div>
+                ${p.recipes.length
+                  ? `<div style="display:flex;flex-wrap:wrap;gap:8px;">${p.recipes.map((r) => W.renderRecipeHtml(r, CAT, "")).join("")}</div>`
+                  : `<span style="font-size:12px;color:var(--text-muted);">${lang === "fr" ? "Aucune recette en table." : "No crafting table recipe."}</span>`}
+              </div>
+            `).join("")}
+          </div>
+        `;
+
+        modal.classList.add("open");
+        const host = body.querySelector("#modalViewerHost");
+        modalViewer = window.EKArmor3D.createViewer(host, { width: 220, height: 270 });
+        modalViewer.setPieces(piecesList.map((x) => x.p), s.render3d);
+
+        body.querySelectorAll("[data-mv-yaw]").forEach((b) => {
+          b.addEventListener("click", () => modalViewer?.setYaw(Number(b.getAttribute("data-mv-yaw"))));
+        });
+        body.querySelector("#btnSendSetWardrobe")?.addEventListener("click", () => {
+          state.wardrobePreset = s.id;
+          state.wardrobePieces = { ...s.pieces };
+          closeModal();
+          navigateTo("enc-wardrobe");
+        });
+      }
+
+      function openArmorPieceModal(familyKey, selectedVariantId) {
+        const fam = CAT.armorFamilies.find((f) => f.key === familyKey);
+        if (!fam) return;
+        const vid = selectedVariantId && CAT.armorsById[selectedVariantId] ? selectedVariantId : fam.primaryId;
+        const p = CAT.armorsById[vid];
+        if (!p) return;
+
+        const modal = document.getElementById("wikiModal");
+        const body = document.getElementById("modalBody");
+        const lang = W.getLang();
+        if (modalViewer) { modalViewer.destroy(); modalViewer = null; }
+
+        body.innerHTML = `
+          <div style="display:grid;grid-template-columns:230px minmax(0,1fr);gap:18px;align-items:start;">
+            <div>
+              <div class="ek-viewer-box" id="modalViewerHost" style="min-height:245px;"></div>
+              <div class="ek-viewer-controls">
+                <button class="oreui-btn oreui-btn-sm" data-mv-yaw="28" type="button">3/4</button>
+                <button class="oreui-btn oreui-btn-sm" data-mv-yaw="0" type="button">${lang === "fr" ? "Face" : "Front"}</button>
+                <button class="oreui-btn oreui-btn-sm" data-mv-yaw="90" type="button">${lang === "fr" ? "Profil" : "Side"}</button>
+                <button class="oreui-btn oreui-btn-sm" data-mv-yaw="180" type="button">${lang === "fr" ? "Dos" : "Back"}</button>
+              </div>
+            </div>
+            <div>
+              <div class="chapter-kicker">SLOT: ${p.slot.toUpperCase()} • ${fam.variants.length} ${lang === "fr" ? "VARIANTES" : "VARIANTS"}</div>
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                ${p.icon ? `<img src="${p.icon}" style="width:40px;height:40px;image-rendering:pixelated;background:var(--bg-input);border:1px solid var(--border-soft);border-radius:4px;padding:3px;" />` : ""}
+                <h2 style="margin:0;font-family:'MinecraftTen',sans-serif;color:var(--accent-bright);">${W.escapeHtml(p.name)}</h2>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;">
+                ${tierBadge(p.tier)}
+                <span class="badge badge-gold">ID: <code>${W.escapeHtml(p.id)}</code></span>
+                <span class="badge">${lang === "fr" ? "Protection" : "Armor"}: +${p.prot}</span>
+                <span class="badge">${lang === "fr" ? "Durabilite" : "Durability"}: ${p.dur}</span>
+                ${p.fire ? `<span class="badge badge-crimson">Fire Resistant</span>` : ""}
+              </div>
+
+              ${fam.variants.length > 1 ? `
+                <div style="margin-bottom:12px;">
+                  <label style="display:block;font-size:11px;font-family:'MinecraftRegular',monospace;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;">
+                    ${lang === "fr" ? "Choisir Couleur / Version Netherite" : "Select Color / Netherite Upgrade"}
+                  </label>
+                  <select class="ore-select" id="modalVariantSelect" style="width:100%;">
+                    ${fam.variants.map((vId) => {
+                      const vp = CAT.armorsById[vId];
+                      return `<option value="${W.escapeHtml(vId)}" ${vId === p.id ? "selected" : ""}>${W.escapeHtml(vp.name)} (${vp.tier})</option>`;
+                    }).join("")}
+                  </select>
+                </div>
+              ` : ""}
+
+              <button class="oreui-btn oreui-btn-sm oreui-btn-steel" id="btnWearPieceWardrobe" type="button">
+                ${lang === "fr" ? `Equiper en [${p.slot.toUpperCase()}] dans l'Atelier 3D` : `Equip in 3D Wardrobe [${p.slot.toUpperCase()}]`}
+              </button>
+            </div>
+          </div>
+
+          <h3 style="margin:16px 0 8px;font-family:'MinecraftTen',sans-serif;color:var(--accent-bright);">
+            ${lang === "fr" ? "Recette(s) de Fabrication / Amelioration" : "Crafting & Smithing Recipe(s)"}
+          </h3>
+          ${p.recipes.length
+            ? `<div style="display:flex;flex-wrap:wrap;gap:10px;">${p.recipes.map((r) => W.renderRecipeHtml(r, CAT, "")).join("")}</div>`
+            : `<p style="color:var(--text-muted);font-size:12.5px;">${lang === "fr" ? "Aucune recette en table de craft pour cette piece." : "No crafting table recipe for this item."}</p>`}
+        `;
+
+        modal.classList.add("open");
+        const host = body.querySelector("#modalViewerHost");
+        modalViewer = window.EKArmor3D.createViewer(host, { width: 210, height: 240 });
+        modalViewer.setPieces([p], fam.render3d);
+
+        body.querySelectorAll("[data-mv-yaw]").forEach((b) => {
+          b.addEventListener("click", () => modalViewer?.setYaw(Number(b.getAttribute("data-mv-yaw"))));
+        });
+        body.querySelector("#modalVariantSelect")?.addEventListener("change", (e) => {
+          openArmorPieceModal(familyKey, e.target.value);
+        });
+        body.querySelector("#btnWearPieceWardrobe")?.addEventListener("click", () => {
+          state.wardrobePieces[p.slot] = p.id;
+          closeModal();
+          navigateTo("enc-wardrobe");
+        });
+      }
+
+      function openItemModal(itemObj) {
+        if (!itemObj) return;
+        const modal = document.getElementById("wikiModal");
+        const body = document.getElementById("modalBody");
+        const lang = W.getLang();
+        if (modalViewer) { modalViewer.destroy(); modalViewer = null; }
+
+        body.innerHTML = `
+          <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center;">
+            <div style="width:120px;height:120px;display:flex;align-items:center;justify-content:center;background:var(--bg-input);border:2px solid var(--border-dark);border-radius:6px;">
+              ${itemObj.icon ? `<img src="${itemObj.icon}" style="width:68px;height:68px;image-rendering:pixelated;" />` : ""}
+            </div>
+            <div style="flex:1;min-width:220px;">
+              <div class="chapter-kicker">${W.escapeHtml((itemObj.arch || "EPIC KNIGHTS").toUpperCase())}</div>
+              <h2 style="margin:0 0 8px;font-family:'MinecraftTen',sans-serif;color:var(--accent-bright);">${W.escapeHtml(itemObj.name)}</h2>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                <span class="badge badge-gold">ID: <code>${W.escapeHtml(itemObj.id)}</code></span>
+                ${itemObj.dmg !== undefined ? `<span class="badge badge-crimson">${lang === "fr" ? "Degats" : "Damage"}: <strong>${itemObj.dmg}</strong></span>` : ""}
+                ${itemObj.dur ? `<span class="badge">${lang === "fr" ? "Durabilite" : "Durability"}: ${itemObj.dur}</span>` : ""}
+                ${itemObj.fire ? `<span class="badge badge-crimson">Fire Resistant</span>` : ""}
+              </div>
+            </div>
+          </div>
+          <h3 style="margin:16px 0 8px;font-family:'MinecraftTen',sans-serif;color:var(--accent-bright);">
+            ${lang === "fr" ? "Recette(s)" : "Recipe(s)"}
+          </h3>
+          ${itemObj.recipes?.length
+            ? `<div style="display:flex;flex-wrap:wrap;gap:10px;">${itemObj.recipes.map((r) => W.renderRecipeHtml(r, CAT, "")).join("")}</div>`
+            : `<p style="color:var(--text-muted);font-size:12.5px;">${
+                itemObj.id === "knights:steel_ingot"
+                  ? (lang === "fr" ? "Obtenu via Fonderie d'Acier 3 zones du Forgeron (JobsSkillsBP : 2 Fer + 2 Fuel au Haut Fourneau)." : "Crafted via JobsSkillsBP Blacksmith 3-Zone Blast Furnace (2 Iron Ingot + 2 Fuel -> 1 Steel Ingot).")
+                  : (lang === "fr" ? "Aucune recette en table de craft." : "No crafting table recipe.")
+              }</p>`}
+        `;
+        modal.classList.add("open");
+      }
+
+      function renderSidebar() {
+        const sb = document.getElementById("wikiSidebar");
+        const lang = W.getLang();
+        let html = `<div class="sidebar-group"><div class="sidebar-group-title">${lang === "fr" ? "Guide & Equilibrage" : "Guide & Rebalance"}</div>`;
+        for (const m of MODULES) {
+          html += `<button class="nav-item ${currentPageId === m.id ? "active" : ""}" data-page="${m.id}"><span>${W.escapeHtml(W.t(m.title).split("—")[0].trim())}</span></button>`;
+        }
+        html += `</div><div class="sidebar-group"><div class="sidebar-group-title">${lang === "fr" ? "Encyclopedies 3D & Crafts" : "3D Armors & Crafting"}</div>`;
+        for (const enc of ENCYCLOPEDIAS) {
+          html += `<button class="nav-item ${currentPageId === enc.id ? "active" : ""}" data-page="${enc.id}"><span>${W.escapeHtml(W.t(enc.label))}</span><span class="nav-count">${enc.count}</span></button>`;
+        }
+        html += `</div>`;
+        sb.innerHTML = html;
+        sb.querySelectorAll(".nav-item[data-page]").forEach((b) => {
+          b.addEventListener("click", () => navigateTo(b.getAttribute("data-page")));
+        });
+      }
+
+      function renderFooterNav() {
+        const idx = PAGE_ORDER.indexOf(currentPageId);
+        const lang = W.getLang();
+        const prevId = idx > 0 ? PAGE_ORDER[idx - 1] : null;
+        const nextId = idx < PAGE_ORDER.length - 1 ? PAGE_ORDER[idx + 1] : null;
+        return `
+          <div class="chapter-nav-footer">
+            ${prevId ? `<button class="oreui-btn" data-nav-page="${prevId}" type="button">&larr; ${lang === "fr" ? "Precedent" : "Previous"}</button>` : "<span></span>"}
+            ${nextId ? `<button class="oreui-btn oreui-btn-steel" data-nav-page="${nextId}" type="button">${lang === "fr" ? "Suivant" : "Next"} &rarr;</button>` : "<span></span>"}
+          </div>
+        `;
+      }
+
+      function renderSetsPage(main) {
+        const lang = W.getLang();
+        const cultures = ["all", ...new Set(CAT.sets.map((s) => s.culture))];
+        const q = state.setSearch.trim().toLowerCase();
+        const filtered = CAT.sets.filter((s) => {
+          if (state.setCulture !== "all" && s.culture !== state.setCulture) return false;
+          if (state.setTier !== "all" && s.tier !== state.setTier) return false;
+          if (q && !W.t(s.name).toLowerCase().includes(q) && !s.id.includes(q) && !s.culture.toLowerCase().includes(q)) return false;
+          return true;
+        });
+
+        main.innerHTML = `
+          <div class="oreui-panel chapter-header">
+            <span class="chapter-kicker">${lang === "fr" ? `GALERIE 3D FULL-SET • ${CAT.sets.length} SETS HISTORIQUES` : `FULL-SET 3D GALLERY • ${CAT.sets.length} HISTORICAL SETS`}</span>
+            <h1>${lang === "fr" ? "Tous les Sets Complets d'Armures en 3D" : "All Complete Armor Sets in 3D"}</h1>
+            <p>${lang === "fr" ? "Cliquez sur n'importe quel set complet pour ouvrir sa visionneuse 3D interactive 360, le detail des 4 pieces et toutes ses recettes." : "Click any full set card to inspect its 360 3D model, piece breakdown, Netherite parity, and full crafting recipes."}</p>
+          </div>
+
+          <div class="toolbar">
+            <div class="filter-tabs">
+              ${cultures.map((c) => `
+                <button class="filter-tab ${state.setCulture === c ? "active" : ""}" data-sc="${W.escapeHtml(c)}" type="button">
+                  ${c === "all" ? (lang === "fr" ? `Tous (${CAT.sets.length})` : `All (${CAT.sets.length})`) : W.escapeHtml(c)}
+                </button>
+              `).join("")}
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <select class="ore-select" id="setTierSel">
+                <option value="all">${lang === "fr" ? "Tous Paliers" : "All Tiers"}</option>
+                <option value="diamond" ${state.setTier === "diamond" ? "selected" : ""}>T3 Diamond (+T4)</option>
+                <option value="iron" ${state.setTier === "iron" ? "selected" : ""}>T2 Iron / Mail</option>
+                <option value="leather" ${state.setTier === "leather" ? "selected" : ""}>T1 Leather / Cloth</option>
+              </select>
+              <input class="ore-input" id="setSearchInp" type="search" value="${W.escapeHtml(state.setSearch)}" placeholder="${lang === "fr" ? "Chercher set..." : "Filter sets..."}" />
+            </div>
+          </div>
+
+          <div class="ek-set-grid">
+            ${filtered.map((s) => `
+              <div class="ek-set-card" data-open-set="${W.escapeHtml(s.id)}">
+                <div class="ek-set-stage">
+                  <img src="${s.render3d}" alt="${W.escapeHtml(W.t(s.name))}" loading="lazy" />
+                </div>
+                <div class="ek-card-body">
+                  <div class="ek-card-title">${W.escapeHtml(W.t(s.name))}</div>
+                  <div style="font-size:11px;color:var(--text-muted);">${W.escapeHtml(s.culture)}</div>
+                  <div class="ek-card-meta">
+                    ${tierBadge(s.tier)}
+                    <span class="badge">Prot +${s.totalProtection}</span>
+                    ${s.hasNetherite ? `<span class="badge badge-crimson">+Netherite</span>` : ""}
+                  </div>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+          ${renderFooterNav()}
+        `;
+
+        main.querySelectorAll("[data-sc]").forEach((b) => b.addEventListener("click", () => { state.setCulture = b.getAttribute("data-sc"); renderSetsPage(main); }));
+        main.querySelector("#setTierSel").addEventListener("change", (e) => { state.setTier = e.target.value; renderSetsPage(main); });
+        main.querySelector("#setSearchInp").addEventListener("input", (e) => { state.setSearch = e.target.value; renderSetsPage(main); main.querySelector("#setSearchInp").focus(); });
+        main.querySelectorAll("[data-open-set]").forEach((c) => c.addEventListener("click", () => openSetModal(c.getAttribute("data-open-set"))));
+        main.querySelectorAll("[data-nav-page]").forEach((b) => b.addEventListener("click", () => navigateTo(b.getAttribute("data-nav-page"))));
+      }
+
+      function renderArmorsPage(main) {
+        const lang = W.getLang();
+        const q = state.armorSearch.trim().toLowerCase();
+        const filtered = CAT.armorFamilies.filter((f) => {
+          if (state.armorSlot !== "all" && f.slot !== state.armorSlot) return false;
+          if (state.armorTier !== "all" && f.tier !== state.armorTier) return false;
+          if (q && !f.name.toLowerCase().includes(q) && !f.baseKey.includes(q) && !f.variants.some((v) => v.includes(q))) return false;
+          return true;
+        });
+
+        const pageSize = 60;
+        const maxPage = Math.max(0, Math.ceil(filtered.length / pageSize) - 1);
+        state.armorPage = Math.min(state.armorPage, maxPage);
+        const slice = filtered.slice(state.armorPage * pageSize, (state.armorPage + 1) * pageSize);
+
+        const counts = {
+          all: CAT.armorFamilies.length,
+          head: CAT.armorFamilies.filter((x) => x.slot === "head").length,
+          chest: CAT.armorFamilies.filter((x) => x.slot === "chest").length,
+          legs: CAT.armorFamilies.filter((x) => x.slot === "legs").length,
+          feet: CAT.armorFamilies.filter((x) => x.slot === "feet").length,
+        };
+
+        main.innerHTML = `
+          <div class="oreui-panel chapter-header">
+            <span class="chapter-kicker">${lang === "fr" ? `ARMURES INDIVIDUELLES 3D • ${CAT.armorFamilies.length} MODELES UNIQUES (${CAT.stats.totalArmors} ITEMS)` : `INDIVIDUAL 3D ARMORS • ${CAT.armorFamilies.length} UNIQUE STYLES (${CAT.stats.totalArmors} ITEMS)`}</span>
+            <h1>${lang === "fr" ? "Rendus 3D de Toutes les Armures Individuelles" : "3D Renders of Every Individual Armor Piece"}</h1>
+            <p>${lang === "fr" ? "Filtrez par slot (Casques, Plastrons, Jambieres/Plumes, Surcots/Epaulieres) ou palier. Cliquez sur une piece pour ouvrir sa visionneuse 3D, changer sa couleur / Netherite et voir son craft." : "Filter by slot or material tier. Click any piece to rotate in 3D, switch dye colors or T4 Netherite variants, and view its crafting recipe."}</p>
+          </div>
+
+          <div class="toolbar">
+            <div class="filter-tabs">
+              <button class="filter-tab ${state.armorSlot === "all" ? "active" : ""}" data-as="all" type="button">${lang === "fr" ? "Tout" : "All"} (${counts.all})</button>
+              <button class="filter-tab ${state.armorSlot === "head" ? "active" : ""}" data-as="head" type="button">${lang === "fr" ? "Casques" : "Helmets"} (${counts.head})</button>
+              <button class="filter-tab ${state.armorSlot === "chest" ? "active" : ""}" data-as="chest" type="button">${lang === "fr" ? "Plastrons" : "Chestplates"} (${counts.chest})</button>
+              <button class="filter-tab ${state.armorSlot === "legs" ? "active" : ""}" data-as="legs" type="button">${lang === "fr" ? "Jambes / Plumes" : "Legs / Plumes"} (${counts.legs})</button>
+              <button class="filter-tab ${state.armorSlot === "feet" ? "active" : ""}" data-as="feet" type="button">${lang === "fr" ? "Surcots / Epaulieres" : "Surcoats / Overlays"} (${counts.feet})</button>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <select class="ore-select" id="armorTierSel">
+                <option value="all">${lang === "fr" ? "Tous Paliers" : "All Tiers"}</option>
+                <option value="diamond" ${state.armorTier === "diamond" ? "selected" : ""}>T3 Diamond (+T4)</option>
+                <option value="iron" ${state.armorTier === "iron" ? "selected" : ""}>T2 Iron / Mail</option>
+                <option value="leather" ${state.armorTier === "leather" ? "selected" : ""}>T1 Leather / Cloth</option>
+              </select>
+              <input class="ore-input" id="armorSearchInp" type="search" value="${W.escapeHtml(state.armorSearch)}" placeholder="${lang === "fr" ? "Chercher casque, surcot..." : "Search armor..."}" />
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0;font-size:12px;color:var(--text-muted);">
+            <span>${lang === "fr" ? `Affichage ${slice.length} sur ${filtered.length} modeles (Page ${state.armorPage + 1}/${maxPage + 1})` : `Showing ${slice.length} of ${filtered.length} styles (Page ${state.armorPage + 1}/${maxPage + 1})`}</span>
+            <div style="display:flex;gap:6px;">
+              <button class="oreui-btn oreui-btn-sm" id="btnPrevAP" ${state.armorPage <= 0 ? "disabled" : ""} type="button">&larr; Prev</button>
+              <button class="oreui-btn oreui-btn-sm" id="btnNextAP" ${state.armorPage >= maxPage ? "disabled" : ""} type="button">Next &rarr;</button>
+            </div>
+          </div>
+
+          <div class="ek-piece-grid">
+            ${slice.map((f) => `
+              <div class="ek-piece-card" data-open-piece="${W.escapeHtml(f.key)}">
+                <div class="ek-piece-stage">
+                  <img src="${f.render3d}" alt="${W.escapeHtml(f.name)}" loading="lazy" />
+                </div>
+                <div class="ek-card-body">
+                  <div class="ek-card-title">${W.escapeHtml(f.name)}</div>
+                  <div class="ek-card-meta">
+                    ${tierBadge(f.tier)}
+                    <span class="badge">${f.slot.toUpperCase()} +${f.prot}</span>
+                    ${f.variants.length > 1 ? `<span class="badge">${f.variants.length}x</span>` : ""}
+                  </div>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+          ${renderFooterNav()}
+        `;
+
+        main.querySelectorAll("[data-as]").forEach((b) => b.addEventListener("click", () => { state.armorSlot = b.getAttribute("data-as"); state.armorPage = 0; renderArmorsPage(main); }));
+        main.querySelector("#armorTierSel").addEventListener("change", (e) => { state.armorTier = e.target.value; state.armorPage = 0; renderArmorsPage(main); });
+        main.querySelector("#armorSearchInp").addEventListener("input", (e) => { state.armorSearch = e.target.value; state.armorPage = 0; renderArmorsPage(main); main.querySelector("#armorSearchInp").focus(); });
+        main.querySelector("#btnPrevAP").addEventListener("click", () => { state.armorPage = Math.max(0, state.armorPage - 1); renderArmorsPage(main); });
+        main.querySelector("#btnNextAP").addEventListener("click", () => { state.armorPage = Math.min(maxPage, state.armorPage + 1); renderArmorsPage(main); });
+        main.querySelectorAll("[data-open-piece]").forEach((c) => c.addEventListener("click", () => openArmorPieceModal(c.getAttribute("data-open-piece"))));
+        main.querySelectorAll("[data-nav-page]").forEach((b) => b.addEventListener("click", () => navigateTo(b.getAttribute("data-nav-page"))));
+      }
+
+      function renderWardrobePage(main) {
+        const lang = W.getLang();
+        if (wardrobeViewer) { wardrobeViewer.destroy(); wardrobeViewer = null; }
+
+        const slotOptions = { head: [], chest: [], legs: [], feet: [] };
+        for (const p of Object.values(CAT.armorsById)) {
+          if (!state.wardrobeNetherite && p.tier === "netherite") continue;
+          if (state.wardrobeNetherite && p.tier === "diamond") continue;
+          slotOptions[p.slot].push(p);
+        }
+        for (const sl of ["head", "chest", "legs", "feet"]) {
+          slotOptions[sl].sort((a, b) => a.name.localeCompare(b.name));
+        }
+
+        const activeItems = [];
+        let totProt = 0, totDur = 0;
+        for (const sl of ["legs", "feet", "chest", "head"]) {
+          let pid = state.wardrobePieces[sl];
+          if (pid && state.wardrobeNetherite && CAT.armorsById[`${pid}_netherite`]) pid = `${pid}_netherite`;
+          if (pid && !state.wardrobeNetherite && pid.endsWith("_netherite")) {
+            const base = pid.replace(/_netherite$/, "");
+            if (CAT.armorsById[base]) pid = base;
+          }
+          const item = pid ? CAT.armorsById[pid] : null;
+          if (item) {
+            activeItems.push(item);
+            totProt += item.prot;
+            totDur += item.dur;
+          }
+        }
+
+        main.innerHTML = `
+          <div class="oreui-panel chapter-header">
+            <span class="chapter-kicker">${lang === "fr" ? "SIMULATEUR D'ARMURE 360° • MIX & MATCH" : "360° 3D KNIGHT WARDROBE • MIX & MATCH"}</span>
+            <h1>${lang === "fr" ? "Atelier Chevalier 3D (Set Complet ou Mixte)" : "Interactive 3D Knight Wardrobe Studio"}</h1>
+            <p>${lang === "fr" ? "Chargez l'un des 58 sets complets ou combinez librement Casque + Plastron + Jambes/Plume + Surcot/Epaulieres pour voir vos statistiques et recettes." : "Load any of the 58 full armor sets or freely combine Helmet + Chestplate + Legs/Plume + Surcoat/Pauldrons with live stats and recipes."}</p>
+          </div>
+
+          <div class="ek-wardrobe-layout">
+            <div class="ek-viewer-box">
+              <div id="wardrobeCanvasHost"></div>
+              <div class="ek-viewer-controls">
+                <button class="oreui-btn oreui-btn-sm" data-wv-yaw="28" type="button">3/4</button>
+                <button class="oreui-btn oreui-btn-sm" data-wv-yaw="0" type="button">${lang === "fr" ? "Face" : "Front"}</button>
+                <button class="oreui-btn oreui-btn-sm" data-wv-yaw="90" type="button">${lang === "fr" ? "Profil" : "Side"}</button>
+                <button class="oreui-btn oreui-btn-sm" data-wv-yaw="180" type="button">${lang === "fr" ? "Dos" : "Back"}</button>
+                <button class="oreui-btn oreui-btn-sm oreui-btn-steel" id="btnWvSpin" type="button">${lang === "fr" ? "Auto-Spin" : "Spin"}</button>
+              </div>
+              <div style="display:flex;justify-content:center;gap:8px;margin-top:10px;flex-wrap:wrap;">
+                <span class="badge badge-gold">${lang === "fr" ? "Protection" : "Armor"}: <strong>${totProt} / 20</strong></span>
+                <span class="badge">${lang === "fr" ? "Durabilite" : "Durability"}: <strong>${totDur}</strong></span>
+              </div>
+            </div>
+
+            <div class="oreui-card" style="display:flex;flex-direction:column;gap:12px;">
+              <div class="tax-inputs-grid" style="margin-bottom:0;">
+                <div class="tax-field">
+                  <label>${lang === "fr" ? "Charger un Set Complet (58)" : "Load Full Set Preset (58)"}</label>
+                  <select class="ore-select" id="wvPresetSel">
+                    ${CAT.sets.map((s) => `<option value="${s.id}" ${s.id === state.wardrobePreset ? "selected" : ""}>${W.escapeHtml(W.t(s.name))}</option>`).join("")}
+                  </select>
+                </div>
+                <div class="tax-field">
+                  <label>${lang === "fr" ? "Palier T4 Netherite" : "T4 Netherite Mode"}</label>
+                  <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--text-main);text-transform:none;padding-top:6px;">
+                    <input type="checkbox" id="wvNethChk" style="width:auto;flex:0 0 auto;margin:0;" ${state.wardrobeNetherite ? "checked" : ""} />
+                    <span>${lang === "fr" ? "Utiliser versions Netherite (Ignifuges)" : "Switch T3 pieces to T4 Netherite"}</span>
+                  </label>
+                </div>
+              </div>
+
+              ${["head", "chest", "legs", "feet"].map((sl) => `
+                <div class="tax-field">
+                  <label>${sl.toUpperCase()} SLOT</label>
+                  <select class="ore-select js-wv-slot" data-slot="${sl}">
+                    <option value="">${lang === "fr" ? "-- Vide (Aucun) --" : "-- Empty --"}</option>
+                    ${slotOptions[sl].map((p) => {
+                      const selId = activeItems.find((ai) => ai.slot === sl)?.id;
+                      return `<option value="${W.escapeHtml(p.id)}" ${p.id === selId ? "selected" : ""}>${W.escapeHtml(p.name)} (+${p.prot})</option>`;
+                    }).join("")}
+                  </select>
+                </div>
+              `).join("")}
+
+              <div>
+                <div style="font-size:12px;font-weight:700;color:var(--accent-bright);margin-bottom:6px;">
+                  ${lang === "fr" ? "Recettes des 4 pieces equipees" : "Recipes for Currently Equipped Pieces"}
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:10px;">
+                  ${activeItems.map((it) => it.recipes[0] ? W.renderRecipeHtml(it.recipes[0], CAT, "") : "").join("")}
+                </div>
+              </div>
+            </div>
+          </div>
+          ${renderFooterNav()}
+        `;
+
+        const host = main.querySelector("#wardrobeCanvasHost");
+        wardrobeViewer = window.EKArmor3D.createViewer(host, { width: 310, height: 350 });
+        const presetSet = CAT.sets.find((s) => s.id === state.wardrobePreset);
+        wardrobeViewer.setPieces(activeItems, presetSet?.render3d || "");
+
+        let spinning = true;
+        main.querySelectorAll("[data-wv-yaw]").forEach((b) => b.addEventListener("click", () => { spinning = false; wardrobeViewer?.setYaw(Number(b.getAttribute("data-wv-yaw"))); }));
+        main.querySelector("#btnWvSpin").addEventListener("click", () => { spinning = !spinning; wardrobeViewer?.setAutoRotate(spinning); });
+        main.querySelector("#wvPresetSel").addEventListener("change", (e) => {
+          state.wardrobePreset = e.target.value;
+          const found = CAT.sets.find((s) => s.id === state.wardrobePreset);
+          if (found) state.wardrobePieces = { ...found.pieces };
+          renderWardrobePage(main);
+        });
+        main.querySelector("#wvNethChk").addEventListener("change", (e) => { state.wardrobeNetherite = e.target.checked; renderWardrobePage(main); });
+        main.querySelectorAll(".js-wv-slot").forEach((sel) => sel.addEventListener("change", () => {
+          const sl = sel.getAttribute("data-slot");
+          if (sel.value) state.wardrobePieces[sl] = sel.value;
+          else delete state.wardrobePieces[sl];
+          renderWardrobePage(main);
+        }));
+        main.querySelectorAll("[data-nav-page]").forEach((b) => b.addEventListener("click", () => navigateTo(b.getAttribute("data-nav-page"))));
+      }
+
+      function renderWeaponsPage(main) {
+        const lang = W.getLang();
+        const q = state.weapSearch.trim().toLowerCase();
+        let list = [];
+        if (state.weapTab === "weapons") {
+          list = CAT.weapons.filter((w) => {
+            if (state.weapTier !== "all" && w.tier !== state.weapTier) return false;
+            if (q && !w.name.toLowerCase().includes(q) && !w.id.includes(q) && !w.arch.includes(q)) return false;
+            return true;
+          });
+        } else if (state.weapTab === "bows") {
+          list = [...CAT.bows, ...(CAT.barding ? [CAT.barding] : [])];
+        } else {
+          list = CAT.materials.filter((m) => !q || m.name.toLowerCase().includes(q) || m.id.includes(q));
+        }
+
+        const pageSize = 75;
+        const maxPage = Math.max(0, Math.ceil(list.length / pageSize) - 1);
+        state.weapPage = Math.min(state.weapPage, maxPage);
+        const slice = list.slice(state.weapPage * pageSize, (state.weapPage + 1) * pageSize);
+
+        main.innerHTML = `
+          <div class="oreui-panel chapter-header">
+            <span class="chapter-kicker">${lang === "fr" ? "ARSENAL & MATERIAUX • 302 ARMES + 3 ARCS + 24 COMPOSANTS" : "ARSENAL & MATERIALS • 302 WEAPONS + 3 BOWS + 24 COMPONENTS"}</span>
+            <h1>${lang === "fr" ? "Toutes les Armes Reequilibrees, Arcs & Materiaux" : "Rebalanced Weapons, Bows & Crafting Materials"}</h1>
+            <p>${lang === "fr" ? "Cliquez sur n'importe quelle arme ou materiau pour inspecter sa recette exacte et ses statistiques apres nerf serveur." : "Click any weapon, bow, or material to open its exact crafting recipe and server-balanced combat stats."}</p>
+          </div>
+
+          <div class="toolbar">
+            <div class="filter-tabs">
+              <button class="filter-tab ${state.weapTab === "weapons" ? "active" : ""}" data-wt="weapons" type="button">${lang === "fr" ? "Armes Melee" : "Melee Weapons"} (${CAT.weapons.length})</button>
+              <button class="filter-tab ${state.weapTab === "bows" ? "active" : ""}" data-wt="bows" type="button">${lang === "fr" ? "Arcs & Barding" : "Bows & Barding"} (4)</button>
+              <button class="filter-tab ${state.weapTab === "materials" ? "active" : ""}" data-wt="materials" type="button">${lang === "fr" ? "Materiaux" : "Materials"} (${CAT.materials.length})</button>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              ${state.weapTab === "weapons" ? `
+                <select class="ore-select" id="weapTierSel">
+                  <option value="all">${lang === "fr" ? "Tous Materiaux" : "All Materials"}</option>
+                  <option value="netherite" ${state.weapTier === "netherite" ? "selected" : ""}>Netherite (7–9)</option>
+                  <option value="diamond" ${state.weapTier === "diamond" ? "selected" : ""}>Diamond (6–8)</option>
+                  <option value="steel" ${state.weapTier === "steel" ? "selected" : ""}>Steel (4–8)</option>
+                  <option value="iron" ${state.weapTier === "iron" ? "selected" : ""}>Iron / Bronze (5–7)</option>
+                  <option value="stone" ${state.weapTier === "stone" ? "selected" : ""}>Stone (5–6)</option>
+                  <option value="wood" ${state.weapTier === "wood" ? "selected" : ""}>Wood (3–5)</option>
+                  <option value="gold" ${state.weapTier === "gold" ? "selected" : ""}>Gold (4–5)</option>
+                </select>
+              ` : ""}
+              <input class="ore-input" id="weapSearchInp" type="search" value="${W.escapeHtml(state.weapSearch)}" placeholder="${lang === "fr" ? "Chercher claymore, katana, acier..." : "Search claymore, halberd..."}" />
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0;font-size:12px;color:var(--text-muted);">
+            <span>${slice.length} / ${list.length} (${state.weapPage + 1}/${maxPage + 1})</span>
+            <div style="display:flex;gap:6px;">
+              <button class="oreui-btn oreui-btn-sm" id="btnPrevW" ${state.weapPage <= 0 ? "disabled" : ""} type="button">&larr; Prev</button>
+              <button class="oreui-btn oreui-btn-sm" id="btnNextW" ${state.weapPage >= maxPage ? "disabled" : ""} type="button">Next &rarr;</button>
+            </div>
+          </div>
+
+          <div class="gallery-grid">
+            ${slice.map((it) => `
+              <div class="gallery-card" data-open-item="${W.escapeHtml(it.id)}" data-item-kind="${state.weapTab}">
+                <div class="render-stage" style="height:88px;"><img src="${it.icon}" alt="" style="width:52px;height:52px;image-rendering:pixelated;" /></div>
+                <div class="gallery-body">
+                  <div class="gallery-name">${W.escapeHtml(it.name)}</div>
+                  <div class="gallery-id"><code>${W.escapeHtml(it.id)}</code></div>
+                  <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:6px;">
+                    ${it.dmg !== undefined ? `<span class="badge badge-crimson">Dmg: ${it.dmg}</span>` : ""}
+                    ${it.dur ? `<span class="badge">Dur: ${it.dur}</span>` : ""}
+                    ${it.fire ? `<span class="badge badge-crimson">Fire Res</span>` : ""}
+                  </div>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+          ${renderFooterNav()}
+        `;
+
+        main.querySelectorAll("[data-wt]").forEach((b) => b.addEventListener("click", () => { state.weapTab = b.getAttribute("data-wt"); state.weapPage = 0; renderWeaponsPage(main); }));
+        main.querySelector("#weapTierSel")?.addEventListener("change", (e) => { state.weapTier = e.target.value; state.weapPage = 0; renderWeaponsPage(main); });
+        main.querySelector("#weapSearchInp").addEventListener("input", (e) => { state.weapSearch = e.target.value; state.weapPage = 0; renderWeaponsPage(main); main.querySelector("#weapSearchInp").focus(); });
+        main.querySelector("#btnPrevW").addEventListener("click", () => { state.weapPage = Math.max(0, state.weapPage - 1); renderWeaponsPage(main); });
+        main.querySelector("#btnNextW").addEventListener("click", () => { state.weapPage = Math.min(maxPage, state.weapPage + 1); renderWeaponsPage(main); });
+        main.querySelectorAll("[data-open-item]").forEach((c) => {
+          c.addEventListener("click", () => {
+            const id = c.getAttribute("data-open-item");
+            const found = CAT.weapons.find((x) => x.id === id) || CAT.bows.find((x) => x.id === id) || CAT.materials.find((x) => x.id === id) || (CAT.barding?.id === id ? CAT.barding : null);
+            openItemModal(found);
+          });
+        });
+        main.querySelectorAll("[data-nav-page]").forEach((b) => b.addEventListener("click", () => navigateTo(b.getAttribute("data-nav-page"))));
+      }
+
+      function renderSectionHtml(sec) {
+        const lang = W.getLang();
+        let body = "";
+        if (sec.lead) body += `<p>${W.t(sec.lead)}</p>`;
+        if (sec.customHtml) body += W.t(sec.customHtml);
+
+        if (sec.widget === "ek-stats-grid") {
+          const st = CAT.stats;
+          body += `
+            <div class="role-hero-box">
+              <div class="role-stat-tile" style="cursor:pointer;" data-nav-page="enc-sets">
+                <img src="assets/renders3d/sets/gothic.png" alt="" style="height:40px;width:auto;" />
+                <div><span class="role-stat-lbl">${lang === "fr" ? "Sets Complets 3D" : "3D Full Armor Sets"}</span><span class="role-stat-val">${st.setsCount} Sets</span></div>
+              </div>
+              <div class="role-stat-tile" style="cursor:pointer;" data-nav-page="enc-armors">
+                <img src="assets/renders3d/pieces/head_barbute.png" alt="" style="height:40px;width:auto;" />
+                <div><span class="role-stat-lbl">${lang === "fr" ? "Armures Individuelles" : "Individual Armors"}</span><span class="role-stat-val">${st.totalArmors} (${st.armorFamiliesCount} 3D)</span></div>
+              </div>
+              <div class="role-stat-tile" style="cursor:pointer;" data-nav-page="enc-weapons">
+                <img src="assets/items/knights_steel_claymore.png" alt="" />
+                <div><span class="role-stat-lbl">${lang === "fr" ? "Armes Reequilibrees" : "Nerfed Weapons & Bows"}</span><span class="role-stat-val">${st.weaponsCount} + ${st.bowsCount}</span></div>
+              </div>
+              <div class="role-stat-tile" style="cursor:pointer;" data-nav-page="enc-weapons">
+                <img src="assets/items/knights_steel_plate.png" alt="" />
+                <div><span class="role-stat-lbl">${lang === "fr" ? "Recettes Verifiees" : "Verified Recipes"}</span><span class="role-stat-val">${st.totalRecipes} Crafts</span></div>
+              </div>
+            </div>
+          `;
+        }
+
+        if (sec.sampleSmithing && CAT.armorsById[sec.sampleSmithing]) {
+          const p = CAT.armorsById[sec.sampleSmithing];
+          body += `<div style="margin:10px 0;">${p.recipes.map((r) => W.renderRecipeHtml(r, CAT, "")).join("")}</div>`;
+        }
+
+        if (sec.specialShowcase) {
+          body += `<div class="gallery-grid" style="margin:10px 0 14px;">`;
+          for (const id of sec.specialShowcase) {
+            const it = CAT.bows.find((b) => b.id === id) || (CAT.barding?.id === id ? CAT.barding : null);
+            if (!it) continue;
+            body += `
+              <div class="gallery-card" data-open-special="${W.escapeHtml(it.id)}">
+                <div class="render-stage" style="height:84px;"><img src="${it.icon}" style="width:50px;height:50px;image-rendering:pixelated;" /></div>
+                <div class="gallery-body">
+                  <div class="gallery-name">${W.escapeHtml(it.name)}</div>
+                  <div class="gallery-id"><code>${W.escapeHtml(it.id)}</code></div>
+                </div>
+              </div>
+            `;
+          }
+          body += `</div>`;
+        }
+
+        if (sec.sampleMaterials) {
+          body += `<div class="gallery-grid" style="margin:12px 0;">`;
+          for (const mid of sec.sampleMaterials) {
+            const mat = CAT.materials.find((x) => x.id === mid);
+            if (!mat) continue;
+            body += `
+              <div class="gallery-card" data-open-special="${W.escapeHtml(mat.id)}">
+                <div class="render-stage" style="height:80px;"><img src="${mat.icon}" style="width:48px;height:48px;image-rendering:pixelated;" /></div>
+                <div class="gallery-body">
+                  <div class="gallery-name">${W.escapeHtml(mat.name)}</div>
+                  ${mat.recipes[0] ? `<div style="margin-top:8px;transform:scale(0.86);transform-origin:left top;">${W.renderRecipeHtml(mat.recipes[0], CAT, "")}</div>` : ""}
+                </div>
+              </div>
+            `;
+          }
+          body += `</div>`;
+        }
+
+        if (sec.widget === "ek-displays-list") {
+          const dq = state.dispSearch.trim().toLowerCase();
+          const filt = CAT.displayBlocks.filter((d) => !dq || d.name.toLowerCase().includes(dq) || d.id.includes(dq));
+          body += `
+            <div class="toolbar"><input class="ore-input" id="dispSearchInp" type="search" value="${W.escapeHtml(state.dispSearch)}" placeholder="${lang === "fr" ? "Filtrer presentoir..." : "Filter displays..."}" /></div>
+            <div class="table-wrap"><table class="wiki-table">
+              <thead><tr><th>${lang === "fr" ? "Presentoir" : "Display Stand"}</th><th>${lang === "fr" ? "Identifiant Bloc" : "Block ID"}</th></tr></thead>
+              <tbody>${filt.map((d) => `<tr><td><strong>${W.escapeHtml(d.name)}</strong></td><td><code>${W.escapeHtml(d.id)}</code></td></tr>`).join("")}</tbody>
+            </table></div>
+          `;
+        }
+
+        if (sec.table) {
+          const headers = W.t(sec.table.headers);
+          body += `
+            <div class="table-wrap"><table class="wiki-table">
+              <thead><tr>${headers.map((h) => `<th>${W.escapeHtml(h)}</th>`).join("")}</tr></thead>
+              <tbody>${sec.table.rows.map((r) => `<tr>${r.map((c) => `<td>${typeof c === "string" ? c : W.t(c)}</td>`).join("")}</tr>`).join("")}</tbody>
+            </table></div>
+          `;
+        }
+
+        if (sec.callouts) {
+          for (const c of sec.callouts) {
+            const cls = c.kind === "warn" ? "callout-warn" : c.kind === "danger" ? "callout-danger" : c.kind === "info" ? "callout-info" : "callout-success";
+            body += `<div class="callout ${cls}"><div class="callout-title">${W.escapeHtml(W.t(c.title))}</div><ul>${(W.t(c.items) || []).map((li) => `<li>${li}</li>`).join("")}</ul></div>`;
+          }
+        }
+
+        return `<section class="wiki-section"><h2><span class="sec-num">${sec.num}</span> ${W.escapeHtml(W.t(sec.title))}</h2>${body}</section>`;
+      }
+
+      function renderCurrentPage() {
+        renderSidebar();
+        const main = document.getElementById("wikiMain");
+        if (currentPageId !== "enc-wardrobe" && wardrobeViewer) { wardrobeViewer.destroy(); wardrobeViewer = null; }
+
+        if (currentPageId === "enc-sets") return renderSetsPage(main);
+        if (currentPageId === "enc-armors") return renderArmorsPage(main);
+        if (currentPageId === "enc-wardrobe") return renderWardrobePage(main);
+        if (currentPageId === "enc-weapons") return renderWeaponsPage(main);
+
+        const mod = MODULES.find((m) => m.id === currentPageId) || MODULES[0];
+        if (!mod) return;
+        main.innerHTML = `
+          <div class="oreui-panel chapter-header">
+            <span class="chapter-kicker">${W.escapeHtml(W.t(mod.kicker))}</span>
+            <h1>${W.escapeHtml(W.t(mod.title))}</h1>
+            <p>${W.escapeHtml(W.t(mod.subtitle))}</p>
+          </div>
+          ${mod.sections.map((s) => renderSectionHtml(s)).join("")}
+          ${renderFooterNav()}
+        `;
+        main.querySelectorAll("[data-nav-page]").forEach((b) => b.addEventListener("click", () => navigateTo(b.getAttribute("data-nav-page"))));
+        main.querySelectorAll("[data-open-special]").forEach((c) => {
+          c.addEventListener("click", () => {
+            const id = c.getAttribute("data-open-special");
+            const obj = CAT.bows.find((x) => x.id === id) || CAT.materials.find((x) => x.id === id) || (CAT.barding?.id === id ? CAT.barding : null);
+            openItemModal(obj);
+          });
+        });
+        const ds = main.querySelector("#dispSearchInp");
+        if (ds) ds.addEventListener("input", (e) => { state.dispSearch = e.target.value; renderCurrentPage(); main.querySelector("#dispSearchInp")?.focus(); });
+      }
+
+      function navigateTo(pageId) {
+        if (!PAGE_ORDER.includes(pageId)) return;
+        currentPageId = pageId;
+        location.hash = pageId;
+        document.getElementById("wikiSidebar")?.classList.remove("open");
+        renderCurrentPage();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function initSearch() {
+        const input = document.getElementById("globalSearch");
+        const dd = document.getElementById("searchDropdown");
+        const docs = [];
+        for (const s of CAT.sets) {
+          docs.push({ cat: "3D Armor Set", title: s.name, desc: s.culture, hay: `${s.id} ${s.name.en} ${s.name.fr} ${s.culture}`.toLowerCase(), go: () => { navigateTo("enc-sets"); setTimeout(() => openSetModal(s.id), 90); } });
+        }
+        for (const f of CAT.armorFamilies) {
+          docs.push({ cat: `Armor (${f.slot})`, title: f.name, desc: `${f.tier} +${f.prot}`, hay: `${f.key} ${f.name} ${f.variants.join(" ")}`.toLowerCase(), go: () => { navigateTo("enc-armors"); setTimeout(() => openArmorPieceModal(f.key), 90); } });
+        }
+        for (const w of [...CAT.weapons, ...CAT.bows, ...CAT.materials]) {
+          docs.push({ cat: w.dmg !== undefined ? `Weapon (Dmg ${w.dmg})` : "Material", title: w.name, desc: w.id, hay: `${w.id} ${w.name}`.toLowerCase(), go: () => openItemModal(w) });
+        }
+
+        input.addEventListener("input", () => {
+          const q = input.value.trim().toLowerCase();
+          if (!q) { dd.classList.remove("open"); dd.innerHTML = ""; return; }
+          const hits = docs.filter((d) => d.hay.includes(q)).slice(0, 15);
+          dd.innerHTML = hits.length
+            ? hits.map((h, i) => `<div class="search-hit" data-hi="${i}"><span class="search-hit-cat">${W.escapeHtml(h.cat)}</span><span class="search-hit-title">${W.escapeHtml(W.t(h.title))}</span><span class="search-hit-desc">${W.escapeHtml(W.t(h.desc))}</span></div>`).join("")
+            : `<div class="search-hit"><div class="search-hit-desc">No matches.</div></div>`;
+          dd.querySelectorAll("[data-hi]").forEach((row) => row.addEventListener("click", () => { dd.classList.remove("open"); hits[Number(row.getAttribute("data-hi"))]?.go(); }));
+          dd.classList.add("open");
+        });
+        document.addEventListener("click", (e) => { if (!e.target.closest(".topbar-search")) dd.classList.remove("open"); });
+        document.addEventListener("keydown", (e) => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") { e.preventDefault(); input.focus(); } });
+      }
+
+      document.getElementById("btnMobileMenu")?.addEventListener("click", () => document.getElementById("wikiSidebar")?.classList.toggle("open"));
+      document.getElementById("btnCloseModal")?.addEventListener("click", closeModal);
+      document.getElementById("wikiModal")?.addEventListener("click", (e) => { if (e.target.id === "wikiModal") closeModal(); });
+      window.addEventListener("hashchange", () => {
+        const next = (location.hash || "").replace(/^#/, "");
+        if (PAGE_ORDER.includes(next) && next !== currentPageId) { currentPageId = next; renderCurrentPage(); }
+      });
+      window.addEventListener("frontier:langchange", renderCurrentPage);
+
+      W.initThemeAndLangControls();
+      initSearch();
+      renderCurrentPage();
+    })();
+  </script>
+</body>
+</html>

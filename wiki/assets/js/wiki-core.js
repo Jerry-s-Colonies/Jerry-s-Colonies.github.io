@@ -95,6 +95,23 @@
     "minecraft:emerald": "Emrld",
     "knights:steel_ingot": "Steel",
     "knights:steel_plate": "S.Plate",
+    "knights:small_steel_plate": "Sm.Plt",
+    "knights:steel_ring": "Ring",
+    "knights:steel_chain": "Chain",
+    "knights:steel_chainmail": "Mail",
+    "knights:leather_strip": "L.Strip",
+    "minecraft:leather_strip": "L.Strip",
+    "knights:woollen_cloth": "W.Cloth",
+    "knights:hilt": "Hilt",
+    "knights:pole": "Pole",
+    "knights:lacquered_iron_plate": "Laq.Plt",
+    "knights:lamellar_rows": "Lamell.",
+    "knights:mountain_pattern_rows": "Mtn.Row",
+    "minecraft:netherite_upgrade_smithing_template": "N.Tmpl",
+    "minecraft:netherite_ingot": "Nethrt",
+    "minecraft:rabbit_hide": "R.Hide",
+    "minecraft:gold_block": "GoldBlk",
+    "minecraft:glass_pane": "GlassP",
     "jobskills:forge_hammer": "Hammer",
     "jobskills:skill_book": "S.Book",
     "jobskills:soaked_hide": "S.Hide",
@@ -218,13 +235,16 @@
 
     const renderSlot = (itemId, count, extraClass) => {
       if (!itemId) return `<div class="craft-slot ${extraClass || ""}"></div>`;
-      const jnItem = catalog?.byId?.[itemId];
-      const vanillaFile = window.FRONTIER_VANILLA_ICONS && window.FRONTIER_VANILLA_ICONS[itemId];
+      const lookupId = itemId === "minecraft:leather_strip" && !catalog?.byId?.[itemId] && catalog?.byId?.["knights:leather_strip"]
+        ? "knights:leather_strip"
+        : itemId;
+      const jnItem = catalog?.byId?.[lookupId];
+      const vanillaFile = window.FRONTIER_VANILLA_ICONS && window.FRONTIER_VANILLA_ICONS[lookupId];
       let inner = "";
-      if (jnItem?.render3d) {
-        inner = `<img src="${assetBase}${jnItem.render3d}" alt="${escapeHtml(itemId)}" title="${escapeHtml(itemId)}">`;
-      } else if (jnItem?.icon) {
+      if (jnItem?.icon) {
         inner = `<img src="${assetBase}${jnItem.icon}" alt="${escapeHtml(itemId)}" title="${escapeHtml(itemId)}">`;
+      } else if (jnItem?.render3d) {
+        inner = `<img src="${assetBase}${jnItem.render3d}" alt="${escapeHtml(itemId)}" title="${escapeHtml(itemId)}">`;
       } else if (vanillaFile) {
         inner = `<img src="${VANILLA_BASE}${vanillaFile}" alt="${escapeHtml(itemId)}" title="${escapeHtml(itemId)}">`;
       } else {
@@ -233,6 +253,20 @@
       const badge = count && count > 1 ? `<span class="craft-count">${count}</span>` : "";
       return `<div class="craft-slot ${extraClass || ""}" title="${escapeHtml(itemId)}">${inner}${badge}</div>`;
     };
+
+    if (recipe.type === "smithing_transform") {
+      return `
+        <div class="recipe-box smithing-box">
+          ${renderSlot(recipe.template || "minecraft:netherite_upgrade_smithing_template", 1)}
+          <span class="craft-arrow" style="font-size:13px;">+</span>
+          ${renderSlot(recipe.base || "", 1)}
+          <span class="craft-arrow" style="font-size:13px;">+</span>
+          ${renderSlot(recipe.addition || "minecraft:netherite_ingot", 1)}
+          <span class="craft-arrow" title="Smithing Table">&#10142;</span>
+          ${renderSlot(recipe.resultItem, recipe.resultCount || 1, "craft-output")}
+        </div>
+      `;
+    }
 
     if (recipe.type === "stonecutter") {
       const ing = recipe.ingredients?.[0] || "";

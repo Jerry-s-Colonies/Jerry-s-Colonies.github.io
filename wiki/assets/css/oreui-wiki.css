@@ -156,6 +156,7 @@ code {
 .oreui-btn-crimson { background: linear-gradient(#e0525f, #8a1220); border-color: #4a0c13; }
 .oreui-btn-info { background: linear-gradient(var(--blue-top), var(--blue-bot)); border-color: #1a3550; }
 .oreui-btn-gold { background: linear-gradient(#f2b544, #c97f18); border-color: #613b05; }
+.oreui-btn-steel { background: linear-gradient(#5b9cf6, #2857a8); border-color: #142f61; }
 
 .ore-input, .ore-select {
   background: var(--bg-input);
@@ -372,7 +373,7 @@ code {
 
 .portal-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr));
   gap: 20px;
   margin-bottom: 32px;
 }
@@ -392,6 +393,9 @@ code {
 }
 .portal-card.portal-live.portal-jobs {
   border-top-color: var(--gold);
+}
+.portal-card.portal-live.portal-knights {
+  border-top-color: #5b9cf6;
 }
 .portal-card.portal-soon {
   border-top-color: var(--gold);
@@ -427,10 +431,12 @@ code {
 .status-live { background: #101c11; border: 1px solid var(--ok); color: #96f274; font-weight: 700; text-shadow: var(--text-outline-sm); }
 .status-crimson { background: #1c1013; border: 1px solid var(--crimson-bright); color: #ff949e; font-weight: 700; text-shadow: var(--text-outline-sm); }
 .status-gold { background: #1c170d; border: 1px solid var(--gold); color: #ffd978; font-weight: 700; text-shadow: var(--text-outline-sm); }
+.status-steel { background: #0e1726; border: 1px solid #5b9cf6; color: #9ec5ff; font-weight: 700; text-shadow: var(--text-outline-sm); }
 .status-soon { background: #1c170d; border: 1px solid var(--gold); color: #ffd166; font-weight: 700; text-shadow: var(--text-outline-sm); }
 [data-theme="light"] .status-live { background: #e9f8e5; color: #14570d; text-shadow: none; }
 [data-theme="light"] .status-crimson { background: #fdecef; color: #8f0d1b; text-shadow: none; }
 [data-theme="light"] .status-gold { background: #fff6df; color: #8a5500; text-shadow: none; }
+[data-theme="light"] .status-steel { background: #e9f2ff; color: #13428a; text-shadow: none; }
 [data-theme="light"] .status-soon { background: #fff6df; color: #8a5500; text-shadow: none; }
 
 .portal-title {
@@ -1978,3 +1984,206 @@ body.theme-jobs .search-hit-cat { color: var(--accent); }
   cursor: pointer;
 }
 .dag-link-pill:hover { border-color: var(--accent); }
+
+/* ============================================================================
+ * EPIC KNIGHTS ROYAL STEEL BLUE THEME (Scoped to body.theme-knights)
+ * ========================================================================== */
+body.theme-knights {
+  --accent: #4f8ef7;
+  --accent-bright: #9ec5ff;
+  --accent-deep: #1e468a;
+  --accent-soft: rgba(79, 142, 247, 0.16);
+  --accent-glow: rgba(79, 142, 247, 0.12);
+}
+[data-theme="light"] body.theme-knights {
+  --accent: #1d4e9e;
+  --accent-bright: #143b7a;
+  --accent-deep: #102f63;
+  --accent-soft: rgba(29, 78, 158, 0.12);
+  --accent-glow: rgba(29, 78, 158, 0.08);
+}
+
+body.theme-knights .brand-sub { color: var(--accent-bright); }
+body.theme-knights a { color: var(--accent-bright); text-shadow: var(--text-outline-sm); }
+body.theme-knights code {
+  color: #b4d4ff;
+  background: #10141c;
+  border-color: rgba(79, 142, 247, 0.42);
+  text-shadow: var(--text-outline-sm);
+}
+[data-theme="light"] body.theme-knights code {
+  color: #143b7a;
+  background: #edf4ff;
+  border-color: rgba(29, 78, 158, 0.35);
+  font-weight: 600;
+  text-shadow: none;
+}
+
+body.theme-knights .topbar-search input:focus { border-color: var(--accent); }
+body.theme-knights .sidebar-group-title { color: var(--accent-bright); text-shadow: var(--text-outline-sm); }
+body.theme-knights .nav-item.active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-bright);
+  text-shadow: var(--text-outline-sm);
+}
+body.theme-knights .chapter-header {
+  border-left: 5px solid var(--accent);
+  background: linear-gradient(135deg, rgba(79, 142, 247, 0.16) 0%, rgba(39, 41, 46, 0.96) 55%);
+}
+[data-theme="light"] body.theme-knights .chapter-header {
+  background: linear-gradient(135deg, rgba(29, 78, 158, 0.12) 0%, #eef1f6 55%);
+}
+body.theme-knights .chapter-kicker { color: var(--accent-bright); text-shadow: var(--text-outline-sm); }
+body.theme-knights .wiki-section > h2 {
+  color: var(--accent-bright);
+  border-left-color: var(--accent);
+  text-shadow: var(--text-outline-lg);
+}
+body.theme-knights .sec-num {
+  color: var(--accent-bright);
+  background: var(--accent-soft);
+  border-color: rgba(79, 142, 247, 0.38);
+  text-shadow: var(--text-outline-sm);
+}
+body.theme-knights .wiki-table th { color: var(--accent-bright); text-shadow: var(--text-outline-sm); }
+body.theme-knights .wiki-table tr:hover td { background: var(--accent-glow); }
+body.theme-knights .filter-tab.active {
+  background: var(--accent-deep);
+  border-color: var(--accent-bright);
+  color: #fff;
+  text-shadow: var(--text-outline-sm);
+}
+body.theme-knights .block-mini-card:hover,
+body.theme-knights .gallery-card:hover { border-color: var(--accent); }
+body.theme-knights .render-stage {
+  background: radial-gradient(circle at center, var(--accent-glow) 0%, transparent 72%);
+}
+body.theme-knights .craft-arrow { color: var(--accent-bright); text-shadow: var(--text-outline-sm); }
+body.theme-knights .callout-title { color: var(--accent-bright); text-shadow: var(--text-outline-sm); }
+body.theme-knights .search-dropdown { border-color: var(--accent); }
+body.theme-knights .search-hit-title { color: var(--accent-bright); }
+body.theme-knights .search-hit-cat { color: var(--accent); }
+
+/* ---------- Epic Knights 3D Sets, Pieces & Wardrobe Studio ---------- */
+.ek-attribution-banner {
+  background: linear-gradient(135deg, rgba(79, 142, 247, 0.14) 0%, rgba(245, 185, 66, 0.10) 100%);
+  border: 2px solid var(--accent);
+  border-left: 6px solid var(--gold);
+  border-radius: 6px;
+  padding: 16px 18px;
+  margin-bottom: 18px;
+}
+.ek-attribution-banner h3 {
+  margin: 0 0 6px;
+  font-family: "MinecraftTen", sans-serif;
+  font-size: 17px;
+  color: #ffd978;
+  text-shadow: var(--text-outline-lg);
+}
+[data-theme="light"] .ek-attribution-banner h3 {
+  color: #8a5500;
+  text-shadow: none;
+}
+
+.ek-set-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(225px, 1fr));
+  gap: 14px;
+  margin-top: 12px;
+}
+.ek-set-card, .ek-piece-card {
+  background: var(--bg-card-alt);
+  border: 2px solid var(--border-dark);
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: transform 0.12s ease, border-color 0.12s ease;
+}
+.ek-set-card:hover, .ek-piece-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-bright);
+}
+.ek-set-stage {
+  height: 215px;
+  background: radial-gradient(circle at center, rgba(79, 142, 247, 0.15) 0%, #101216 76%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.ek-set-stage img {
+  max-height: 196px;
+  max-width: 100%;
+  image-rendering: pixelated;
+}
+.ek-piece-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+.ek-piece-stage {
+  height: 155px;
+  background: radial-gradient(circle at center, rgba(79, 142, 247, 0.14) 0%, #101216 76%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.ek-piece-stage img {
+  max-height: 142px;
+  max-width: 100%;
+  image-rendering: pixelated;
+}
+.ek-card-body {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+}
+.ek-card-title {
+  font-family: "MinecraftTen", sans-serif;
+  font-size: 14.5px;
+  color: var(--accent-bright);
+  text-shadow: var(--text-outline-sm);
+  line-height: 1.2;
+}
+.ek-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  font-size: 11px;
+}
+
+.ek-wardrobe-layout {
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+@media (max-width: 980px) {
+  .ek-wardrobe-layout { grid-template-columns: 1fr; }
+}
+.ek-viewer-box {
+  background: radial-gradient(circle at center, rgba(79, 142, 247, 0.16) 0%, #0e1015 76%);
+  border: 2px solid var(--border-dark);
+  border-radius: 6px;
+  padding: 12px;
+}
+.ek-viewer-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  margin-top: 10px;
+}
+.smithing-box {
+  border-color: #7c4dff !important;
+  background: rgba(124, 77, 255, 0.08) !important;
+}
