@@ -83,12 +83,13 @@ html, body {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  font-family: 'MinecraftRegular', 'MinecraftTen', 'Consolas', monospace;
-  font-size: 12px;
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  text-transform: none;
   color: #fff;
-  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.7);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65);
   background: linear-gradient(#6c6c6c, #464646);
   border: 2px solid #1a1a1a;
   border-radius: 4px;
@@ -104,7 +105,7 @@ html, body {
 .oreui-btn:active { box-shadow: inset 0 2px 0 rgba(0, 0, 0, 0.45); transform: translateY(1px); }
 .oreui-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-.oreui-btn-sm { padding: 5px 10px; font-size: 11px; }
+.oreui-btn-sm { padding: 5px 10px; font-size: 12px; }
 .oreui-btn-primary { background: linear-gradient(var(--green-top), var(--green-bot)); border-color: #1f4611; }
 .oreui-btn-danger { background: linear-gradient(#e0525f, #8a1220); border-color: #4d0f14; }
 .oreui-btn-info { background: linear-gradient(var(--blue-top), var(--blue-bot)); border-color: #1a3550; }
@@ -349,13 +350,55 @@ details.relay-settings summary {
   padding: 14px;
 }
 
-.stat-label { font-size: 11px; text-transform: uppercase; color: var(--text-muted); }
-.stat-val { font-size: 24px; margin-top: 4px; color: var(--text-main); }
+.stat-label { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.3px; }
+.stat-val { font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums; margin-top: 4px; color: var(--text-main); }
+
+.oreui-card h3 {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.val-pos { color: #3ddc84 !important; }
+.val-warn { color: #f5b942 !important; }
+.val-neg { color: #ff5c6c !important; }
+.val-neutral { color: var(--text-main) !important; }
+
+[data-theme="light"] .val-pos { color: #1f7a38 !important; }
+[data-theme="light"] .val-warn { color: #b4690e !important; }
+[data-theme="light"] .val-neg { color: #c62828 !important; }
+
+.bal-overpicked { background: rgba(231, 76, 60, 0.25); color: #ff8c80; }
+.bal-high { background: rgba(230, 126, 34, 0.25); color: #f6b979; }
+.bal-balanced { background: rgba(79, 168, 50, 0.25); color: #8ed965; }
+.bal-underpicked { background: rgba(90, 143, 199, 0.25); color: #8ec5fc; }
+
+[data-theme="light"] .bal-overpicked { background: rgba(231, 76, 60, 0.16); color: #b71c1c; }
+[data-theme="light"] .bal-high { background: rgba(230, 126, 34, 0.16); color: #a15206; }
+[data-theme="light"] .bal-balanced { background: rgba(79, 168, 50, 0.18); color: #1f7a38; }
+[data-theme="light"] .bal-underpicked { background: rgba(90, 143, 199, 0.18); color: #1c538e; }
+
+.subtab-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.subtab-btn.active {
+  background: linear-gradient(var(--blue-top), var(--blue-bot));
+  border-color: #1a3550;
+}
+
+.an-subpanel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
 
 /* ---------- Analytics & Server Insights ---------- */
 .kpi-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
 }
 
@@ -393,21 +436,23 @@ details.relay-settings summary {
 
 .kpi-value {
   font-size: 28px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
   line-height: 1.1;
   color: var(--text-main);
 }
 
 .kpi-delta {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
-.kpi-delta.up { color: var(--green-top); }
-.kpi-delta.down { color: var(--crimson-bright); }
+.kpi-delta.up { color: #3ddc84; }
+.kpi-delta.down { color: #ff5c6c; }
 .kpi-delta.flat { color: var(--text-muted); }
 
-[data-theme="light"] .kpi-delta.up { color: #2b7a14; }
-[data-theme="light"] .kpi-delta.down { color: #b71c1c; }
+[data-theme="light"] .kpi-delta.up { color: #1f7a38; }
+[data-theme="light"] .kpi-delta.down { color: #c62828; }
 
 .kpi-sub {
   font-size: 11px;
@@ -711,10 +756,18 @@ table.ore-table tr:hover td {
 .toast.ok { border-color: var(--ok); }
 .toast.err { border-color: var(--danger); }
 
+@media (max-width: 1150px) {
+  .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
 @media (max-width: 880px) {
   .app-shell { grid-template-columns: 1fr; }
   .sidebar { border-right: none; border-bottom: 2px solid var(--border-dark); }
   .nav-list { flex-direction: row; flex-wrap: wrap; }
   .nav-btn { width: auto; }
   .inv-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+
+@media (max-width: 680px) {
+  .kpi-grid { grid-template-columns: 1fr; }
 }

@@ -69,6 +69,11 @@
       "ov.empty_alerts": "Aucune alerte securite recente.",
       "ov.empty_audits": "Aucune entree d'audit recente.",
       "an.heading": "Analytics Serveur, Retention & Economie",
+      "an.preview_notice": "Mode apercu client (redemarrez le serveur Bedrock pour activer la capture chat, les metiers, heures de pointe, combat et Tebex).",
+      "an.sub.exec": "Vue Executive",
+      "an.sub.jobs": "Metiers & Equilibrage",
+      "an.sub.eco": "Economie & Tebex",
+      "an.sub.gameplay": "Combat & Churn",
       "an.waiting": "En attente des statistiques serveur (redemarrez le serveur si la mise a jour vient d'etre installee).",
       "an.updated": "Mise a jour stats: {date} | Pic 7j: {peak} joueurs",
       "an.export_json": "Export Stats JSON",
@@ -136,6 +141,59 @@
       "an.top.col_pass": "Pass / Rang",
       "an.top.col_eco": "Coins / Jetons",
       "an.top.empty": "Aucune donnee joueur enregistree.",
+      "an.lifecycle.title": "Segmentation Cycle de vie Joueurs",
+      "an.lifecycle.new7": "Nouveaux (< 7j)",
+      "an.lifecycle.regular": "Reguliers (>= 3j/7j)",
+      "an.lifecycle.casual": "Occasionnels (< 3j/7j)",
+      "an.lifecycle.at_risk": "A risque (7-14j inactifs)",
+      "an.lifecycle.churned": "Inactifs (> 14j)",
+      "an.funnel.title": "Funnel de Conversion & Adoption",
+      "an.funnel.known": "Joueurs connus",
+      "an.funnel.active7d": "Actifs (7j)",
+      "an.funnel.withJob": "Avec un Metier",
+      "an.funnel.discord": "Discord lie",
+      "an.funnel.paying": "Acheteurs Tebex",
+      "an.jobs.balance_heading": "Matrice d'Equilibrage Metiers (Aide Nerf / Buff)",
+      "an.jobs.col_job": "Metier",
+      "an.jobs.col_players": "Joueurs (%)",
+      "an.jobs.col_online": "En ligne",
+      "an.jobs.col_switch": "Switchs (+/-)",
+      "an.jobs.col_actives": "Actifs utilises",
+      "an.jobs.col_mastery": "Maitrise arbre",
+      "an.jobs.col_hours": "Heures moy.",
+      "an.jobs.col_coins": "Coins moy.",
+      "an.jobs.col_combat": "PvP / PvE",
+      "an.jobs.col_diag": "Diagnostic",
+      "an.jobs.diag_overpicked": "SUR-JOUE (NERF ?)",
+      "an.jobs.diag_high": "TRES POPULAIRE",
+      "an.jobs.diag_balanced": "EQUILIBRE",
+      "an.jobs.diag_underpicked": "SOUS-JOUE (BUFF ?)",
+      "an.skills.top_heading": "Top 10 Competences les plus debloquees",
+      "an.skills.empty": "Aucune competence debloquee enregistree.",
+      "an.tebex.title": "Ventilation des Packs Tebex",
+      "an.tebex.col_pack": "Pack Jetons",
+      "an.tebex.col_orders": "Commandes",
+      "an.tebex.col_tokens": "Total Jetons",
+      "an.tebex.col_usd": "Revenu est. ($)",
+      "an.tebex.empty": "Aucune commande Tebex enregistree.",
+      "an.tebex.total_row": "Total ({orders} cmd)",
+      "an.wealth.title": "Tranches de Richesse (Coins)",
+      "an.eco.est_rev": "Revenu Tebex estime",
+      "an.combat.title": "Combat, Mortalite & Dimensions",
+      "an.combat.pvp": "Kills PvP",
+      "an.combat.pve": "Kills PvE (Mobs)",
+      "an.combat.deaths": "Morts joueurs (K/D)",
+      "an.combat.dims": "Dimensions (OW / Neth / End)",
+      "an.weapons.title": "Top 10 Armes les plus utilisees (PvP / PvE)",
+      "an.weapons.col_item": "Arme",
+      "an.weapons.col_pvp": "PvP",
+      "an.weapons.col_pve": "PvE",
+      "an.weapons.col_total": "Total",
+      "an.weapons.empty": "Aucun combat enregistre depuis le demarrage.",
+      "an.churn.title": "Watchlist Churn (Veterans inactifs >= 7j)",
+      "an.churn.col_inactive": "Inactivite",
+      "an.churn.days_ago": "Il y a {d}j",
+      "an.churn.empty": "Aucun veteran a risque de depart detecte.",
       "modal.playtime_label": "Temps de jeu :",
       "modal.job_label": "Metier :",
       "modal.days30_label": "Jours actifs (30j) :",
@@ -393,6 +451,11 @@
       "ov.empty_alerts": "No recent security alerts.",
       "ov.empty_audits": "No recent audit entries.",
       "an.heading": "Server Analytics, Retention & Economy",
+      "an.preview_notice": "Client preview mode (restart the Bedrock server to enable live chat capture, jobs balancing, peak hours, combat and Tebex telemetry).",
+      "an.sub.exec": "Executive View",
+      "an.sub.jobs": "Jobs & Balancing",
+      "an.sub.eco": "Economy & Tebex",
+      "an.sub.gameplay": "Combat & Churn",
       "an.waiting": "Waiting for server analytics snapshot (restart the Bedrock server if the update was just installed).",
       "an.updated": "Stats updated: {date} | 7d Peak: {peak} players",
       "an.export_json": "Export Stats JSON",
@@ -460,6 +523,59 @@
       "an.top.col_pass": "Pass / Rank",
       "an.top.col_eco": "Coins / Tokens",
       "an.top.empty": "No player telemetry recorded yet.",
+      "an.lifecycle.title": "Player Lifecycle Segmentation",
+      "an.lifecycle.new7": "New (< 7d)",
+      "an.lifecycle.regular": "Regulars (>= 3d/7d)",
+      "an.lifecycle.casual": "Casual (< 3d/7d)",
+      "an.lifecycle.at_risk": "At Risk (7-14d inactive)",
+      "an.lifecycle.churned": "Churned (> 14d inactive)",
+      "an.funnel.title": "Conversion & Adoption Funnel",
+      "an.funnel.known": "Known Players",
+      "an.funnel.active7d": "Active (7d)",
+      "an.funnel.withJob": "Has Active Job",
+      "an.funnel.discord": "Discord Linked",
+      "an.funnel.paying": "Tebex Buyers",
+      "an.jobs.balance_heading": "Job Balancing Matrix (Nerf / Buff Decisions)",
+      "an.jobs.col_job": "Job",
+      "an.jobs.col_players": "Players (%)",
+      "an.jobs.col_online": "Online",
+      "an.jobs.col_switch": "Switches (+/-)",
+      "an.jobs.col_actives": "Actives Used",
+      "an.jobs.col_mastery": "Tree Mastery",
+      "an.jobs.col_hours": "Avg Hours",
+      "an.jobs.col_coins": "Avg Coins",
+      "an.jobs.col_combat": "PvP / PvE",
+      "an.jobs.col_diag": "Status",
+      "an.jobs.diag_overpicked": "OVERPICKED (NERF?)",
+      "an.jobs.diag_high": "HIGH PICK",
+      "an.jobs.diag_balanced": "BALANCED",
+      "an.jobs.diag_underpicked": "UNDERPICKED (BUFF?)",
+      "an.skills.top_heading": "Top 10 Most Unlocked Skills",
+      "an.skills.empty": "No skill unlocks recorded yet.",
+      "an.tebex.title": "Tebex Package Breakdown",
+      "an.tebex.col_pack": "Token Pack",
+      "an.tebex.col_orders": "Orders",
+      "an.tebex.col_tokens": "Total Tokens",
+      "an.tebex.col_usd": "Est. Revenue ($)",
+      "an.tebex.empty": "No Tebex orders recorded yet.",
+      "an.tebex.total_row": "Total ({orders} orders)",
+      "an.wealth.title": "Wealth Distribution (Coins)",
+      "an.eco.est_rev": "Est. Tebex Revenue",
+      "an.combat.title": "Combat, Deaths & Dimensions",
+      "an.combat.pvp": "PvP Kills",
+      "an.combat.pve": "PvE Kills (Mobs)",
+      "an.combat.deaths": "Player Deaths (K/D)",
+      "an.combat.dims": "Dimensions (OW / Neth / End)",
+      "an.weapons.title": "Top 10 Most Used Weapons (PvP / PvE)",
+      "an.weapons.col_item": "Weapon",
+      "an.weapons.col_pvp": "PvP",
+      "an.weapons.col_pve": "PvE",
+      "an.weapons.col_total": "Total",
+      "an.weapons.empty": "No combat kills recorded since startup.",
+      "an.churn.title": "Churn Watchlist (Veterans inactive >= 7d)",
+      "an.churn.col_inactive": "Inactive",
+      "an.churn.days_ago": "{d}d ago",
+      "an.churn.empty": "No at-risk veterans detected.",
       "modal.playtime_label": "Playtime:",
       "modal.job_label": "Job:",
       "modal.days30_label": "Active Days (30d):",
@@ -681,6 +797,9 @@
     serverOnline: false,
     lastSyncAt: 0,
     seenResultIds: new Set(),
+    initialStateLoaded: false,
+    sessionStartedAt: 0,
+    activeAnalyticsSub: "anSubExec",
     isLocalLauncher: false,
   };
 
@@ -958,6 +1077,12 @@
     }
   }
 
+  function setValColor(el, tone = "neutral") {
+    if (!el) return;
+    el.classList.remove("val-pos", "val-warn", "val-neg", "val-neutral");
+    el.classList.add(`val-${tone}`);
+  }
+
   function renderOverview() {
     const snap = state.snapshot || {};
     const meta = snap.meta || {};
@@ -966,13 +1091,27 @@
     const muted = roster.filter((r) => Boolean(r.mute)).length;
     const frozen = roster.filter((r) => Boolean(r.frozen)).length;
     const suspects = snap.anticheat?.suspects || [];
+    const onlineCnt = meta.onlineCount ?? 0;
+    const tpsNum = Number(meta.tps || 0);
+    const sanctTotal = banned + muted + frozen;
+    const alertCnt = state.securityAlerts.length;
 
-    $("ovOnline").textContent = String(meta.onlineCount ?? 0);
+    $("ovOnline").textContent = String(onlineCnt);
+    setValColor($("ovOnline"), onlineCnt > 0 ? "pos" : "neutral");
+
     $("ovKnown").textContent = String(meta.knownCount ?? roster.length);
-    $("ovTps").textContent = meta.tps ? Number(meta.tps).toFixed(1) : "--";
+
+    $("ovTps").textContent = meta.tps ? tpsNum.toFixed(1) : "--";
+    setValColor($("ovTps"), !meta.tps ? "neutral" : tpsNum >= 18 ? "pos" : tpsNum >= 14 ? "warn" : "neg");
+
     $("ovSanctions").textContent = `${banned} / ${muted} / ${frozen}`;
+    setValColor($("ovSanctions"), sanctTotal === 0 ? "pos" : sanctTotal <= 5 ? "warn" : "neg");
+
     $("ovSuspects").textContent = String(suspects.length);
-    $("ovAlerts").textContent = String(state.securityAlerts.length);
+    setValColor($("ovSuspects"), suspects.length === 0 ? "pos" : "neg");
+
+    $("ovAlerts").textContent = String(alertCnt);
+    setValColor($("ovAlerts"), alertCnt === 0 ? "pos" : alertCnt <= 10 ? "warn" : "neg");
 
     $("ovAlertFeed").innerHTML = state.securityAlerts.length
       ? state.securityAlerts
@@ -996,8 +1135,149 @@
       : `<div class="feed-item">${esc(t("ov.empty_audits"))}</div>`;
   }
 
+  function switchAnalyticsSub(subId) {
+    state.activeAnalyticsSub = subId;
+    document.querySelectorAll(".an-subpanel").forEach((el) => el.classList.add("hidden"));
+    const target = $(subId);
+    if (target) target.classList.remove("hidden");
+    document.querySelectorAll(".subtab-btn").forEach((b) => {
+      b.classList.toggle("active", b.getAttribute("data-sub") === subId);
+    });
+  }
+
+  function buildFallbackAnalytics(snap) {
+    if (!snap || (!Array.isArray(snap.roster) && !Array.isArray(snap.onlinePlayers))) return null;
+    const now = snap.meta?.now || Date.now();
+    const DAY_MS = 86400000;
+    const todayIdx = Math.floor(now / DAY_MS);
+    const roster = snap.roster || [];
+    const online = snap.onlinePlayers || [];
+    const onlineMap = new Map(online.map((p) => [p.id, p]));
+    let dau = 0, wau = 0, mau = 0, newWeekly = 0, prevNewWeekly = 0, discordLinked = 0;
+    let d1Coh = 0, d1Ret = 0, d7Coh = 0, d7Ret = 0;
+    let totalCoins = 0, totalTokens = 0, tierSum = 0;
+    const lifecycle = { new7: 0, regular: 0, casual: 0, atRisk: 0, churned: 0 };
+    const dailyMap = new Map();
+    for (let i = 13; i >= 0; i--) dailyMap.set(todayIdx - i, { day: new Date((todayIdx - i) * DAY_MS).toISOString().slice(0, 10), dau: 0, newPlayers: 0 });
+    const rankCounts = new Map();
+    for (const p of online) {
+      totalCoins += Number(p.bankBalance) || 0;
+      totalTokens += Number(p.tokens) || 0;
+      tierSum += Number(p.passTier) || 0;
+      if (p.rankId) rankCounts.set(p.rankId, (rankCounts.get(p.rankId) || 0) + 1);
+    }
+    for (const r of roster) {
+      if (r.discordName) discordLinked++;
+      const fj = r.firstJoin > 0 ? Math.floor(r.firstJoin / DAY_MS) : 0;
+      const ls = r.online ? todayIdx : (r.lastSeen > 0 ? Math.floor(r.lastSeen / DAY_MS) : 0);
+      if (ls === todayIdx) dau++;
+      if (ls >= todayIdx - 6) wau++;
+      if (ls >= todayIdx - 29) mau++;
+      if (fj >= todayIdx - 6) newWeekly++;
+      else if (fj >= todayIdx - 13) prevNewWeekly++;
+      if (fj > 0 && dailyMap.has(fj)) dailyMap.get(fj).newPlayers++;
+      if (ls > 0 && dailyMap.has(ls)) dailyMap.get(ls).dau++;
+      if (fj > 0 && fj <= todayIdx - 1) { d1Coh++; if (ls >= fj + 1) d1Ret++; }
+      if (fj > 0 && fj <= todayIdx - 7) { d7Coh++; if (ls >= fj + 7) d7Ret++; }
+      const daysOff = ls > 0 ? Math.max(0, todayIdx - ls) : 999;
+      if (fj >= todayIdx - 6) lifecycle.new7++;
+      else if (daysOff < 7) lifecycle.casual++;
+      else if (daysOff <= 14) lifecycle.atRisk++;
+      else lifecycle.churned++;
+    }
+    const dims = { overworld: 0, nether: 0, end: 0 };
+    for (const p of online) {
+      if (p.dimension === "minecraft:nether") dims.nether++;
+      else if (p.dimension === "minecraft:the_end") dims.end++;
+      else dims.overworld++;
+    }
+    return {
+      _isFallback: true,
+      generatedAt: now,
+      kpis: {
+        dau,
+        wau,
+        wauDeltaPct: null,
+        mau,
+        regularPlayers: 0,
+        regularDeltaPct: null,
+        stickinessPct: wau > 0 ? Math.round((dau / wau) * 1000) / 10 : 0,
+        newWeekly,
+        newWeeklyDeltaPct: prevNewWeekly > 0 ? Math.round(((newWeekly - prevNewWeekly) / prevNewWeekly) * 1000) / 10 : null,
+        retentionD1Pct: d1Coh > 0 ? Math.round((d1Ret / d1Coh) * 1000) / 10 : null,
+        retentionD7Pct: d7Coh > 0 ? Math.round((d7Ret / d7Coh) * 1000) / 10 : null,
+        retentionD7DeltaPct: null,
+        retentionD30Pct: null,
+        totalPlayHours: 0,
+        avgPlayHoursPerActive: 0,
+        avgSessionMinutes: 0,
+        peakOnline7d: online.length,
+        avgOnline7d: online.length,
+        discordLinkedCount: discordLinked,
+        discordLinkedPct: roster.length > 0 ? Math.round((discordLinked / roster.length) * 1000) / 10 : 0,
+      },
+      dailySeries: [...dailyMap.values()],
+      hourlyProfile: Array.from({ length: 24 }, (_, hour) => ({ hour, avgOnline: 0, peakOnline: 0, avgTps: 0, samples: 0 })),
+      lifecycle,
+      funnel: [
+        { id: "known", count: roster.length },
+        { id: "active7d", count: wau },
+        { id: "withJob", count: 0 },
+        { id: "discord", count: discordLinked },
+        { id: "paying", count: 0 },
+      ],
+      jobs: { totalWithJob: 0, totalWithoutJob: roster.length, adoptionPct: 0, breakdown: [] },
+      economy: {
+        totalCoins,
+        avgCoins: online.length > 0 ? Math.round(totalCoins / online.length) : 0,
+        medianCoins: 0,
+        top10SharePct: 0,
+        wealthTiers: [],
+        totalTokens,
+        tebexTokensTotal: 0,
+        tebexOrdersTotal: 0,
+        payingPlayersCount: 0,
+        conversionRatePct: 0,
+        arppuTokens: 0,
+        estRevenueUsd: 0,
+        tebexPackages: [],
+        rankDistribution: [...rankCounts.entries()].map(([id, count]) => ({ id, count })),
+        passTierBuckets: [],
+        avgPassTier: online.length > 0 ? Math.round((tierSum / online.length) * 10) / 10 : 0,
+        dailyQuestsDone: 0,
+        weeklyQuestsDone: 0,
+        totalCodeRedemptions: 0,
+      },
+      gameplay: { pvpKills: 0, pveKills: 0, playerDeaths: 0, kdRatio: 0, topWeapons: [], topSkills: [], dimensions: dims },
+      playtimeBuckets: [],
+      churnRiskPlayers: [],
+      topPlayers: roster
+        .map((r) => {
+          const on = onlineMap.get(r.playerId);
+          return {
+            playerId: r.playerId,
+            name: r.name,
+            online: Boolean(on),
+            playTimeSeconds: 0,
+            activeDays30: 0,
+            sessions: 0,
+            jobId: "",
+            jobSkills: 0,
+            jobMaxSkills: 0,
+            passTier: on ? on.passTier : 0,
+            rankId: on ? on.rankId : "-",
+            coins: on ? on.bankBalance : 0,
+            tokens: on ? on.tokens : 0,
+            tebexTokens: 0,
+          };
+        })
+        .sort((a, b) => (b.online ? 1 : 0) - (a.online ? 1 : 0) || b.passTier - a.passTier || b.coins - a.coins)
+        .slice(0, 15),
+    };
+  }
+
   function getAnalyticsData() {
-    return state.snapshot?.analytics || state.snapshot?.meta?.analytics || null;
+    return state.snapshot?.analytics || state.snapshot?.meta?.analytics || buildFallbackAnalytics(state.snapshot);
   }
 
   function renderHbarList(containerId, items, totalBase, gold = false) {
@@ -1021,6 +1301,9 @@
 
   function renderAnalytics() {
     const an = getAnalyticsData();
+    if ($("anPreviewBanner")) {
+      $("anPreviewBanner").classList.toggle("hidden", !(an && an._isFallback));
+    }
     if (!an || !an.kpis) {
       if ($("anGeneratedAt")) $("anGeneratedAt").textContent = t("an.waiting");
       if ($("anTopPlayersBody")) {
@@ -1029,17 +1312,21 @@
       return;
     }
     const k = an.kpis;
+    const eco = an.economy || {};
     $("anGeneratedAt").textContent = t("an.updated", { date: fmtDate(an.generatedAt), peak: k.peakOnline7d ?? 0 });
 
     $("anKpiWau").textContent = fmtNum(k.wau);
+    setValColor($("anKpiWau"), k.wau > 0 ? "pos" : "neutral");
     renderDeltaEl($("anKpiWauDelta"), k.wauDeltaPct);
     $("anKpiWauSub").textContent = t("an.kpi.wau_sub", { dau: fmtNum(k.dau), mau: fmtNum(k.mau) });
 
     $("anKpiRegulars").textContent = fmtNum(k.regularPlayers);
+    setValColor($("anKpiRegulars"), k.regularPlayers > 0 ? "pos" : "neutral");
     renderDeltaEl($("anKpiRegularsDelta"), k.regularDeltaPct);
     $("anKpiRegularsSub").textContent = t("an.kpi.regulars_sub", { stick: k.stickinessPct ?? 0, avg: k.avgOnline7d ?? 0 });
 
     $("anKpiNew7").textContent = fmtNum(k.newWeekly);
+    setValColor($("anKpiNew7"), k.newWeekly > 0 ? "pos" : "neutral");
     renderDeltaEl($("anKpiNew7Delta"), k.newWeeklyDeltaPct);
     $("anKpiNew7Sub").textContent = t("an.kpi.new7_sub", {
       known: fmtNum(state.snapshot?.meta?.knownCount ?? 0),
@@ -1047,7 +1334,9 @@
       discPct: k.discordLinkedPct ?? 0,
     });
 
-    $("anKpiRet7").textContent = k.retentionD7Pct !== null && k.retentionD7Pct !== undefined ? `${k.retentionD7Pct}%` : "--";
+    const hasRet7 = k.retentionD7Pct !== null && k.retentionD7Pct !== undefined;
+    $("anKpiRet7").textContent = hasRet7 ? `${k.retentionD7Pct}%` : "--";
+    setValColor($("anKpiRet7"), !hasRet7 ? "neutral" : k.retentionD7Pct >= 40 ? "pos" : k.retentionD7Pct >= 20 ? "warn" : "neg");
     renderDeltaEl($("anKpiRet7Delta"), k.retentionD7DeltaPct);
     $("anKpiRet7Sub").textContent = t("an.kpi.retention_sub", {
       d1: k.retentionD1Pct !== null && k.retentionD1Pct !== undefined ? `${k.retentionD1Pct}%` : "--",
@@ -1055,11 +1344,13 @@
     });
 
     $("anKpiPlaytime").textContent = `${fmtNum(k.totalPlayHours)}h`;
+    setValColor($("anKpiPlaytime"), (k.totalPlayHours || 0) > 0 ? "pos" : "neutral");
     $("anKpiPlaytimeSub1").textContent = t("an.kpi.playtime_sub1", { avg: k.avgPlayHoursPerActive ?? 0 });
     $("anKpiPlaytimeSub2").textContent = t("an.kpi.playtime_sub2", { sess: k.avgSessionMinutes ?? 0 });
 
-    const eco = an.economy || {};
-    $("anKpiConversion").textContent = `${eco.conversionRatePct ?? 0}%`;
+    const conv = Number(eco.conversionRatePct) || 0;
+    $("anKpiConversion").textContent = `${conv}%`;
+    setValColor($("anKpiConversion"), conv >= 5 ? "pos" : conv > 0 ? "warn" : "neutral");
     $("anKpiMonSub1").textContent = t("an.kpi.mon_sub1", {
       buyers: fmtNum(eco.payingPlayersCount),
       orders: fmtNum(eco.tebexOrdersTotal),
@@ -1111,6 +1402,20 @@
       })
       .join("");
 
+    const lc = an.lifecycle || {};
+    const lcTotal = Math.max(1, (lc.new7 || 0) + (lc.regular || 0) + (lc.casual || 0) + (lc.atRisk || 0) + (lc.churned || 0));
+    renderHbarList("anLifecycleList", [
+      { label: t("an.lifecycle.new7"), count: lc.new7 || 0 },
+      { label: t("an.lifecycle.regular"), count: lc.regular || 0 },
+      { label: t("an.lifecycle.casual"), count: lc.casual || 0 },
+      { label: t("an.lifecycle.at_risk"), count: lc.atRisk || 0 },
+      { label: t("an.lifecycle.churned"), count: lc.churned || 0 },
+    ], lcTotal, false);
+
+    const funnel = an.funnel || [];
+    const funnelBase = Math.max(1, funnel[0]?.count || 1);
+    renderHbarList("anFunnelList", funnel.map((f) => ({ label: t(`an.funnel.${f.id}`), count: f.count || 0 })), funnelBase, true);
+
     const jobs = an.jobs || {};
     $("anJobsAdoptionBadge").textContent = t("an.jobs.adoption", {
       pct: jobs.adoptionPct ?? 0,
@@ -1118,36 +1423,80 @@
     });
     const jList = jobs.breakdown || [];
     const jDenom = Math.max(1, jobs.totalWithJob || Math.max(...jList.map((j) => j.players || 0), 1));
-    $("anJobsList").innerHTML = jList
-      .map((j) => {
-        const share = Math.min(100, Math.round(((j.players || 0) / jDenom) * 1000) / 10);
-        return `<div class="hbar-row">
-          <div class="hbar-meta">
-            <strong>${esc(jobLabel(j.id))}</strong>
-            <span>${esc(t("an.jobs.row_meta", { players: j.players, online: j.online, avg: j.avgSkills, max: j.maxSkills || "-", comp: j.completionPct }))}</span>
-          </div>
-          <div class="hbar-track"><div class="hbar-fill" style="width:${share}%"></div></div>
-        </div>`;
-      })
-      .join("");
+    $("anJobsList").innerHTML = jList.length
+      ? jList
+          .map((j) => {
+            const share = Math.min(100, Math.round(((j.players || 0) / jDenom) * 1000) / 10);
+            return `<div class="hbar-row">
+              <div class="hbar-meta">
+                <strong>${esc(jobLabel(j.id))}</strong>
+                <span>${esc(t("an.jobs.row_meta", { players: j.players, online: j.online, avg: j.avgSkills, max: j.maxSkills || "-", comp: j.completionPct }))}</span>
+              </div>
+              <div class="hbar-track"><div class="hbar-fill" style="width:${share}%"></div></div>
+            </div>`;
+          })
+          .join("")
+      : `<div class="feed-item">${esc(t("an.waiting"))}</div>`;
+
+    $("anJobsBalanceBody").innerHTML = jList.length
+      ? jList
+          .map((j) => {
+            const net = Number(j.netSwitches) || 0;
+            const netCls = net > 0 ? "val-pos" : net < 0 ? "val-neg" : "val-neutral";
+            const netTxt = net > 0 ? `+${net}` : String(net);
+            const flag = j.balanceFlag || "balanced";
+            return `<tr>
+              <td><strong>${esc(jobLabel(j.id))}</strong></td>
+              <td>${fmtNum(j.players)} (${j.sharePct ?? 0}%)</td>
+              <td>${fmtNum(j.online)}</td>
+              <td class="${netCls}">+${j.switchesIn || 0} / -${j.switchesOut || 0} (<strong>${netTxt}</strong>)</td>
+              <td>${fmtNum(j.activeUses)}</td>
+              <td>${j.avgSkills || 0}/${j.maxSkills || "-"} (${j.completionPct || 0}%)</td>
+              <td>${j.avgPlayHours || 0}h</td>
+              <td>${fmtNum(j.avgCoins)}</td>
+              <td>${fmtNum(j.pvpKills)} / ${fmtNum(j.pveKills)}</td>
+              <td><span class="tag-badge bal-${esc(flag)}">${esc(t(`an.jobs.diag_${flag}`))}</span></td>
+            </tr>`;
+          })
+          .join("")
+      : `<tr><td colspan="10">${esc(t("an.waiting"))}</td></tr>`;
+
+    const gp = an.gameplay || {};
+    const topSkills = gp.topSkills || [];
+    const maxSkillCnt = Math.max(1, ...topSkills.map((s) => s.count || 0));
+    renderHbarList("anTopSkillsList", topSkills.map((s) => ({ label: s.id, count: s.count })), maxSkillCnt, false);
 
     const knownTotal = Math.max(1, state.snapshot?.meta?.knownCount || 0);
     renderHbarList("anPlaytimeDist", an.playtimeBuckets || [], knownTotal, false);
     const passSum = (eco.passTierBuckets || []).reduce((s, b) => s + (b.count || 0), 0);
     renderHbarList("anPassDist", eco.passTierBuckets || [], Math.max(1, passSum), true);
+    const wealthSum = (eco.wealthTiers || []).reduce((s, b) => s + (b.count || 0), 0);
+    renderHbarList("anWealthList", eco.wealthTiers || [], Math.max(1, wealthSum), true);
 
-    $("anEcoGrid").innerHTML = [
-      [t("an.eco.total_coins"), fmtNum(eco.totalCoins)],
-      [t("an.eco.avg_median_coins"), `${fmtNum(eco.avgCoins)} / ${fmtNum(eco.medianCoins)}`],
-      [t("an.eco.top10_share"), `${eco.top10SharePct ?? 0}%`],
-      [t("an.eco.total_tokens"), fmtNum(eco.totalTokens)],
-      [t("an.eco.avg_pass"), String(eco.avgPassTier ?? 0)],
-      [t("an.eco.quests_done"), `${fmtNum(eco.dailyQuestsDone)} / ${fmtNum(eco.weeklyQuestsDone)}`],
-      [t("an.eco.code_uses"), fmtNum(eco.totalCodeRedemptions)],
-      [t("an.eco.discord_links"), `${fmtNum(k.discordLinkedCount)} (${k.discordLinkedPct ?? 0}%)`],
-    ]
-      .map(([lbl, val]) => `<div class="eco-cell"><div class="eco-cell-lbl">${esc(lbl)}</div><div class="eco-cell-val">${esc(val)}</div></div>`)
+    const top10Pct = Number(eco.top10SharePct) || 0;
+    const top10Tone = top10Pct >= 75 ? "neg" : top10Pct >= 55 ? "warn" : "pos";
+    const ecoCells = [
+      [t("an.eco.total_coins"), fmtNum(eco.totalCoins), "neutral"],
+      [t("an.eco.avg_median_coins"), `${fmtNum(eco.avgCoins)} / ${fmtNum(eco.medianCoins)}`, "neutral"],
+      [t("an.eco.top10_share"), `${top10Pct}%`, top10Tone],
+      [t("an.eco.total_tokens"), fmtNum(eco.totalTokens), "neutral"],
+      [t("an.eco.est_rev"), `$${Number(eco.estRevenueUsd || 0).toFixed(2)}`, (eco.estRevenueUsd || 0) > 0 ? "pos" : "neutral"],
+      [t("an.eco.avg_pass"), String(eco.avgPassTier ?? 0), "neutral"],
+      [t("an.eco.quests_done"), `${fmtNum(eco.dailyQuestsDone)} / ${fmtNum(eco.weeklyQuestsDone)}`, "pos"],
+      [t("an.eco.code_uses"), fmtNum(eco.totalCodeRedemptions), "neutral"],
+      [t("an.eco.discord_links"), `${fmtNum(k.discordLinkedCount)} (${k.discordLinkedPct ?? 0}%)`, (k.discordLinkedPct || 0) >= 30 ? "pos" : "warn"],
+    ];
+    $("anEcoGrid").innerHTML = ecoCells
+      .map(([lbl, val, tone]) => `<div class="eco-cell"><div class="eco-cell-lbl">${esc(lbl)}</div><div class="eco-cell-val val-${tone}">${esc(val)}</div></div>`)
       .join("");
+
+    const pkgs = eco.tebexPackages || [];
+    $("anTebexPkgBody").innerHTML = pkgs.length
+      ? pkgs
+          .map((pk) => `<tr><td><strong>${fmtNum(pk.tokens)} J</strong></td><td>${fmtNum(pk.orders)}</td><td>${fmtNum(pk.totalTokens)}</td><td class="val-pos">$${Number(pk.estUsd || 0).toFixed(2)}</td></tr>`)
+          .join("") +
+        `<tr><td><strong>${esc(t("an.tebex.total_row", { orders: fmtNum(eco.tebexOrdersTotal) }))}</strong></td><td><strong>${fmtNum(eco.tebexOrdersTotal)}</strong></td><td><strong>${fmtNum(eco.tebexTokensTotal)}</strong></td><td class="val-pos"><strong>$${Number(eco.estRevenueUsd || 0).toFixed(2)}</strong></td></tr>`
+      : `<tr><td colspan="4">${esc(t("an.tebex.empty"))}</td></tr>`;
 
     const rankDefs = new Map((state.snapshot?.metaOptions?.ranks || []).map((r) => [r.id, r.label]));
     const rankItems = (eco.rankDistribution || []).map((r) => ({
@@ -1156,6 +1505,35 @@
     }));
     const rankSum = rankItems.reduce((s, x) => s + x.count, 0);
     renderHbarList("anRanksList", rankItems, Math.max(1, rankSum), false);
+
+    const dims = gp.dimensions || {};
+    $("anCombatGrid").innerHTML = [
+      [t("an.combat.pvp"), fmtNum(gp.pvpKills), "warn"],
+      [t("an.combat.pve"), fmtNum(gp.pveKills), "pos"],
+      [t("an.combat.deaths"), `${fmtNum(gp.playerDeaths)} (K/D ${gp.kdRatio ?? 0})`, "neg"],
+      [t("an.combat.dims"), `${dims.overworld || 0} / ${dims.nether || 0} / ${dims.end || 0}`, "neutral"],
+    ]
+      .map(([lbl, val, tone]) => `<div class="eco-cell"><div class="eco-cell-lbl">${esc(lbl)}</div><div class="eco-cell-val val-${tone}">${esc(val)}</div></div>`)
+      .join("");
+
+    const weapons = gp.topWeapons || [];
+    $("anTopWeaponsBody").innerHTML = weapons.length
+      ? weapons.map((w) => `<tr><td><strong>${esc(String(w.id).replace("minecraft:", ""))}</strong></td><td>${fmtNum(w.pvp)}</td><td>${fmtNum(w.pve)}</td><td><strong>${fmtNum(w.total)}</strong></td></tr>`).join("")
+      : `<tr><td colspan="4">${esc(t("an.weapons.empty"))}</td></tr>`;
+
+    const churn = an.churnRiskPlayers || [];
+    $("anChurnBody").innerHTML = churn.length
+      ? churn
+          .map((c) => `<tr>
+            <td><strong>${esc(c.name)}</strong></td>
+            <td class="val-neg">${esc(t("an.churn.days_ago", { d: c.daysInactive }))}</td>
+            <td>${esc(fmtHours(c.playTimeSeconds))}</td>
+            <td>${esc(jobLabel(c.jobId))}</td>
+            <td>${fmtNum(c.coins)} C / ${fmtNum(c.tokens)} J</td>
+            <td><button class="oreui-btn oreui-btn-info oreui-btn-sm open-player-btn" data-pid="${esc(c.playerId)}">${esc(t("players.manage"))}</button></td>
+          </tr>`)
+          .join("")
+      : `<tr><td colspan="6">${esc(t("an.churn.empty"))}</td></tr>`;
 
     const top = an.topPlayers || [];
     $("anTopPlayersBody").innerHTML = top.length
@@ -1193,10 +1571,13 @@
       for (const [k, v] of Object.entries(an.kpis || {})) rows.push(["KPI", k, v ?? "", ""]);
       for (const d of an.dailySeries || []) rows.push(["DAILY_14D", d.day, d.dau, `new=${d.newPlayers}`]);
       for (const h of an.hourlyProfile || []) rows.push(["HOURLY_24H", `${h.hour}h`, h.avgOnline, `peak=${h.peakOnline};tps=${h.avgTps}`]);
-      for (const j of an.jobs?.breakdown || []) rows.push(["JOB", j.id, j.players, `online=${j.online};avgSkills=${j.avgSkills}/${j.maxSkills}`]);
+      for (const j of an.jobs?.breakdown || []) {
+        rows.push(["JOB", j.id, j.players, `share=${j.sharePct}%;online=${j.online};sw=${j.switchesIn}/${j.switchesOut};act=${j.activeUses};avgSkills=${j.avgSkills}/${j.maxSkills};pvp=${j.pvpKills};pve=${j.pveKills};diag=${j.balanceFlag}`]);
+      }
       for (const [k, v] of Object.entries(an.economy || {})) {
         if (typeof v !== "object") rows.push(["ECONOMY", k, v ?? "", ""]);
       }
+      for (const w of an.gameplay?.topWeapons || []) rows.push(["WEAPON", w.id, w.total, `pvp=${w.pvp};pve=${w.pve}`]);
       for (const p of an.topPlayers || []) {
         rows.push(["TOP_PLAYER", p.name, `${Math.round((p.playTimeSeconds || 0) / 360) / 10}h`, `job=${p.jobId};coins=${p.coins};tokens=${p.tokens}`]);
       }
@@ -1567,15 +1948,20 @@
       state.lastSyncAt = res.lastSyncAt || 0;
       state.snapshot = res.data || null;
       state.securityAlerts = res.securityAlerts || [];
+      const isInitial = !state.initialStateLoaded;
       for (const r of res.recentResults || []) {
         if (r.commandId && !state.seenResultIds.has(r.commandId)) {
           state.seenResultIds.add(r.commandId);
           if (state.seenResultIds.size > 150) {
             state.seenResultIds.delete(state.seenResultIds.values().next().value);
           }
-          showToast(t("toast.server_msg", { msg: r.message }), Boolean(r.ok));
+          const isOld = r.timestamp && state.sessionStartedAt && r.timestamp < state.sessionStartedAt - 10000;
+          if (!isInitial && !isOld) {
+            showToast(t("toast.server_msg", { msg: r.message }), Boolean(r.ok));
+          }
         }
       }
+      state.initialStateLoaded = true;
       renderAll();
     } catch {}
   }
@@ -1583,6 +1969,9 @@
   function startSession(token, user) {
     state.token = token;
     state.user = user;
+    state.initialStateLoaded = false;
+    state.sessionStartedAt = Date.now();
+    state.seenResultIds.clear();
     localStorage.setItem(STORAGE_TOKEN, token);
     $("loginView").classList.add("hidden");
     $("appView").classList.remove("hidden");
@@ -1685,6 +2074,11 @@
       if (btn) switchTab(btn.getAttribute("data-tab"));
     });
 
+    $("anSubtabBar")?.addEventListener("click", (e) => {
+      const btn = e.target.closest(".subtab-btn");
+      if (btn) switchAnalyticsSub(btn.getAttribute("data-sub"));
+    });
+
     document.querySelectorAll(".filter-player-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
         state.playerFilter = btn.getAttribute("data-filter");
@@ -1708,6 +2102,14 @@
     });
 
     $("anTopPlayersBody")?.addEventListener("click", (e) => {
+      const btn = e.target.closest(".open-player-btn");
+      if (!btn) return;
+      state.modalPlayerId = btn.getAttribute("data-pid");
+      $("playerModal").classList.remove("hidden");
+      renderPlayerModal(state.modalPlayerId);
+    });
+
+    $("anChurnBody")?.addEventListener("click", (e) => {
       const btn = e.target.closest(".open-player-btn");
       if (!btn) return;
       state.modalPlayerId = btn.getAttribute("data-pid");
