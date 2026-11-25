@@ -86,6 +86,7 @@
 
       <nav class="nav-list" id="navList">
         <button class="oreui-btn nav-btn active" data-tab="tabOverview" data-min="1" data-i18n="nav.overview">Vue d'ensemble</button>
+        <button class="oreui-btn nav-btn" data-tab="tabAnalytics" data-min="1" data-i18n="nav.analytics">Statistiques & Retention</button>
         <button class="oreui-btn nav-btn" data-tab="tabPlayers" data-min="1" data-i18n="nav.players">Joueurs & Moderation</button>
         <button class="oreui-btn nav-btn" data-tab="tabChat" data-min="1" data-i18n="nav.chat">Chat & Annonces</button>
         <button class="oreui-btn nav-btn" data-tab="tabAntiCheat" data-min="1" data-i18n="nav.anticheat">Anti-Cheat & PacketGuard</button>
@@ -134,6 +135,154 @@
             <div class="oreui-panel oreui-card">
               <h3 class="pixel-font" style="margin-top: 0;" data-i18n="ov.recent_audits">Dernieres Actions Audit</h3>
               <div id="ovAuditFeed" class="feed-list"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ONGLET 1B: STATISTIQUES & RETENTION -->
+        <section id="tabAnalytics" class="tab-section hidden">
+          <div class="oreui-panel oreui-card">
+            <div class="toolbar" style="margin-bottom: 0;">
+              <div>
+                <h3 class="pixel-font" style="margin: 0;" data-i18n="an.heading">Analytics Serveur, Retention & Economie</h3>
+                <div id="anGeneratedAt" style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">--</div>
+              </div>
+              <div class="toolbar-group">
+                <button id="exportStatsJsonBtn" class="oreui-btn oreui-btn-info oreui-btn-sm" type="button" data-i18n="an.export_json">Export Stats JSON</button>
+                <button id="exportStatsCsvBtn" class="oreui-btn oreui-btn-primary oreui-btn-sm" type="button" data-i18n="an.export_csv">Export Stats CSV</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="kpi-grid">
+            <div class="oreui-panel kpi-card">
+              <div class="kpi-head">
+                <span data-i18n="an.kpi.wau">Visiteurs hebdomadaires (7j)</span>
+                <span class="kpi-tip" data-i18n-title="an.kpi.wau_tip" title="Joueurs uniques actifs sur les 7 derniers jours">i</span>
+              </div>
+              <div id="anKpiWau" class="kpi-value pixel-font">0</div>
+              <div id="anKpiWauDelta" class="kpi-delta flat">--</div>
+              <div id="anKpiWauSub" class="kpi-sub">--</div>
+            </div>
+
+            <div class="oreui-panel kpi-card">
+              <div class="kpi-head">
+                <span data-i18n="an.kpi.regulars">Joueurs reguliers (>= 3j/7j)</span>
+                <span class="kpi-tip" data-i18n-title="an.kpi.regulars_tip" title="Joueurs connectes au moins 3 jours distincts sur 7 jours">i</span>
+              </div>
+              <div id="anKpiRegulars" class="kpi-value pixel-font">0</div>
+              <div id="anKpiRegularsDelta" class="kpi-delta flat">--</div>
+              <div id="anKpiRegularsSub" class="kpi-sub">--</div>
+            </div>
+
+            <div class="oreui-panel kpi-card">
+              <div class="kpi-head">
+                <span data-i18n="an.kpi.new7">Nouveaux joueurs (7j)</span>
+                <span class="kpi-tip" data-i18n-title="an.kpi.new7_tip" title="Premieres connexions enregistrees sur les 7 derniers jours">i</span>
+              </div>
+              <div id="anKpiNew7" class="kpi-value pixel-font">0</div>
+              <div id="anKpiNew7Delta" class="kpi-delta flat">--</div>
+              <div id="anKpiNew7Sub" class="kpi-sub">--</div>
+            </div>
+
+            <div class="oreui-panel kpi-card">
+              <div class="kpi-head">
+                <span data-i18n="an.kpi.retention">Fidelisation nouveaux (J+7)</span>
+                <span class="kpi-tip" data-i18n-title="an.kpi.retention_tip" title="Part des nouveaux joueurs revenus la semaine suivante">i</span>
+              </div>
+              <div id="anKpiRet7" class="kpi-value pixel-font">--</div>
+              <div id="anKpiRet7Delta" class="kpi-delta flat">--</div>
+              <div id="anKpiRet7Sub" class="kpi-sub">--</div>
+            </div>
+
+            <div class="oreui-panel kpi-card">
+              <div class="kpi-head">
+                <span data-i18n="an.kpi.playtime">Temps de jeu cumule</span>
+                <span class="kpi-tip" data-i18n-title="an.kpi.playtime_tip" title="Heures totales tracees et duree moyenne par session">i</span>
+              </div>
+              <div id="anKpiPlaytime" class="kpi-value pixel-font">0h</div>
+              <div id="anKpiPlaytimeSub1" class="kpi-sub">--</div>
+              <div id="anKpiPlaytimeSub2" class="kpi-sub">--</div>
+            </div>
+
+            <div class="oreui-panel kpi-card">
+              <div class="kpi-head">
+                <span data-i18n="an.kpi.monetization">Monetisation Tebex</span>
+                <span class="kpi-tip" data-i18n-title="an.kpi.monetization_tip" title="Acheteurs uniques, taux de conversion et Jetons Tebex livres">i</span>
+              </div>
+              <div id="anKpiConversion" class="kpi-value pixel-font">0%</div>
+              <div id="anKpiMonSub1" class="kpi-sub">--</div>
+              <div id="anKpiMonSub2" class="kpi-sub">--</div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="oreui-panel oreui-card">
+              <div class="toolbar">
+                <h3 class="pixel-font" style="margin: 0;" data-i18n="an.chart.daily_title">Activite quotidienne (14 jours UTC)</h3>
+                <span class="tag-badge tag-info" data-i18n="an.chart.daily_legend">DAU / Nouveaux</span>
+              </div>
+              <div id="anDailyChart" class="chart-cols"></div>
+            </div>
+
+            <div class="oreui-panel oreui-card">
+              <div class="toolbar">
+                <h3 class="pixel-font" style="margin: 0;" data-i18n="an.chart.hourly_title">Heures de pointe (24h UTC, moy. 7j)</h3>
+                <span id="anPeakBadge" class="tag-badge tag-warn">--</span>
+              </div>
+              <div id="anHourlyChart" class="chart-cols chart-cols-24"></div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="oreui-panel oreui-card">
+              <div class="toolbar">
+                <h3 class="pixel-font" style="margin: 0;" data-i18n="an.jobs.title">Popularite des Metiers (Jobs & Skills)</h3>
+                <span id="anJobsAdoptionBadge" class="tag-badge tag-ok">--</span>
+              </div>
+              <div id="anJobsList" class="hbar-list"></div>
+            </div>
+
+            <div class="oreui-panel oreui-card">
+              <h3 class="pixel-font" style="margin-top: 0;" data-i18n="an.engagement.title">Engagement Temps de jeu & FrontierPass</h3>
+              <div class="an-subhead" data-i18n="an.playtime_dist_title">Distribution du temps de jeu</div>
+              <div id="anPlaytimeDist" class="hbar-list" style="margin-bottom: 14px;"></div>
+              <div class="an-subhead" data-i18n="an.pass_dist_title">Paliers FrontierPass</div>
+              <div id="anPassDist" class="hbar-list"></div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="oreui-panel oreui-card">
+              <h3 class="pixel-font" style="margin-top: 0;" data-i18n="an.eco.title">Sante Economique & Equilibre</h3>
+              <div id="anEcoGrid" class="eco-metrics-grid"></div>
+            </div>
+
+            <div class="oreui-panel oreui-card">
+              <h3 class="pixel-font" style="margin-top: 0;" data-i18n="an.ranks.title">Repartition des Rangs & Discord</h3>
+              <div id="anRanksList" class="hbar-list"></div>
+            </div>
+          </div>
+
+          <div class="oreui-panel oreui-card">
+            <h3 class="pixel-font" style="margin-top: 0;" data-i18n="an.top.title">Top 15 Joueurs les plus actifs</h3>
+            <div class="table-scroll">
+              <table class="ore-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="an.top.col_player">Joueur</th>
+                    <th data-i18n="an.top.col_state">Etat</th>
+                    <th data-i18n="an.top.col_playtime">Temps de jeu</th>
+                    <th data-i18n="an.top.col_days">Jours (30j)</th>
+                    <th data-i18n="an.top.col_sessions">Sessions</th>
+                    <th data-i18n="an.top.col_job">Metier</th>
+                    <th data-i18n="an.top.col_pass">Pass / Rang</th>
+                    <th data-i18n="an.top.col_eco">Coins / Jetons</th>
+                    <th data-i18n="players.col.actions">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="anTopPlayersBody"></tbody>
+              </table>
             </div>
           </div>
         </section>

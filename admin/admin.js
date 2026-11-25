@@ -51,6 +51,7 @@
       "status.sync": "Dernier sync: {val}",
       "status.sync_wait": "En attente de synchronisation...",
       "nav.overview": "Vue d'ensemble",
+      "nav.analytics": "Statistiques & Retention",
       "nav.players": "Joueurs & Moderation",
       "nav.chat": "Chat & Annonces",
       "nav.anticheat": "Anti-Cheat & PacketGuard",
@@ -67,6 +68,78 @@
       "ov.recent_audits": "Dernieres Actions Audit",
       "ov.empty_alerts": "Aucune alerte securite recente.",
       "ov.empty_audits": "Aucune entree d'audit recente.",
+      "an.heading": "Analytics Serveur, Retention & Economie",
+      "an.waiting": "En attente des statistiques serveur (redemarrez le serveur si la mise a jour vient d'etre installee).",
+      "an.updated": "Mise a jour stats: {date} | Pic 7j: {peak} joueurs",
+      "an.export_json": "Export Stats JSON",
+      "an.export_csv": "Export Stats CSV",
+      "an.kpi.wau": "Visiteurs hebdomadaires (7j)",
+      "an.kpi.wau_tip": "Joueurs uniques actifs sur les 7 derniers jours",
+      "an.kpi.wau_sub": "Aujourd'hui (DAU): {dau} | Mois (MAU): {mau}",
+      "an.kpi.regulars": "Joueurs reguliers (>= 3j/7j)",
+      "an.kpi.regulars_tip": "Joueurs connectes au moins 3 jours distincts sur 7 jours",
+      "an.kpi.regulars_sub": "Stickiness (DAU/WAU): {stick}% | Moy. 7j: {avg} en ligne",
+      "an.kpi.new7": "Nouveaux joueurs (7j)",
+      "an.kpi.new7_tip": "Premieres connexions enregistrees sur les 7 derniers jours",
+      "an.kpi.new7_sub": "Total connus: {known} | Discord lies: {disc} ({discPct}%)",
+      "an.kpi.retention": "Fidelisation nouveaux (J+7)",
+      "an.kpi.retention_tip": "Part des nouveaux joueurs revenus la semaine suivante",
+      "an.kpi.retention_sub": "Retention J+1: {d1} | J+30: {d30}",
+      "an.kpi.playtime": "Temps de jeu cumule",
+      "an.kpi.playtime_tip": "Heures totales tracees et duree moyenne par session",
+      "an.kpi.playtime_sub1": "Moyenne / joueur: {avg}h",
+      "an.kpi.playtime_sub2": "Session moyenne: {sess} min",
+      "an.kpi.monetization": "Monetisation Tebex",
+      "an.kpi.monetization_tip": "Acheteurs uniques, taux de conversion et Jetons Tebex livres",
+      "an.kpi.mon_sub1": "Acheteurs: {buyers} | Commandes: {orders}",
+      "an.kpi.mon_sub2": "Jetons Tebex: {tok} (ARPPU: {arppu})",
+      "an.delta.vs_prev": "{arrow} {val}% depuis la semaine derniere",
+      "an.delta.no_prev": "Premiere semaine de mesure",
+      "an.chart.daily_title": "Activite quotidienne (14 jours UTC)",
+      "an.chart.daily_legend": "DAU / Nouveaux",
+      "an.chart.daily_tip": "{day} : {dau} actifs, {nw} nouveaux",
+      "an.chart.hourly_title": "Heures de pointe (24h UTC, moy. 7j)",
+      "an.chart.peak_badge": "Pic 7j: {peak} en ligne",
+      "an.chart.hourly_tip": "{hour}h UTC : moy {avg} | pic {peak} | TPS {tps}",
+      "an.jobs.title": "Popularite des Metiers (Jobs & Skills)",
+      "an.jobs.adoption": "Adoption: {pct}% ({withJob} avec metier)",
+      "an.jobs.row_meta": "{players} joueurs ({online} en ligne) | Moy. {avg}/{max} comp. ({comp}%)",
+      "an.job.miner": "Mineur",
+      "an.job.lumberjack": "Bucheron",
+      "an.job.blacksmith": "Forgeron",
+      "an.job.rancher": "Eleveur",
+      "an.job.farmer": "Fermier",
+      "an.job.fisher": "Pecheur",
+      "an.job.hunter": "Chasseur",
+      "an.job.knight": "Chevalier",
+      "an.job.none": "Aucun metier",
+      "an.engagement.title": "Engagement Temps de jeu & FrontierPass",
+      "an.playtime_dist_title": "Distribution du temps de jeu",
+      "an.pass_dist_title": "Paliers FrontierPass",
+      "an.eco.title": "Sante Economique & Equilibre",
+      "an.eco.total_coins": "Masse monetaire (Coins)",
+      "an.eco.avg_median_coins": "Moyenne / Mediane Coins",
+      "an.eco.top10_share": "Part du Top 10% richesses",
+      "an.eco.total_tokens": "Jetons en circulation",
+      "an.eco.avg_pass": "Palier Pass moyen",
+      "an.eco.quests_done": "Quetes J / H completees",
+      "an.eco.code_uses": "Codes cadeaux utilises",
+      "an.eco.discord_links": "Comptes Discord lies",
+      "an.ranks.title": "Repartition des Rangs & Discord",
+      "an.top.title": "Top 15 Joueurs les plus actifs",
+      "an.top.col_player": "Joueur",
+      "an.top.col_state": "Etat",
+      "an.top.col_playtime": "Temps de jeu",
+      "an.top.col_days": "Jours (30j)",
+      "an.top.col_sessions": "Sessions",
+      "an.top.col_job": "Metier",
+      "an.top.col_pass": "Pass / Rang",
+      "an.top.col_eco": "Coins / Jetons",
+      "an.top.empty": "Aucune donnee joueur enregistree.",
+      "modal.playtime_label": "Temps de jeu :",
+      "modal.job_label": "Metier :",
+      "modal.days30_label": "Jours actifs (30j) :",
+      "modal.tebex_label": "Tebex :",
       "players.filter.online": "En ligne",
       "players.filter.all": "Tous",
       "players.filter.sanctioned": "Sanctionnes",
@@ -302,6 +375,7 @@
       "status.sync": "Last sync: {val}",
       "status.sync_wait": "Waiting for synchronization...",
       "nav.overview": "Overview",
+      "nav.analytics": "Analytics & Retention",
       "nav.players": "Players & Moderation",
       "nav.chat": "Chat & Broadcasts",
       "nav.anticheat": "Anti-Cheat & PacketGuard",
@@ -318,6 +392,78 @@
       "ov.recent_audits": "Recent Audit Actions",
       "ov.empty_alerts": "No recent security alerts.",
       "ov.empty_audits": "No recent audit entries.",
+      "an.heading": "Server Analytics, Retention & Economy",
+      "an.waiting": "Waiting for server analytics snapshot (restart the Bedrock server if the update was just installed).",
+      "an.updated": "Stats updated: {date} | 7d Peak: {peak} players",
+      "an.export_json": "Export Stats JSON",
+      "an.export_csv": "Export Stats CSV",
+      "an.kpi.wau": "Weekly Visitors (7d)",
+      "an.kpi.wau_tip": "Unique players active during the last 7 days",
+      "an.kpi.wau_sub": "Today (DAU): {dau} | Monthly (MAU): {mau}",
+      "an.kpi.regulars": "Regular Players (>= 3d/7d)",
+      "an.kpi.regulars_tip": "Players connected at least 3 distinct days in the last 7 days",
+      "an.kpi.regulars_sub": "Stickiness (DAU/WAU): {stick}% | 7d Avg: {avg} online",
+      "an.kpi.new7": "New Players (7d)",
+      "an.kpi.new7_tip": "First joins recorded in the last 7 days",
+      "an.kpi.new7_sub": "Total known: {known} | Discord linked: {disc} ({discPct}%)",
+      "an.kpi.retention": "New Player Retention (D7)",
+      "an.kpi.retention_tip": "Share of new players returning in the following week",
+      "an.kpi.retention_sub": "D1 Retention: {d1} | D30: {d30}",
+      "an.kpi.playtime": "Cumulative Playtime",
+      "an.kpi.playtime_tip": "Total tracked hours and average session duration",
+      "an.kpi.playtime_sub1": "Avg / player: {avg}h",
+      "an.kpi.playtime_sub2": "Avg session: {sess} min",
+      "an.kpi.monetization": "Tebex Monetization",
+      "an.kpi.monetization_tip": "Unique buyers, conversion rate and Tebex Tokens delivered",
+      "an.kpi.mon_sub1": "Buyers: {buyers} | Orders: {orders}",
+      "an.kpi.mon_sub2": "Tebex Tokens: {tok} (ARPPU: {arppu})",
+      "an.delta.vs_prev": "{arrow} {val}% since last week",
+      "an.delta.no_prev": "First measurement week",
+      "an.chart.daily_title": "Daily Activity (14 days UTC)",
+      "an.chart.daily_legend": "DAU / New",
+      "an.chart.daily_tip": "{day}: {dau} active, {nw} new",
+      "an.chart.hourly_title": "Peak Hours (24h UTC, 7d avg)",
+      "an.chart.peak_badge": "7d Peak: {peak} online",
+      "an.chart.hourly_tip": "{hour}h UTC: avg {avg} | peak {peak} | TPS {tps}",
+      "an.jobs.title": "Job Popularity (Jobs & Skills)",
+      "an.jobs.adoption": "Adoption: {pct}% ({withJob} with job)",
+      "an.jobs.row_meta": "{players} players ({online} online) | Avg {avg}/{max} skills ({comp}%)",
+      "an.job.miner": "Miner",
+      "an.job.lumberjack": "Lumberjack",
+      "an.job.blacksmith": "Blacksmith",
+      "an.job.rancher": "Rancher",
+      "an.job.farmer": "Farmer",
+      "an.job.fisher": "Fisher",
+      "an.job.hunter": "Hunter",
+      "an.job.knight": "Knight",
+      "an.job.none": "No job",
+      "an.engagement.title": "Playtime Engagement & FrontierPass",
+      "an.playtime_dist_title": "Playtime Distribution",
+      "an.pass_dist_title": "FrontierPass Tiers",
+      "an.eco.title": "Economic Health & Balance",
+      "an.eco.total_coins": "Total Money Supply (Coins)",
+      "an.eco.avg_median_coins": "Avg / Median Coins",
+      "an.eco.top10_share": "Top 10% Wealth Share",
+      "an.eco.total_tokens": "Circulating Tokens",
+      "an.eco.avg_pass": "Average Pass Tier",
+      "an.eco.quests_done": "Daily / Weekly Quests",
+      "an.eco.code_uses": "Gift Code Redemptions",
+      "an.eco.discord_links": "Linked Discord Accounts",
+      "an.ranks.title": "Rank Distribution & Discord",
+      "an.top.title": "Top 15 Most Active Players",
+      "an.top.col_player": "Player",
+      "an.top.col_state": "State",
+      "an.top.col_playtime": "Playtime",
+      "an.top.col_days": "Days (30d)",
+      "an.top.col_sessions": "Sessions",
+      "an.top.col_job": "Job",
+      "an.top.col_pass": "Pass / Rank",
+      "an.top.col_eco": "Coins / Tokens",
+      "an.top.empty": "No player telemetry recorded yet.",
+      "modal.playtime_label": "Playtime:",
+      "modal.job_label": "Job:",
+      "modal.days30_label": "Active Days (30d):",
+      "modal.tebex_label": "Tebex:",
       "players.filter.online": "Online",
       "players.filter.all": "All",
       "players.filter.sanctioned": "Sanctioned",
@@ -590,6 +736,43 @@
     return `${h}h ${m}m`;
   }
 
+  function fmtHours(sec) {
+    const s = Math.max(0, Math.floor(Number(sec) || 0));
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    return `${h}h ${String(m).padStart(2, "0")}m`;
+  }
+
+  function fmtNum(n) {
+    return Number(n || 0).toLocaleString(getLocale());
+  }
+
+  function jobLabel(jobId) {
+    if (!jobId) return t("an.job.none");
+    const k = `an.job.${jobId}`;
+    return I18N[state.lang]?.[k] ? t(k) : jobId;
+  }
+
+  function renderDeltaEl(el, pct) {
+    if (!el) return;
+    if (pct === null || pct === undefined || Number.isNaN(Number(pct))) {
+      el.className = "kpi-delta flat";
+      el.textContent = t("an.delta.no_prev");
+      return;
+    }
+    const num = Number(pct);
+    if (num > 0) {
+      el.className = "kpi-delta up";
+      el.textContent = t("an.delta.vs_prev", { arrow: "\u25B2", val: `+${num}` });
+    } else if (num < 0) {
+      el.className = "kpi-delta down";
+      el.textContent = t("an.delta.vs_prev", { arrow: "\u25BC", val: String(num) });
+    } else {
+      el.className = "kpi-delta flat";
+      el.textContent = t("an.delta.vs_prev", { arrow: "=", val: "0" });
+    }
+  }
+
   function getApiBase() {
     if (state.isLocalLauncher) return "";
     const raw = String(state.relayUrl || "").trim().replace(/\/+$/, "");
@@ -813,6 +996,226 @@
       : `<div class="feed-item">${esc(t("ov.empty_audits"))}</div>`;
   }
 
+  function getAnalyticsData() {
+    return state.snapshot?.analytics || state.snapshot?.meta?.analytics || null;
+  }
+
+  function renderHbarList(containerId, items, totalBase, gold = false) {
+    const el = $(containerId);
+    if (!el) return;
+    if (!items || !items.length) {
+      el.innerHTML = `<div class="feed-item">${esc(t("an.waiting"))}</div>`;
+      return;
+    }
+    const denom = Math.max(1, totalBase || Math.max(...items.map((x) => x.count || 0), 1));
+    el.innerHTML = items
+      .map((it) => {
+        const pct = Math.min(100, Math.round(((it.count || 0) / denom) * 1000) / 10);
+        return `<div class="hbar-row">
+          <div class="hbar-meta"><strong>${esc(it.label)}</strong><span>${fmtNum(it.count)} (${pct}%)</span></div>
+          <div class="hbar-track"><div class="hbar-fill ${gold ? "hbar-fill-gold" : ""}" style="width:${pct}%"></div></div>
+        </div>`;
+      })
+      .join("");
+  }
+
+  function renderAnalytics() {
+    const an = getAnalyticsData();
+    if (!an || !an.kpis) {
+      if ($("anGeneratedAt")) $("anGeneratedAt").textContent = t("an.waiting");
+      if ($("anTopPlayersBody")) {
+        $("anTopPlayersBody").innerHTML = `<tr><td colspan="9">${esc(t("an.waiting"))}</td></tr>`;
+      }
+      return;
+    }
+    const k = an.kpis;
+    $("anGeneratedAt").textContent = t("an.updated", { date: fmtDate(an.generatedAt), peak: k.peakOnline7d ?? 0 });
+
+    $("anKpiWau").textContent = fmtNum(k.wau);
+    renderDeltaEl($("anKpiWauDelta"), k.wauDeltaPct);
+    $("anKpiWauSub").textContent = t("an.kpi.wau_sub", { dau: fmtNum(k.dau), mau: fmtNum(k.mau) });
+
+    $("anKpiRegulars").textContent = fmtNum(k.regularPlayers);
+    renderDeltaEl($("anKpiRegularsDelta"), k.regularDeltaPct);
+    $("anKpiRegularsSub").textContent = t("an.kpi.regulars_sub", { stick: k.stickinessPct ?? 0, avg: k.avgOnline7d ?? 0 });
+
+    $("anKpiNew7").textContent = fmtNum(k.newWeekly);
+    renderDeltaEl($("anKpiNew7Delta"), k.newWeeklyDeltaPct);
+    $("anKpiNew7Sub").textContent = t("an.kpi.new7_sub", {
+      known: fmtNum(state.snapshot?.meta?.knownCount ?? 0),
+      disc: fmtNum(k.discordLinkedCount),
+      discPct: k.discordLinkedPct ?? 0,
+    });
+
+    $("anKpiRet7").textContent = k.retentionD7Pct !== null && k.retentionD7Pct !== undefined ? `${k.retentionD7Pct}%` : "--";
+    renderDeltaEl($("anKpiRet7Delta"), k.retentionD7DeltaPct);
+    $("anKpiRet7Sub").textContent = t("an.kpi.retention_sub", {
+      d1: k.retentionD1Pct !== null && k.retentionD1Pct !== undefined ? `${k.retentionD1Pct}%` : "--",
+      d30: k.retentionD30Pct !== null && k.retentionD30Pct !== undefined ? `${k.retentionD30Pct}%` : "--",
+    });
+
+    $("anKpiPlaytime").textContent = `${fmtNum(k.totalPlayHours)}h`;
+    $("anKpiPlaytimeSub1").textContent = t("an.kpi.playtime_sub1", { avg: k.avgPlayHoursPerActive ?? 0 });
+    $("anKpiPlaytimeSub2").textContent = t("an.kpi.playtime_sub2", { sess: k.avgSessionMinutes ?? 0 });
+
+    const eco = an.economy || {};
+    $("anKpiConversion").textContent = `${eco.conversionRatePct ?? 0}%`;
+    $("anKpiMonSub1").textContent = t("an.kpi.mon_sub1", {
+      buyers: fmtNum(eco.payingPlayersCount),
+      orders: fmtNum(eco.tebexOrdersTotal),
+    });
+    $("anKpiMonSub2").textContent = t("an.kpi.mon_sub2", {
+      tok: fmtNum(eco.tebexTokensTotal),
+      arppu: fmtNum(eco.arppuTokens),
+    });
+
+    const daily = an.dailySeries || [];
+    const maxDau = Math.max(1, ...daily.map((d) => Math.max(d.dau || 0, d.newPlayers || 0)));
+    $("anDailyChart").innerHTML = daily
+      .map((d) => {
+        const hDau = Math.max(2, Math.round(((d.dau || 0) / maxDau) * 100));
+        const hNew = Math.max(2, Math.round(((d.newPlayers || 0) / maxDau) * 100));
+        const tip = t("an.chart.daily_tip", { day: d.day, dau: d.dau || 0, nw: d.newPlayers || 0 });
+        return `<div class="chart-col" title="${esc(tip)}">
+          <div class="chart-col-val">${d.dau || 0}</div>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="height:${hDau}%"></div>
+            <div class="chart-bar chart-bar-new" style="height:${hNew}%"></div>
+          </div>
+          <div class="chart-col-lbl">${esc(d.day.slice(5))}</div>
+        </div>`;
+      })
+      .join("");
+
+    const hourly = an.hourlyProfile || [];
+    const maxHr = Math.max(1, ...hourly.map((h) => Math.max(h.peakOnline || 0, h.avgOnline || 0)));
+    $("anPeakBadge").textContent = t("an.chart.peak_badge", { peak: k.peakOnline7d ?? 0 });
+    $("anHourlyChart").innerHTML = hourly
+      .map((h) => {
+        const val = h.avgOnline > 0 ? h.avgOnline : h.peakOnline;
+        const pct = Math.max(2, Math.round((val / maxHr) * 100));
+        const isPeak = h.peakOnline > 0 && h.peakOnline >= (k.peakOnline7d || 0) && (k.peakOnline7d || 0) > 0;
+        const tip = t("an.chart.hourly_tip", {
+          hour: String(h.hour).padStart(2, "0"),
+          avg: h.avgOnline,
+          peak: h.peakOnline,
+          tps: h.avgTps || "--",
+        });
+        return `<div class="chart-col" title="${esc(tip)}">
+          <div class="chart-col-val">${h.peakOnline || 0}</div>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar ${isPeak ? "chart-bar-peak" : ""}" style="height:${pct}%"></div>
+          </div>
+          <div class="chart-col-lbl">${h.hour}</div>
+        </div>`;
+      })
+      .join("");
+
+    const jobs = an.jobs || {};
+    $("anJobsAdoptionBadge").textContent = t("an.jobs.adoption", {
+      pct: jobs.adoptionPct ?? 0,
+      withJob: fmtNum(jobs.totalWithJob),
+    });
+    const jList = jobs.breakdown || [];
+    const jDenom = Math.max(1, jobs.totalWithJob || Math.max(...jList.map((j) => j.players || 0), 1));
+    $("anJobsList").innerHTML = jList
+      .map((j) => {
+        const share = Math.min(100, Math.round(((j.players || 0) / jDenom) * 1000) / 10);
+        return `<div class="hbar-row">
+          <div class="hbar-meta">
+            <strong>${esc(jobLabel(j.id))}</strong>
+            <span>${esc(t("an.jobs.row_meta", { players: j.players, online: j.online, avg: j.avgSkills, max: j.maxSkills || "-", comp: j.completionPct }))}</span>
+          </div>
+          <div class="hbar-track"><div class="hbar-fill" style="width:${share}%"></div></div>
+        </div>`;
+      })
+      .join("");
+
+    const knownTotal = Math.max(1, state.snapshot?.meta?.knownCount || 0);
+    renderHbarList("anPlaytimeDist", an.playtimeBuckets || [], knownTotal, false);
+    const passSum = (eco.passTierBuckets || []).reduce((s, b) => s + (b.count || 0), 0);
+    renderHbarList("anPassDist", eco.passTierBuckets || [], Math.max(1, passSum), true);
+
+    $("anEcoGrid").innerHTML = [
+      [t("an.eco.total_coins"), fmtNum(eco.totalCoins)],
+      [t("an.eco.avg_median_coins"), `${fmtNum(eco.avgCoins)} / ${fmtNum(eco.medianCoins)}`],
+      [t("an.eco.top10_share"), `${eco.top10SharePct ?? 0}%`],
+      [t("an.eco.total_tokens"), fmtNum(eco.totalTokens)],
+      [t("an.eco.avg_pass"), String(eco.avgPassTier ?? 0)],
+      [t("an.eco.quests_done"), `${fmtNum(eco.dailyQuestsDone)} / ${fmtNum(eco.weeklyQuestsDone)}`],
+      [t("an.eco.code_uses"), fmtNum(eco.totalCodeRedemptions)],
+      [t("an.eco.discord_links"), `${fmtNum(k.discordLinkedCount)} (${k.discordLinkedPct ?? 0}%)`],
+    ]
+      .map(([lbl, val]) => `<div class="eco-cell"><div class="eco-cell-lbl">${esc(lbl)}</div><div class="eco-cell-val">${esc(val)}</div></div>`)
+      .join("");
+
+    const rankDefs = new Map((state.snapshot?.metaOptions?.ranks || []).map((r) => [r.id, r.label]));
+    const rankItems = (eco.rankDistribution || []).map((r) => ({
+      label: rankDefs.get(r.id) || r.id,
+      count: r.count,
+    }));
+    const rankSum = rankItems.reduce((s, x) => s + x.count, 0);
+    renderHbarList("anRanksList", rankItems, Math.max(1, rankSum), false);
+
+    const top = an.topPlayers || [];
+    $("anTopPlayersBody").innerHTML = top.length
+      ? top
+          .map((p) => {
+            const onlineTxt = p.online ? `<span class="tag-badge tag-ok">${esc(t("players.online_badge"))}</span>` : `<span class="tag-badge">${esc(t("players.offline_badge"))}</span>`;
+            const jobTxt = p.jobId ? `${esc(jobLabel(p.jobId))} (${p.jobSkills}/${p.jobMaxSkills || "-"})` : esc(t("an.job.none"));
+            return `<tr>
+              <td><strong>${esc(p.name)}</strong></td>
+              <td>${onlineTxt}</td>
+              <td>${esc(fmtHours(p.playTimeSeconds))}</td>
+              <td>${p.activeDays30 || 0}</td>
+              <td>${p.sessions || 0}</td>
+              <td>${jobTxt}</td>
+              <td>T${p.passTier || 0} / ${esc(rankDefs.get(p.rankId) || p.rankId || "-")}</td>
+              <td>${fmtNum(p.coins)} C / ${fmtNum(p.tokens)} J</td>
+              <td><button class="oreui-btn oreui-btn-info oreui-btn-sm open-player-btn" data-pid="${esc(p.playerId)}">${esc(t("players.manage"))}</button></td>
+            </tr>`;
+          })
+          .join("")
+      : `<tr><td colspan="9">${esc(t("an.top.empty"))}</td></tr>`;
+  }
+
+  function exportAnalytics(format) {
+    const an = getAnalyticsData();
+    if (!an) {
+      showToast(t("an.waiting"), false);
+      return;
+    }
+    let content;
+    let mime;
+    let filename;
+    if (format === "csv") {
+      const rows = [["Section", "Key", "Value", "Extra"]];
+      for (const [k, v] of Object.entries(an.kpis || {})) rows.push(["KPI", k, v ?? "", ""]);
+      for (const d of an.dailySeries || []) rows.push(["DAILY_14D", d.day, d.dau, `new=${d.newPlayers}`]);
+      for (const h of an.hourlyProfile || []) rows.push(["HOURLY_24H", `${h.hour}h`, h.avgOnline, `peak=${h.peakOnline};tps=${h.avgTps}`]);
+      for (const j of an.jobs?.breakdown || []) rows.push(["JOB", j.id, j.players, `online=${j.online};avgSkills=${j.avgSkills}/${j.maxSkills}`]);
+      for (const [k, v] of Object.entries(an.economy || {})) {
+        if (typeof v !== "object") rows.push(["ECONOMY", k, v ?? "", ""]);
+      }
+      for (const p of an.topPlayers || []) {
+        rows.push(["TOP_PLAYER", p.name, `${Math.round((p.playTimeSeconds || 0) / 360) / 10}h`, `job=${p.jobId};coins=${p.coins};tokens=${p.tokens}`]);
+      }
+      content = rows.map((r) => r.map((c) => `"${String(c ?? "").replace(/"/g, '""')}"`).join(",")).join("\r\n");
+      mime = "text/csv;charset=utf-8";
+      filename = "frontier-analytics.csv";
+    } else {
+      content = JSON.stringify({ exportedAt: new Date().toISOString(), analytics: an }, null, 2);
+      mime = "application/json;charset=utf-8";
+      filename = "frontier-analytics.json";
+    }
+    const blob = new Blob([content], { type: mime });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
   function renderPlayersTable() {
     const roster = (state.snapshot?.roster || []).slice();
     const q = state.searchQuery.trim().toLowerCase();
@@ -869,6 +1272,7 @@
       <div><strong>${esc(t("modal.status_label"))}</strong> ${esc(entry.status)} ${entry.banReason ? `| ${esc(t("modal.reason"))}: ${esc(entry.banReason)}` : ""} ${entry.banExpiresAt ? `| ${esc(t("modal.expires"))}: ${fmtDate(entry.banExpiresAt)}` : ""}</div>
       <div><strong>${esc(t("modal.online_label"))}</strong> ${online ? `${esc(t("modal.yes"))} (${esc(online.dimension)} : ${online.x}, ${online.y}, ${online.z} | HP ${online.hp}/${online.maxHp} | ${esc(online.gamemode)})` : esc(t("modal.no_seen", { date: fmtDate(entry.lastSeen) }))}</div>
       <div><strong>${esc(t("modal.freeze_label"))}</strong> ${entry.frozen ? esc(t("modal.active")) : esc(t("modal.inactive"))} | <strong>${esc(t("modal.mute_label"))}</strong> ${entry.mute ? `${esc(entry.mute.reason)} (${entry.mute.until ? fmtDate(entry.mute.until) : esc(t("modal.permanent"))})` : esc(t("modal.inactive"))} | <strong>${esc(t("modal.vl_label"))}</strong> ${entry.acVl || 0}</div>
+      <div><strong>${esc(t("modal.playtime_label"))}</strong> ${esc(fmtHours(online ? online.playTimeSeconds : entry.playTimeSeconds))} | <strong>${esc(t("modal.days30_label"))}</strong> ${entry.activeDays30 || 0} (${entry.sessionsCount || 0} sess.) | <strong>${esc(t("modal.job_label"))}</strong> ${esc(jobLabel(online ? online.jobId : entry.jobId))}${(online ? online.jobId : entry.jobId) ? ` (${(online ? online.jobSkills : entry.jobSkills) || 0}/${(online ? online.jobMaxSkills : entry.jobMaxSkills) || "-"})` : ""} | <strong>${esc(t("modal.tebex_label"))}</strong> ${(online ? online.tebexTokens : entry.tebexTokens) || 0} J (${(online ? online.tebexOrders : entry.tebexOrders) || 0})</div>
       ${online ? `<div><strong>${esc(t("modal.pass_label"))}</strong> ${esc(t("modal.tier", { tier: online.passTier, xp: online.passXp }))} | <strong>${esc(t("modal.rank_label"))}</strong> ${esc(online.rankId)} | <strong>${esc(t("modal.vault_label"))}</strong> ${online.bankBalance}/${online.bankLimit} ${esc(t("modal.coins"))} | <strong>${esc(t("modal.tokens_label"))}</strong> ${online.tokens}</div>` : ""}
     `;
 
@@ -1145,6 +1549,7 @@
     applyRoleVisibility();
     renderHeaderAndSidebar();
     renderOverview();
+    renderAnalytics();
     renderPlayersTable();
     renderChat();
     renderAntiCheat();
@@ -1301,6 +1706,17 @@
       $("playerModal").classList.remove("hidden");
       renderPlayerModal(state.modalPlayerId);
     });
+
+    $("anTopPlayersBody")?.addEventListener("click", (e) => {
+      const btn = e.target.closest(".open-player-btn");
+      if (!btn) return;
+      state.modalPlayerId = btn.getAttribute("data-pid");
+      $("playerModal").classList.remove("hidden");
+      renderPlayerModal(state.modalPlayerId);
+    });
+
+    $("exportStatsJsonBtn")?.addEventListener("click", () => exportAnalytics("json"));
+    $("exportStatsCsvBtn")?.addEventListener("click", () => exportAnalytics("csv"));
 
     $("closePlayerModalBtn").addEventListener("click", () => {
       state.modalPlayerId = null;
