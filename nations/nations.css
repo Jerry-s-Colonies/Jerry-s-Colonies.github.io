@@ -6,6 +6,24 @@
   max-width: 1280px;
 }
 
+body.theme-jn .topbar .brand-link,
+body.theme-jn .topbar .brand-title {
+  color: #ffffff;
+}
+
+body.theme-jn .topbar .brand-sub {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+[data-theme="light"] .topbar .brand-link,
+[data-theme="light"] .topbar .brand-title {
+  color: #181b20;
+}
+
+[data-theme="light"] .topbar .brand-sub {
+  color: #3f4754;
+}
+
 .nations-hero {
   padding: 24px 26px 20px;
   margin-bottom: 20px;

@@ -154,6 +154,12 @@ code {
 .oreui-btn:hover { filter: brightness(1.1); transform: translateY(-1px); text-decoration: none; }
 .oreui-btn:active { box-shadow: inset 0 2px 0 rgba(0, 0, 0, 0.45); transform: translateY(1px); }
 .oreui-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+a.oreui-btn,
+a.oreui-btn:hover,
+a.oreui-btn:visited {
+  color: #fff;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.75);
+}
 
 .oreui-btn-sm { padding: 5px 10px; font-size: 11px; }
 .oreui-btn-primary { background: linear-gradient(var(--green-top), var(--green-bot)); border-color: #1f4611; }
@@ -226,6 +232,7 @@ code {
   letter-spacing: 0.7px;
   line-height: 1.1;
   white-space: nowrap;
+  color: var(--text-main);
   text-shadow: var(--text-outline-lg);
 }
 .brand-sub {
@@ -1009,7 +1016,7 @@ body.theme-jn {
 body.theme-jn .brand-sub {
   color: var(--accent-bright);
 }
-body.theme-jn a {
+body.theme-jn a:not(.oreui-btn):not(.brand-link) {
   color: var(--accent-bright);
   text-shadow: var(--text-outline-sm);
 }
@@ -1366,7 +1373,7 @@ body.theme-frontier {
 }
 
 body.theme-frontier .brand-sub { color: var(--accent-bright); }
-body.theme-frontier a { color: var(--accent-bright); text-shadow: var(--text-outline-sm); }
+body.theme-frontier a:not(.oreui-btn):not(.brand-link) { color: var(--accent-bright); text-shadow: var(--text-outline-sm); }
 body.theme-frontier code {
   color: #ff9ca5;
   background: #111318;
@@ -1616,7 +1623,7 @@ body.theme-jobs {
 }
 
 body.theme-jobs .brand-sub { color: var(--accent-bright); }
-body.theme-jobs a { color: var(--accent-bright); text-shadow: var(--text-outline-sm); }
+body.theme-jobs a:not(.oreui-btn):not(.brand-link) { color: var(--accent-bright); text-shadow: var(--text-outline-sm); }
 body.theme-jobs code {
   color: #ffe18d;
   background: #111318;
@@ -2041,7 +2048,7 @@ body.theme-knights {
 }
 
 body.theme-knights .brand-sub { color: var(--accent-bright); }
-body.theme-knights a { color: var(--accent-bright); text-shadow: var(--text-outline-sm); }
+body.theme-knights a:not(.oreui-btn):not(.brand-link) { color: var(--accent-bright); text-shadow: var(--text-outline-sm); }
 body.theme-knights code {
   color: #b4d4ff;
   background: #10141c;
