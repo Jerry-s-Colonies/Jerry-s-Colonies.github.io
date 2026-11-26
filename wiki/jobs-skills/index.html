@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Jobs &amp; Skill Trees Wiki — The Frontier</title>
   <link rel="icon" href="../assets/img/jobs_skills_icon.png" type="image/png" />
-  <link rel="stylesheet" href="../assets/css/oreui-wiki.css?v=20261124ek" />
+  <link rel="stylesheet" href="../assets/css/oreui-wiki.css?v=20261126mob" />
 </head>
+
 <body class="theme-jobs">
   <header class="topbar">
     <div class="topbar-left">
@@ -15,20 +17,17 @@
         <img class="brand-icon" src="../assets/img/jobs_skills_icon.png" alt="Jobs &amp; Skill Trees" />
         <div>
           <div class="brand-title">JOBS &amp; SKILL TREES</div>
-          <span class="brand-sub" data-en="The Frontier Wiki • v1.0.2" data-fr="Wiki The Frontier • v1.0.2">The Frontier Wiki • v1.0.2</span>
+          <span class="brand-sub" data-en="The Frontier Wiki • v1.0.2" data-fr="Wiki The Frontier • v1.0.2">The Frontier
+            Wiki • v1.0.2</span>
         </div>
       </a>
     </div>
 
     <div class="topbar-search">
-      <input
-        id="globalSearch"
-        type="search"
-        autocomplete="off"
+      <input id="globalSearch" type="search" autocomplete="off"
         data-ph-en="Search professions, 156 skills, forge stats, leather tanning, war seals..."
         data-ph-fr="Rechercher metiers, 156 competences, forge, tannage, sceaux..."
-        placeholder="Search professions, 156 skills, forge stats, leather tanning, war seals..."
-      />
+        placeholder="Search professions, 156 skills, forge stats, leather tanning, war seals..." />
       <span class="search-kbd">Ctrl+K</span>
       <div class="search-dropdown" id="searchDropdown"></div>
     </div>
@@ -56,7 +55,7 @@
   </div>
 
   <script src="../assets/js/vanilla-icons.js?v=20261124ek"></script>
-  <script src="../assets/js/wiki-core.js?v=20261124ek"></script>
+  <script src="../assets/js/wiki-core.js?v=20261126mob"></script>
   <script src="data/jobs-data.js"></script>
   <script src="data/guide-core-blacksmith.js"></script>
   <script src="data/guide-all-professions.js"></script>
@@ -142,10 +141,10 @@
           const title = W.t(ent.name);
           body.innerHTML = `
             <div style="display:flex;flex-wrap:wrap;gap:18px;align-items:center;">
-              <div style="width:260px;height:160px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at center, rgba(240,173,40,0.16) 0%, var(--bg-input) 78%);border:2px solid var(--border-dark);border-radius:6px;padding:10px;">
+              <div style="width:260px;max-width:100%;height:160px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at center, rgba(240,173,40,0.16) 0%, var(--bg-input) 78%);border:2px solid var(--border-dark);border-radius:6px;padding:10px;">
                 <img src="${ent.render3d}" alt="${W.escapeHtml(title)}" style="max-width:100%;max-height:100%;image-rendering:pixelated;" />
               </div>
-              <div style="flex:1;min-width:220px;">
+              <div style="flex:1;min-width:min(100%,220px);">
                 <div class="chapter-kicker">${W.escapeHtml(ent.category)}</div>
                 <h2 style="margin:0 0 8px;font-family:'MinecraftTen',sans-serif;color:var(--accent-bright);">${W.escapeHtml(title)}</h2>
                 <div style="margin-bottom:8px;"><span class="badge badge-gold">Entity: <code>jobskills:forge_bar</code></span></div>
@@ -170,18 +169,17 @@
             </div>
           `;
         } else {
-          recipeHtml = `<p style="margin-top:14px;color:var(--text-muted);font-size:12.5px;">${
-            lang === "fr"
-              ? "Obtenu via atelier du Forgeron (Chaudron / Fourneau / Haut Fourneau / Enclume) en mode Sneak+Clic."
-              : "Produced through Blacksmith workstations (Cauldron / Furnace / Blast Furnace / Anvil) using Sneak+Click."
-          }</p>`;
+          recipeHtml = `<p style="margin-top:14px;color:var(--text-muted);font-size:12.5px;">${lang === "fr"
+            ? "Obtenu via atelier du Forgeron (Chaudron / Fourneau / Haut Fourneau / Enclume) en mode Sneak+Clic."
+            : "Produced through Blacksmith workstations (Cauldron / Furnace / Blast Furnace / Anvil) using Sneak+Click."
+            }</p>`;
         }
         body.innerHTML = `
           <div style="display:flex;flex-wrap:wrap;gap:18px;align-items:center;">
             <div style="width:140px;height:140px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at center, rgba(240,173,40,0.16) 0%, var(--bg-input) 78%);border:2px solid var(--border-dark);border-radius:6px;">
               <img src="${it.icon}" alt="${W.escapeHtml(title)}" style="width:76px;height:76px;image-rendering:pixelated;" />
             </div>
-            <div style="flex:1;min-width:220px;">
+            <div style="flex:1;min-width:min(100%,220px);">
               <div class="chapter-kicker">${W.escapeHtml(it.category)}</div>
               <h2 style="margin:0 0 8px;font-family:'MinecraftTen',sans-serif;color:var(--accent-bright);">${W.escapeHtml(title)}</h2>
               <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;">
@@ -397,7 +395,7 @@
               </div>
             </div>
 
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;align-items:start;">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:14px;align-items:start;">
               <div class="mc-lore-box">
                 <div class="mc-line-muted">--- [Forge] ---</div>
                 <div style="color:${th.hex};font-weight:700;">Quality: [${rating}/5] ${barsStr} (${lang === "fr" ? th.fr : th.en})</div>
@@ -411,8 +409,8 @@
                 </div>
                 <p style="margin:0;font-size:12.5px;color:var(--text-secondary);">
                   ${lang === "fr"
-                    ? "La 1re stat de la categorie est TOUJOURS garantie. Les suivantes sont tirees sans doublon parmi les stats dont le rang min est atteint."
-                    : "The category Primary Stat is ALWAYS guaranteed. Remaining slots pick randomly without duplicates from stats unlocked at this rating."}
+            ? "La 1re stat de la categorie est TOUJOURS garantie. Les suivantes sont tirees sans doublon parmi les stats dont le rang min est atteint."
+            : "The category Primary Stat is ALWAYS guaranteed. Remaining slots pick randomly without duplicates from stats unlocked at this rating."}
                 </p>
                 ${rawRating === 5 && !state.simMasterSeal ? `<p style="margin:6px 0 0;font-size:12px;color:#ffca63;">${lang === "fr" ? "Score suffisant pour [5/5], mais plafonne a [4/5] sans smith_master_seal !" : "Score qualified for [5/5], but capped at [4/5] without smith_master_seal!"}</p>` : ""}
               </div>
@@ -589,11 +587,11 @@
               </div>
               <div style="display:flex;flex-wrap:wrap;gap:6px;">
                 ${selected.requires.length === 0
-                  ? `<span style="font-size:12px;color:var(--text-muted);">${lang === "fr" ? "Aucun — Racine de l'arbre" : "None — Tree Root"}</span>`
-                  : selected.requires.map((rid) => {
-                      const rs = skills.find((s) => s.id === rid);
-                      return rs ? `<button type="button" class="dag-link-pill" data-jump-skill="${rs.id}"><img src="${rs.icon}" style="width:16px;height:16px;image-rendering:pixelated;" />${W.escapeHtml(W.t(rs.name))}</button>` : "";
-                    }).join("")}
+            ? `<span style="font-size:12px;color:var(--text-muted);">${lang === "fr" ? "Aucun — Racine de l'arbre" : "None — Tree Root"}</span>`
+            : selected.requires.map((rid) => {
+              const rs = skills.find((s) => s.id === rid);
+              return rs ? `<button type="button" class="dag-link-pill" data-jump-skill="${rs.id}"><img src="${rs.icon}" style="width:16px;height:16px;image-rendering:pixelated;" />${W.escapeHtml(W.t(rs.name))}</button>` : "";
+            }).join("")}
               </div>
             </div>
 
@@ -603,11 +601,11 @@
               </div>
               <div style="display:flex;flex-wrap:wrap;gap:6px;">
                 ${selected.unlocks.length === 0
-                  ? `<span style="font-size:12px;color:var(--text-muted);">${lang === "fr" ? "Sommet de branche" : "Branch Capstone"}</span>`
-                  : selected.unlocks.map((cid) => {
-                      const cs = skills.find((s) => s.id === cid);
-                      return cs ? `<button type="button" class="dag-link-pill" data-jump-skill="${cs.id}"><img src="${cs.icon}" style="width:16px;height:16px;image-rendering:pixelated;" />${W.escapeHtml(W.t(cs.name))}</button>` : "";
-                    }).join("")}
+            ? `<span style="font-size:12px;color:var(--text-muted);">${lang === "fr" ? "Sommet de branche" : "Branch Capstone"}</span>`
+            : selected.unlocks.map((cid) => {
+              const cs = skills.find((s) => s.id === cid);
+              return cs ? `<button type="button" class="dag-link-pill" data-jump-skill="${cs.id}"><img src="${cs.icon}" style="width:16px;height:16px;image-rendering:pixelated;" />${W.escapeHtml(W.t(cs.name))}</button>` : "";
+            }).join("")}
               </div>
             </div>
           </div>
@@ -839,13 +837,13 @@
 
             <div class="mc-lore-box">
               ${loreLines.map((ln, idx) => {
-                if (idx === 0 || idx === loreLines.length - 1 || ln.startsWith("Cooked by") || ln.startsWith("Crafted by") || ln.startsWith("Cured by") || ln.startsWith("Forged by") || ln.startsWith("Harvested by")) {
-                  return `<div class="mc-line-muted">${W.escapeHtml(ln)}</div>`;
-                }
-                if (ln.startsWith("Quality:")) return `<div style="color:${colors[r]};font-weight:700;">${W.escapeHtml(ln)}</div>`;
-                if (idx === 1) return `<div class="mc-line-title">${W.escapeHtml(ln)}</div>`;
-                return `<div style="color:#87e8de;">${W.escapeHtml(ln)}</div>`;
-              }).join("")}
+          if (idx === 0 || idx === loreLines.length - 1 || ln.startsWith("Cooked by") || ln.startsWith("Crafted by") || ln.startsWith("Cured by") || ln.startsWith("Forged by") || ln.startsWith("Harvested by")) {
+            return `<div class="mc-line-muted">${W.escapeHtml(ln)}</div>`;
+          }
+          if (ln.startsWith("Quality:")) return `<div style="color:${colors[r]};font-weight:700;">${W.escapeHtml(ln)}</div>`;
+          if (idx === 1) return `<div class="mc-line-title">${W.escapeHtml(ln)}</div>`;
+          return `<div style="color:#87e8de;">${W.escapeHtml(ln)}</div>`;
+        }).join("")}
             </div>
           </div>
           ${renderChapterNavFooter()}
@@ -1028,4 +1026,5 @@
     })();
   </script>
 </body>
+
 </html>

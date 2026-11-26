@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Epic Knights Frontier Wiki — The Frontier</title>
   <link rel="icon" href="../assets/img/epic_knights_icon.png" type="image/png" />
-  <link rel="stylesheet" href="../assets/css/oreui-wiki.css?v=20261124ek" />
+  <link rel="stylesheet" href="../assets/css/oreui-wiki.css?v=20261126mob" />
 </head>
 <body class="theme-knights">
   <header class="topbar">
@@ -56,7 +56,7 @@
   </div>
 
   <script src="../assets/js/vanilla-icons.js?v=20261124ek"></script>
-  <script src="../assets/js/wiki-core.js?v=20261124ek"></script>
+  <script src="../assets/js/wiki-core.js?v=20261126mob"></script>
   <script src="data/ek-geometries.js?v=20261124ek"></script>
   <script src="data/ek-catalog.js?v=20261124ek2"></script>
   <script src="data/guide-ek.js?v=20261124ek2"></script>
@@ -130,7 +130,7 @@
           .filter((x) => x.p);
 
         body.innerHTML = `
-          <div style="display:grid;grid-template-columns:250px minmax(0,1fr);gap:18px;align-items:start;">
+          <div class="modal-split-grid">
             <div>
               <div class="ek-viewer-box" id="modalViewerHost" style="min-height:280px;"></div>
               <div class="ek-viewer-controls">
@@ -211,7 +211,7 @@
         if (modalViewer) { modalViewer.destroy(); modalViewer = null; }
 
         body.innerHTML = `
-          <div style="display:grid;grid-template-columns:230px minmax(0,1fr);gap:18px;align-items:start;">
+          <div class="modal-split-grid">
             <div>
               <div class="ek-viewer-box" id="modalViewerHost" style="min-height:245px;"></div>
               <div class="ek-viewer-controls">

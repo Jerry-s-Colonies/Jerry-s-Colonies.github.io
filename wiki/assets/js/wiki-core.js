@@ -185,6 +185,17 @@
       .replace(/"/g, "&quot;");
   }
 
+  function updateLangBtnLabel(lang) {
+    const langBtn = document.getElementById("btnLangToggle");
+    if (!langBtn) return;
+    const isNarrow = typeof window !== "undefined" && window.innerWidth <= 540;
+    if (isNarrow) {
+      langBtn.textContent = lang === "fr" ? "FR" : "EN";
+    } else {
+      langBtn.textContent = lang === "fr" ? "EN / FR [FR]" : "EN / FR [EN]";
+    }
+  }
+
   function applyStaticTranslations(lang) {
     document.documentElement.lang = lang;
     const nodes = document.querySelectorAll("[data-en], [data-fr]");
@@ -197,11 +208,75 @@
       const ph = lang === "fr" ? el.getAttribute("data-ph-fr") : el.getAttribute("data-ph-en");
       if (ph !== null) el.setAttribute("placeholder", ph);
     }
-    const langBtn = document.getElementById("btnLangToggle");
-    if (langBtn) {
-      langBtn.textContent = lang === "fr" ? "EN / FR [FR]" : "EN / FR [EN]";
-    }
+    updateLangBtnLabel(lang);
     setTheme(getTheme());
+  }
+
+  function syncTopbarHeight() {
+    const topbar = document.querySelector(".topbar");
+    if (!topbar) return;
+    const apply = () => {
+      const h = Math.ceil(topbar.getBoundingClientRect().height || topbar.offsetHeight || 58);
+      document.documentElement.style.setProperty("--topbar-h", `${h}px`);
+    };
+    apply();
+    window.addEventListener("resize", () => {
+      apply();
+      updateLangBtnLabel(getLang());
+    }, { passive: true });
+    window.addEventListener("orientationchange", () => {
+      setTimeout(() => {
+        apply();
+        updateLangBtnLabel(getLang());
+      }, 80);
+    }, { passive: true });
+    if (typeof ResizeObserver === "function") {
+      try {
+        const ro = new ResizeObserver(apply);
+        ro.observe(topbar);
+      } catch {
+        /* ignore */
+      }
+    }
+  }
+
+  function initMobileDrawer() {
+    const sidebar = document.getElementById("wikiSidebar");
+    if (!sidebar) return;
+
+    let backdrop = document.getElementById("sidebarBackdrop");
+    if (!backdrop) {
+      backdrop = document.createElement("div");
+      backdrop.id = "sidebarBackdrop";
+      backdrop.className = "sidebar-backdrop";
+      document.body.appendChild(backdrop);
+    }
+
+    const menuBtn = document.getElementById("btnMobileMenu");
+    const syncState = () => {
+      const isOpen = sidebar.classList.contains("open");
+      backdrop.classList.toggle("open", isOpen);
+      document.body.classList.toggle("sidebar-open", isOpen);
+      if (menuBtn) menuBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    };
+
+    backdrop.addEventListener("click", () => {
+      sidebar.classList.remove("open");
+      syncState();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && sidebar.classList.contains("open")) {
+        sidebar.classList.remove("open");
+        syncState();
+      }
+    });
+
+    if (typeof MutationObserver === "function") {
+      const mo = new MutationObserver(syncState);
+      mo.observe(sidebar, { attributes: true, attributeFilter: ["class"] });
+    }
+    syncState();
   }
 
   function formatIngredientLabel(rawId) {
@@ -293,6 +368,8 @@
   function initThemeAndLangControls() {
     setTheme(getTheme());
     applyStaticTranslations(getLang());
+    syncTopbarHeight();
+    initMobileDrawer();
 
     const langBtn = document.getElementById("btnLangToggle");
     if (langBtn) {

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Frontier Engine &amp; Extension Wiki — The Frontier</title>
   <link rel="icon" href="../assets/img/frontier_extension_icon.png" type="image/png" />
-  <link rel="stylesheet" href="../assets/css/oreui-wiki.css?v=20261124ek" />
+  <link rel="stylesheet" href="../assets/css/oreui-wiki.css?v=20261126mob" />
 </head>
 <body class="theme-frontier">
   <header class="topbar">
@@ -56,7 +56,7 @@
   </div>
 
   <script src="../assets/js/vanilla-icons.js?v=20261124ek"></script>
-  <script src="../assets/js/wiki-core.js?v=20261124ek"></script>
+  <script src="../assets/js/wiki-core.js?v=20261126mob"></script>
   <script src="data/catalog-frontier.js"></script>
   <script src="data/battlepass-data.js"></script>
   <script src="data/guide-commands-world.js"></script>
@@ -124,7 +124,7 @@
               <div style="width:190px;height:190px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at center, rgba(230,57,70,0.16) 0%, var(--bg-input) 78%);border:2px solid var(--border-dark);border-radius:6px;">
                 ${ent.render3d ? `<img src="${ent.render3d}" alt="${W.escapeHtml(title)}" style="max-width:170px;max-height:170px;image-rendering:pixelated;" />` : ""}
               </div>
-              <div style="flex:1;min-width:220px;">
+              <div style="flex:1;min-width:min(100%,220px);">
                 <div class="chapter-kicker">${W.escapeHtml(ent.category)}</div>
                 <h2 style="margin:0 0 8px;font-family:'MinecraftTen',sans-serif;color:var(--accent-bright);">${W.escapeHtml(title)}</h2>
                 <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;">
@@ -176,7 +176,7 @@
             <div style="width:180px;height:180px;display:flex;align-items:center;justify-content:center;background:var(--bg-input);border:2px solid var(--border-dark);border-radius:6px;">
               ${imgSrc ? `<img src="${imgSrc}" alt="${W.escapeHtml(title)}" style="max-width:156px;max-height:156px;image-rendering:pixelated;" />` : ""}
             </div>
-            <div style="flex:1;min-width:220px;">
+            <div style="flex:1;min-width:min(100%,220px);">
               <div class="chapter-kicker">${obj.render3d ? "3D Isometric Render" : "Item Sprite"}</div>
               <h2 style="margin:0 0 8px;font-family:'MinecraftTen',sans-serif;color:var(--accent-bright);">${W.escapeHtml(title)}</h2>
               <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;">${metaHtml}</div>

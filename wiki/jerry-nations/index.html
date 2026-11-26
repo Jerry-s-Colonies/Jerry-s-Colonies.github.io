@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Jerry's Nations Wiki — The Frontier</title>
   <link rel="icon" href="../assets/img/jerry_nations_icon.png" type="image/png" />
-  <link rel="stylesheet" href="../assets/css/oreui-wiki.css?v=20261124ek" />
+  <link rel="stylesheet" href="../assets/css/oreui-wiki.css?v=20261126mob" />
 </head>
 <body class="theme-jn">
   <header class="topbar">
@@ -56,7 +56,7 @@
   </div>
 
   <script src="../assets/js/vanilla-icons.js?v=20261124ek"></script>
-  <script src="../assets/js/wiki-core.js?v=20261124ek"></script>
+  <script src="../assets/js/wiki-core.js?v=20261126mob"></script>
   <script src="data/catalog-generated.js"></script>
   <script src="data/nation-quests-data.js"></script>
   <script src="data/guide-nations.js"></script>
@@ -129,7 +129,7 @@
               <div style="width:190px;height:190px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at center, rgba(99,199,77,0.14) 0%, var(--bg-input) 78%);border:2px solid var(--border-dark);border-radius:6px;">
                 ${extra.render3d ? `<img src="${extra.render3d}" alt="${W.escapeHtml(title)}" style="max-width:172px;max-height:172px;image-rendering:pixelated;" />` : ""}
               </div>
-              <div style="flex:1;min-width:220px;">
+              <div style="flex:1;min-width:min(100%,220px);">
                 <div class="chapter-kicker">${W.escapeHtml(roleTxt)}</div>
                 <h2 style="margin:0 0 8px;font-family:'MinecraftTen',sans-serif;color:var(--accent-bright);">${W.escapeHtml(title)}</h2>
                 <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;">
@@ -217,7 +217,7 @@
             <div style="width:180px;height:180px;display:flex;align-items:center;justify-content:center;background:var(--bg-input);border:2px solid var(--border-dark);border-radius:6px;">
               ${imgSrc ? `<img src="${imgSrc}" alt="${W.escapeHtml(title)}" style="max-width:160px;max-height:160px;image-rendering:pixelated;" />` : ""}
             </div>
-            <div style="flex:1;min-width:220px;">
+            <div style="flex:1;min-width:min(100%,220px);">
               <div class="chapter-kicker">${obj.render3d ? "3D Isometric Render" : "Item Sprite"}</div>
               <h2 style="margin:0 0 8px;font-family:'MinecraftTen',sans-serif;">${W.escapeHtml(title)}</h2>
               <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;">${metaHtml}</div>
@@ -588,7 +588,7 @@
 
               <h3>${isFr ? "3. Rangs d'Entrainement (1-5) & Stats Martiales" : "3. Training Ranks (1-5) & Martial Stats"}</h3>
               <p>${isFr ? "Chaque regiment compte au maximum 10 soldats. Multiplicateur d'XP d'entrainement : Intelligence 1-10 (x1.0), 11-15 (x1.25), 16-20 (x1.50)." : "Max regiment size: 10 soldiers. Training XP multiplier scales with Intelligence: 1-10 (x1.0), 11-15 (x1.25), 16-20 (x1.50)."}</p>
-              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;">
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:14px;">
                 <div class="table-wrap" style="margin:0;"><table class="wiki-table">
                   <thead><tr><th>${isFr ? "Rang d'entrainement" : "Training Rank"}</th><th>${isFr ? "XP Requise" : "XP Required"}</th></tr></thead>
                   <tbody>

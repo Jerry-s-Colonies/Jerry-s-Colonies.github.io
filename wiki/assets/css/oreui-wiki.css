@@ -76,18 +76,21 @@
 
 * { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: clip; }
 
 body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
+  overflow-x: clip;
   background: var(--bg-page);
   color: var(--text-main);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   font-size: 14px;
   line-height: 1.65;
 }
+
+img, canvas { max-width: 100%; }
 
 a { color: var(--gold); text-decoration: none; }
 a:hover { text-decoration: underline; }
@@ -99,6 +102,7 @@ code {
   padding: 1px 6px;
   border-radius: 3px;
   color: var(--gold);
+  overflow-wrap: anywhere;
 }
 
 .hidden { display: none !important; }
@@ -485,6 +489,39 @@ code {
   z-index: 150;
 }
 
+.sidebar-backdrop {
+  position: fixed;
+  top: var(--topbar-h);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(6, 8, 12, 0.65);
+  z-index: 140;
+  display: none;
+}
+.sidebar-backdrop.open { display: block; }
+body.sidebar-open { overflow: hidden; }
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.filter-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.modal-split-grid {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
 .sidebar-group {
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--border-soft);
@@ -693,7 +730,7 @@ code {
 /* ---------- Inline Block 3D Preview Strips ---------- */
 .block-strip {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 175px), 1fr));
   gap: 12px;
   margin: 14px 0 18px;
 }
@@ -758,7 +795,7 @@ code {
 
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr));
   gap: 14px;
 }
 .gallery-card {
@@ -1280,7 +1317,7 @@ body.theme-jn .callout-info .callout-title {
 
 .military-cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr));
   gap: 12px;
   margin: 12px 0 18px;
 }
@@ -1394,7 +1431,7 @@ body.theme-frontier .search-hit-title { color: var(--accent-bright); }
 /* ---------- Frontier Custom Widgets (Commands, Tax Calc, Lootboxes, Preview) ---------- */
 .cmd-card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr));
   gap: 12px;
   margin: 12px 0 18px;
 }
@@ -1483,7 +1520,7 @@ body.theme-frontier .search-hit-title { color: var(--accent-bright); }
 }
 .tax-inputs-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 175px), 1fr));
   gap: 12px;
   margin-bottom: 14px;
 }
@@ -1498,7 +1535,7 @@ body.theme-frontier .search-hit-title { color: var(--accent-bright); }
 .tax-field input, .tax-field select { width: 100%; }
 .tax-result-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
   gap: 10px;
 }
 
@@ -1649,7 +1686,7 @@ body.theme-jobs .search-hit-cat { color: var(--accent); }
 /* ---------- Jobs & Skills Workflow Pipelines, Role Cards & 13x9 DAG ---------- */
 .role-overview-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(235px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 235px), 1fr));
   gap: 12px;
   margin: 14px 0 18px;
 }
@@ -2088,7 +2125,7 @@ body.theme-knights .search-hit-cat { color: var(--accent); }
 
 .ek-set-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(225px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 225px), 1fr));
   gap: 14px;
   margin-top: 12px;
 }
@@ -2122,7 +2159,7 @@ body.theme-knights .search-hit-cat { color: var(--accent); }
 }
 .ek-piece-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 175px), 1fr));
   gap: 12px;
   margin-top: 12px;
 }
@@ -2186,4 +2223,146 @@ body.theme-knights .search-hit-cat { color: var(--accent); }
 .smithing-box {
   border-color: #7c4dff !important;
   background: rgba(124, 77, 255, 0.08) !important;
+}
+
+/* ---------- Mobile & Tablet Responsive Overhaul ---------- */
+@media (max-width: 920px) {
+  .sidebar {
+    width: min(84vw, 300px);
+    padding: 12px 10px 40px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .nav-item {
+    padding: 10px 12px;
+    font-size: 14px;
+    min-height: 40px;
+  }
+}
+
+@media (max-width: 860px) {
+  .topbar {
+    height: auto;
+    min-height: 52px;
+    flex-wrap: wrap;
+    padding: 8px 10px;
+    gap: 6px 8px;
+  }
+  .topbar-left {
+    flex: 1 1 auto;
+    min-width: 0;
+    gap: 7px;
+  }
+  .brand-link {
+    min-width: 0;
+    gap: 7px;
+  }
+  .brand-icon {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+  }
+  .brand-title {
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .brand-sub { display: none; }
+  .topbar-actions {
+    flex-shrink: 0;
+    gap: 5px;
+  }
+  .topbar-actions .oreui-btn-sm {
+    padding: 5px 8px;
+    font-size: 10.5px;
+    min-height: 32px;
+  }
+  .topbar-search {
+    order: 3;
+    flex: 1 0 100%;
+    width: 100%;
+    max-width: none;
+  }
+  .topbar-search input {
+    height: 38px;
+    font-size: 16px;
+    padding: 0 12px;
+  }
+  .search-dropdown { max-height: 55vh; }
+}
+
+@media (max-width: 720px) {
+  .wiki-main { padding: 14px 10px 48px; }
+  .hub-wrap { padding: calc(var(--topbar-h) + 14px) 10px 42px; }
+  .hub-hero { padding: 18px 14px; margin-bottom: 18px; }
+  .hub-hero h1 { font-size: 22px; }
+  .hub-hero p { font-size: 13.5px; }
+  .stat-pill { font-size: 11.5px; padding: 4px 8px; }
+  .portal-card { padding: 15px; }
+  .portal-icon { width: 48px; height: 48px; }
+  .portal-title { font-size: 18px; }
+  .chapter-header { padding: 14px; margin-bottom: 14px; }
+  .chapter-header h1 { font-size: 21px; }
+  .wiki-section { padding: 14px 12px; margin-bottom: 16px; }
+  .wiki-section > h2 {
+    margin: -14px -12px 12px;
+    padding: 10px 12px;
+    font-size: 16px;
+    flex-wrap: wrap;
+  }
+  .wiki-section ul, .wiki-section ol { margin-left: 16px; padding-left: 4px; }
+  .table-wrap { -webkit-overflow-scrolling: touch; }
+  .wiki-table { font-size: 12px; }
+  .wiki-table th, .wiki-table td { padding: 6px 8px; }
+  .wiki-table td code { word-break: break-word; }
+  .recipe-box { max-width: 100%; overflow-x: auto; padding: 8px 10px; gap: 8px; }
+  .modal-backdrop { padding: 8px; }
+  .modal-dialog { padding: 16px 14px; max-height: 92dvh; }
+  .modal-split-grid { grid-template-columns: 1fr; gap: 12px; }
+  .chapter-pager { flex-wrap: wrap; gap: 8px; }
+  .chapter-pager .oreui-btn {
+    flex: 1 1 135px;
+    white-space: normal;
+    text-align: center;
+    min-height: 38px;
+  }
+  .toolbar { flex-direction: column; align-items: stretch; }
+  .toolbar .ore-input,
+  .filter-bar .ore-input,
+  .filter-bar .ore-select {
+    width: 100%;
+    font-size: 16px;
+    min-height: 38px;
+  }
+  .filter-tab { padding: 7px 10px; font-size: 11.5px; min-height: 34px; }
+  .workflow-step { min-width: 0; flex: 1 1 100%; }
+  .dag-viewport { padding: 8px; -webkit-overflow-scrolling: touch; }
+  .dag-grid {
+    grid-template-columns: repeat(13, 38px);
+    grid-template-rows: repeat(9, 38px);
+    width: 494px;
+  }
+  .dag-cell { width: 38px; height: 38px; }
+  .dag-node { width: 32px; height: 32px; }
+  .dag-node img { width: 20px; height: 20px; }
+  .ek-viewer-box canvas, .customizer-stage canvas { max-width: 100%; height: auto; }
+}
+
+@media (max-width: 480px) {
+  .brand-icon { width: 24px; height: 24px; }
+  .brand-title { font-size: 12.5px; }
+  .topbar-actions .oreui-btn-sm { padding: 4px 7px; font-size: 10px; }
+  .craft-grid {
+    grid-template-columns: repeat(3, 34px);
+    grid-template-rows: repeat(3, 34px);
+  }
+  .craft-slot { width: 34px; height: 34px; }
+  .craft-slot img { width: 24px; height: 24px; }
+  .craft-output { width: 42px; height: 42px; }
+  .block-strip, .ek-piece-grid, .role-hero-box {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .gallery-grid, .ek-set-grid, .role-overview-grid, .cmd-card-grid, .military-cards-grid {
+    grid-template-columns: 1fr;
+  }
 }
