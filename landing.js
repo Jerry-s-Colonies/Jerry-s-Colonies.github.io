@@ -50,6 +50,37 @@ function setupCopyButton() {
     if (mapBtn) mapBtn.addEventListener('click', (e) => e.stopPropagation());
 }
 
+function setupNavDropdown() {
+    const dropdown = document.getElementById('nav-more-dropdown');
+    const btn = document.getElementById('nav-more-btn');
+    const menu = document.getElementById('nav-more-menu');
+    if (!dropdown || !btn) return;
+
+    const setOpen = (open) => {
+        dropdown.classList.toggle('is-open', open);
+        btn.setAttribute('aria-expanded', String(open));
+    };
+
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setOpen(!dropdown.classList.contains('is-open'));
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!dropdown.contains(e.target)) setOpen(false);
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') setOpen(false);
+    });
+
+    if (menu) {
+        menu.querySelectorAll('a').forEach((link) => {
+            link.addEventListener('click', () => setOpen(false));
+        });
+    }
+}
+
 function setupNavToggle() {
     const toggle = document.getElementById('nav-toggle');
     const links = document.getElementById('nav-links');
@@ -174,6 +205,7 @@ async function refreshDiscordStats() {
 document.addEventListener('DOMContentLoaded', () => {
     setupCopyButton();
     setupNavToggle();
+    setupNavDropdown();
     setupHeroBackground();
     setupScreenshotCarousel();
     refreshDiscordStats();

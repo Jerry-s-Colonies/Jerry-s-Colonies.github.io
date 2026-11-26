@@ -24,7 +24,7 @@
     <meta name="twitter:image" content="https://thefrontiermc.net/assets/icons/logo.png">
 
     <link rel="icon" type="image/png" href="assets/icons/logo.png">
-    <link rel="stylesheet" type="text/css" href="landing.css">
+    <link rel="stylesheet" type="text/css" href="landing.css?v=20261126nav">
 </head>
 
 <body>
@@ -38,13 +38,20 @@
             <span></span><span></span><span></span>
         </button>
         <div class="landing-nav-links" id="nav-links">
-            <a class="oreui-btn oreui-btn-status" href="#stats">Server Status</a>
-            <a class="oreui-btn oreui-btn-map" href="/map/">World Map</a>
-            <a class="oreui-btn oreui-btn-status" href="/nations/">Nations</a>
-            <a class="oreui-btn oreui-btn-wiki" href="/wiki/">Wiki</a>
-            <a class="oreui-btn oreui-btn-trailer" href="#trailer">Trailer</a>
-            <a class="oreui-btn" href="/admin/">Admin</a>
-            <a class="oreui-btn oreui-btn-discord" href="https://discord.gg/P3ahdUzgMH" target="_blank" rel="noopener">
+            <a class="nav-link" href="/map/">World Map</a>
+            <a class="nav-link" href="/nations/">Nations</a>
+            <a class="nav-link" href="/wiki/">Wiki</a>
+            <div class="nav-dropdown" id="nav-more-dropdown">
+                <button class="nav-link nav-dropdown-btn" id="nav-more-btn" type="button" aria-expanded="false" aria-haspopup="true" aria-controls="nav-more-menu">
+                    More <span class="nav-caret" aria-hidden="true"></span>
+                </button>
+                <div class="nav-dropdown-menu" id="nav-more-menu" role="menu">
+                    <a class="nav-dropdown-item" href="#stats" role="menuitem">Server Status</a>
+                    <a class="nav-dropdown-item" href="#trailer" role="menuitem">Trailer</a>
+                    <a class="nav-dropdown-item" href="/admin/" role="menuitem">Admin</a>
+                </div>
+            </div>
+            <a class="oreui-btn oreui-btn-discord nav-discord-cta" href="https://discord.gg/P3ahdUzgMH" target="_blank" rel="noopener">
                 <img class="oreui-btn-icon" src="assets/icons/discord-icon.png" alt="">Discord
             </a>
         </div>
@@ -84,8 +91,8 @@
                 <a class="oreui-btn oreui-btn-wiki hero-wiki-btn" href="/wiki/">
                     <img class="oreui-btn-icon" src="wiki/assets/vanilla/book.png" alt="">Explore The Wiki
                 </a>
-                <a class="oreui-btn oreui-btn-status" href="/nations/">
-                    <img class="oreui-btn-icon" src="wiki/assets/vanilla/banner_pattern.png" alt="" onerror="this.style.display='none'">Nations Directory
+                <a class="oreui-btn oreui-btn-status hero-wiki-btn hero-nations-btn" href="/nations/">
+                    <img class="oreui-btn-icon" src="wiki/jerry-nations/assets/items/colony_flag.png" alt="">Nations Directory
                 </a>
             </div>
 
@@ -256,7 +263,7 @@
 
     <div id="toast" class="toast"></div>
 
-    <script src="landing.js"></script>
+    <script src="landing.js?v=20261126nav"></script>
 </body>
 
 </html>
