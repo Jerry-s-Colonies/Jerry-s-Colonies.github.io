@@ -109,7 +109,7 @@ body.theme-jn .topbar .brand-sub {
 
 .nations-controls-grid {
   display: grid;
-  grid-template-columns: minmax(220px, 1.8fr) repeat(3, minmax(140px, 1fr)) auto;
+  grid-template-columns: minmax(200px, 1.5fr) repeat(4, minmax(120px, 1fr)) auto;
   gap: 10px;
   align-items: center;
 }
@@ -413,12 +413,77 @@ body.theme-jn .topbar .brand-sub {
   color: var(--text-muted);
 }
 
+.badge-muted {
+  background: rgba(140, 148, 160, 0.14);
+  border-color: rgba(140, 148, 160, 0.35);
+  color: var(--text-muted);
+}
+
+.nation-recruit-note {
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: var(--bg-input);
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+
+.nations-weekly-banner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  margin-bottom: 14px;
+}
+
+.nations-podium-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.nations-podium-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  background: var(--bg-card);
+  border: 2px solid var(--border-dark);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.12s ease, border-color 0.12s ease;
+}
+
+.nations-podium-card:hover {
+  transform: translateY(-2px);
+}
+
+.nations-podium-card.podium-1 { border-top: 4px solid #ffd166; }
+.nations-podium-card.podium-2 { border-top: 4px solid #cfd8e3; }
+.nations-podium-card.podium-3 { border-top: 4px solid #e09153; }
+
+@media (max-width: 1180px) {
+  .nations-controls-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .nations-ctrl-search {
+    grid-column: 1 / -1;
+  }
+}
+
 @media (max-width: 1020px) {
   .nations-controls-grid {
     grid-template-columns: 1fr 1fr;
   }
   .nations-ctrl-search {
     grid-column: 1 / -1;
+  }
+  .nations-podium-grid {
+    grid-template-columns: 1fr;
   }
 }
 

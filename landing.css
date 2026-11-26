@@ -549,6 +549,12 @@ a {
     border-radius: 20px;
 }
 
+.hero-badge.is-offline {
+    color: #ffd0d5;
+    background: rgba(185, 28, 44, 0.25);
+    border-color: #c93b4b;
+}
+
 .hero-badge-dot {
     width: 8px;
     height: 8px;
@@ -556,6 +562,12 @@ a {
     background: #79c353;
     box-shadow: 0 0 8px #79c353;
     animation: pulse-dot 1.6s infinite ease-in-out;
+}
+
+.hero-badge.is-offline .hero-badge-dot {
+    background: #e6194b;
+    box-shadow: 0 0 8px #e6194b;
+    animation: none;
 }
 
 @keyframes pulse-dot {
@@ -697,9 +709,11 @@ a {
     box-shadow: 1px 0 0 rgba(0, 0, 0, 0.4);
 }
 
-.ip-copy-btn {
+.ip-copy-btn,
+.ip-play-btn {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
     margin: 4px;
     padding: 0 16px;
@@ -722,7 +736,8 @@ a {
         box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
     }
 
-    .ip-copy-btn {
+    .ip-copy-btn,
+    .ip-play-btn {
         margin: 6px 4px 4px;
         padding: 12px 16px;
     }

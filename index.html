@@ -24,7 +24,8 @@
     <meta name="twitter:image" content="https://thefrontiermc.net/assets/icons/logo.png">
 
     <link rel="icon" type="image/png" href="assets/icons/logo.png">
-    <link rel="stylesheet" type="text/css" href="landing.css?v=20261126font">
+    <link rel="preload" as="image" href="assets/backgrounds/1.png">
+    <link rel="stylesheet" type="text/css" href="landing.css?v=20261126live">
 </head>
 
 <body>
@@ -62,9 +63,9 @@
         <div class="hero-bg" id="hero-bg-b"></div>
 
         <div class="hero-content">
-            <div class="hero-badge">
-                <span class="hero-badge-dot"></span>
-                Online Now
+            <div class="hero-badge" id="hero-badge">
+                <span class="hero-badge-dot" id="hero-badge-dot"></span>
+                <span id="hero-badge-label">Online Now</span>
             </div>
             <img class="hero-logo" src="assets/icons/logo.png" alt="The Frontier logo">
             <div class="hero-title-wrap">
@@ -107,6 +108,7 @@
                     <span class="ip-box-value">19132</span>
                 </div>
                 <button id="copy-ip-btn" class="oreui-btn ip-copy-btn" type="button">Copy</button>
+                <a id="play-server-btn" class="oreui-btn oreui-btn-primary ip-play-btn" href="minecraft://?addExternalServer=The%20Frontier|play.thefrontiermc.net:19132">Play</a>
             </div>
         </div>
     </header>
@@ -121,8 +123,8 @@
             <div role="button" tabindex="0" id="server-half-btn" class="combo-half combo-half-server">
                 <div class="combo-half-head">
                     <div class="stats-status">
-                        <span class="stats-status-dot is-online"></span>
-                        <span>Online</span>
+                        <span class="stats-status-dot is-online" id="server-status-dot"></span>
+                        <span id="server-status-label">Checking&hellip;</span>
                     </div>
                     <div class="combo-half-head-actions">
                         <a id="server-map-btn" class="map-jump-btn" href="/map/" aria-label="Open World Map">
@@ -134,7 +136,11 @@
 
                 <div class="combo-stat-row">
                     <div class="stat-cell">
-                        <div class="stat-cell-value">1.26.66</div>
+                        <div class="stat-cell-value" id="stat-server-players">--</div>
+                        <div class="stat-cell-label">Players Online</div>
+                    </div>
+                    <div class="stat-cell">
+                        <div class="stat-cell-value" id="stat-server-version">1.26.66</div>
                         <div class="stat-cell-label">Version</div>
                     </div>
                     <div class="stat-cell">
@@ -263,7 +269,7 @@
 
     <div id="toast" class="toast"></div>
 
-    <script src="landing.js?v=20261126nav"></script>
+    <script src="landing.js?v=20261126live"></script>
 </body>
 
 </html>

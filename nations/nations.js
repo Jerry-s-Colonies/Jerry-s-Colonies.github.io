@@ -107,6 +107,7 @@
     query: "",
     tierFilter: "all",
     continentFilter: "all",
+    recruitFilter: "all",
     sortBy: "rank",
     viewMode: "cards",
     selectedNationId: null,
@@ -162,6 +163,13 @@
       ? { x: Math.round(raw.capital.x), z: Math.round(raw.capital.z) }
       : null;
 
+    const recruitmentStatus = ["open", "apply", "closed"].includes(raw.recruitmentStatus)
+      ? raw.recruitmentStatus
+      : "open";
+    const recruitmentNote = typeof raw.recruitmentNote === "string"
+      ? raw.recruitmentNote.trim().slice(0, 120)
+      : "";
+
     return {
       id: raw.id,
       name: raw.name,
@@ -173,6 +181,8 @@
       tier,
       level,
       xp,
+      recruitmentStatus,
+      recruitmentNote,
       hasLevelData: isRich && hasLevel,
       color: typeof raw.color === "string" ? raw.color : "#63c74d",
       flag: Array.isArray(raw.flag) ? raw.flag : [],
@@ -232,10 +242,37 @@
     });
   }
 
+  function renderRecruitBadge(status, lang) {
+    if (status === "apply") {
+      return `<span class="badge badge-gold">${lang === "fr" ? "Sur candidature" : "By Application"}</span>`;
+    }
+    if (status === "closed") {
+      return `<span class="badge badge-muted">${lang === "fr" ? "Ferme" : "Closed"}</span>`;
+    }
+    return `<span class="badge badge-green">${lang === "fr" ? "Recrute" : "Open"}</span>`;
+  }
+
+  function getIsoWeekInfo(lang) {
+    const now = new Date();
+    const utc = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+    const dayNum = utc.getUTCDay() || 7;
+    const monday = new Date(utc);
+    monday.setUTCDate(utc.getUTCDate() - (dayNum - 1));
+    const sunday = new Date(monday);
+    sunday.setUTCDate(monday.getUTCDate() + 6);
+
+    utc.setUTCDate(utc.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(utc.getUTCFullYear(), 0, 1));
+    const week = Math.ceil(((utc - yearStart) / 86400000 + 1) / 7);
+    const fmt = (d) => d.toLocaleDateString(lang === "fr" ? "fr-FR" : "en-US", { month: "short", day: "numeric", timeZone: "UTC" });
+    return { week, range: `${fmt(monday)} - ${fmt(sunday)}` };
+  }
+
   function renderFilterOptions() {
     const lang = W.getLang();
     const tierSel = document.getElementById("nationTierFilter");
     const contSel = document.getElementById("nationContinentFilter");
+    const recSel = document.getElementById("nationRecruitFilter");
     const sortSel = document.getElementById("nationSortSelect");
 
     if (tierSel) {
@@ -258,6 +295,20 @@
       contSel.innerHTML = opts.join("");
       contSel.value = seen.includes(prev) ? prev : "all";
       state.continentFilter = contSel.value;
+    }
+
+    if (recSel) {
+      const prev = state.recruitFilter;
+      const recOpts = [
+        ["all", lang === "fr" ? "Recrutement : Tous" : "Recruitment: All"],
+        ["open", lang === "fr" ? "Recrutement : Ouvert" : "Recruitment: Open"],
+        ["apply", lang === "fr" ? "Recrutement : Sur candidature" : "Recruitment: By Application"],
+        ["closed", lang === "fr" ? "Recrutement : Ferme" : "Recruitment: Closed"],
+      ];
+      recSel.innerHTML = recOpts
+        .map(([v, lbl]) => `<option value="${v}">${W.escapeHtml(lbl)}</option>`)
+        .join("");
+      recSel.value = ["all", "open", "apply", "closed"].includes(prev) ? prev : "all";
     }
 
     if (sortSel) {
@@ -323,6 +374,7 @@
     const list = state.nations.filter((n) => {
       if (state.tierFilter !== "all" && String(n.tier) !== state.tierFilter) return false;
       if (state.continentFilter !== "all" && n.continent !== state.continentFilter) return false;
+      if (state.recruitFilter !== "all" && n.recruitmentStatus !== state.recruitFilter) return false;
       if (!q) return true;
       if (n.name.toLowerCase().includes(q)) return true;
       if (n.leaderName.toLowerCase().includes(q)) return true;
@@ -365,7 +417,110 @@
       return;
     }
 
-    if (state.viewMode === "table") {
+    if (state.viewMode === "weekly") {
+      const wk = getIsoWeekInfo(lang);
+      const rankedList = [...list].sort((a, b) => a.serverRank - b.serverRank);
+      const top3 = rankedList.slice(0, 3);
+      const podiumOrder = [top3[1], top3[0], top3[2]].filter(Boolean);
+      const rest = rankedList.slice(3);
+
+      container.innerHTML = `
+        <div class="oreui-card nations-weekly-banner">
+          <div>
+            <strong style="font-family:'MinecraftTen',sans-serif;font-size:17px;letter-spacing:0.07em;">
+              ${lang === "fr" ? `Classement Hebdomadaire — Semaine ${wk.week}` : `Weekly Ranking — Week ${wk.week}`}
+            </strong>
+            <div style="font-size:12px;color:var(--text-muted);">${W.escapeHtml(wk.range)} • ${
+              lang === "fr"
+                ? "Base actuellement sur le classement general serveur (niveau, XP, membres et parcelles)."
+                : "Currently based on live server standing (level, XP, members, and claims)."
+            }</div>
+          </div>
+          <span class="badge badge-gold">${lang === "fr" ? `${rankedList.length} nations classees` : `${rankedList.length} ranked nations`}</span>
+        </div>
+
+        ${podiumOrder.length > 0 ? `
+          <div class="nations-podium-grid">
+            ${podiumOrder.map((n, idx) => {
+              const rankNum = n.serverRank;
+              const tm = n.tier !== null ? getTierMeta(n.tier) : null;
+              return `
+                <article class="nations-podium-card podium-${rankNum}" data-nation-id="${W.escapeHtml(n.id)}">
+                  <div class="nation-card-head">
+                    <div class="nation-flag-frame">
+                      <img data-flag-id="${W.escapeHtml(n.id)}" src="${n.flagUrl || ""}" alt="${W.escapeHtml(n.name)}" />
+                    </div>
+                    <div class="nation-title-col">
+                      <div class="nation-rank-row">
+                        <span class="nation-rank-badge rank-${rankNum}">#${rankNum}</span>
+                        ${renderRecruitBadge(n.recruitmentStatus, lang)}
+                      </div>
+                      <h2 class="nation-card-title">${W.escapeHtml(n.name)}</h2>
+                      <div class="nation-leader-line">${lang === "fr" ? "Chef" : "Leader"}: <strong>${W.escapeHtml(n.leaderName)}</strong></div>
+                    </div>
+                  </div>
+                  <div class="nation-stats-mini">
+                    <div class="nation-stat-cell">
+                      <span class="nation-stat-lbl">${lang === "fr" ? "Niveau" : "Level"}</span>
+                      <span class="nation-stat-val">${n.level !== null ? `Lv.${n.level}` : "--"}</span>
+                    </div>
+                    <div class="nation-stat-cell">
+                      <span class="nation-stat-lbl">${lang === "fr" ? "Membres" : "Members"}</span>
+                      <span class="nation-stat-val">${n.memberCount}</span>
+                    </div>
+                    <div class="nation-stat-cell">
+                      <span class="nation-stat-lbl">${lang === "fr" ? "Parcelles" : "Parcels"}</span>
+                      <span class="nation-stat-val">${n.claimCount}</span>
+                    </div>
+                  </div>
+                  ${tm ? `<div style="font-size:11.5px;color:var(--text-muted);">Tier ${tm.id} • ${W.escapeHtml(lang === "fr" ? tm.fr : tm.en)}</div>` : ""}
+                </article>
+              `;
+            }).join("")}
+          </div>
+        ` : ""}
+
+        ${rest.length > 0 ? `
+          <div class="table-wrap">
+            <table class="wiki-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>${lang === "fr" ? "Nation" : "Nation"}</th>
+                  <th>${lang === "fr" ? "Dirigeant" : "Leader"}</th>
+                  <th>${lang === "fr" ? "Niveau" : "Level"}</th>
+                  <th>${lang === "fr" ? "Recrutement" : "Recruiting"}</th>
+                  <th>${lang === "fr" ? "Membres" : "Members"}</th>
+                  <th>${lang === "fr" ? "Parcelles" : "Parcels"}</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rest.map((n) => {
+                  const tm = n.tier !== null ? getTierMeta(n.tier) : null;
+                  const lvlStr = n.level !== null ? `Lv.${n.level} <span class="badge ${tm?.badgeCls || ""}">T${n.tier}</span>` : "--";
+                  return `
+                    <tr class="nation-table-row" data-nation-id="${W.escapeHtml(n.id)}">
+                      <td><strong>#${n.serverRank}</strong></td>
+                      <td>
+                        <div class="nation-table-name">
+                          <img class="nation-table-flag" data-flag-id="${W.escapeHtml(n.id)}" src="${n.flagUrl || ""}" alt="" />
+                          <strong style="color:${W.escapeHtml(n.color || "#fff")};">${W.escapeHtml(n.name)}</strong>
+                        </div>
+                      </td>
+                      <td>${W.escapeHtml(n.leaderName)}</td>
+                      <td>${lvlStr}</td>
+                      <td>${renderRecruitBadge(n.recruitmentStatus, lang)}</td>
+                      <td><strong>${n.memberCount}</strong></td>
+                      <td>${n.claimCount}</td>
+                    </tr>
+                  `;
+                }).join("")}
+              </tbody>
+            </table>
+          </div>
+        ` : ""}
+      `;
+    } else if (state.viewMode === "table") {
       container.innerHTML = `
         <div class="table-wrap">
           <table class="wiki-table">
@@ -375,6 +530,7 @@
                 <th>${lang === "fr" ? "Nation" : "Nation"}</th>
                 <th>${lang === "fr" ? "Dirigeant" : "Leader"}</th>
                 <th>${lang === "fr" ? "Niveau" : "Level"}</th>
+                <th>${lang === "fr" ? "Recrutement" : "Recruiting"}</th>
                 <th>${lang === "fr" ? "Membres" : "Members"}</th>
                 <th>${lang === "fr" ? "Parcelles" : "Parcels"}</th>
                 <th>${lang === "fr" ? "Citoyens" : "Citizens"}</th>
@@ -401,6 +557,7 @@
                     </td>
                     <td>${W.escapeHtml(n.leaderName)}</td>
                     <td>${lvlStr}</td>
+                    <td>${renderRecruitBadge(n.recruitmentStatus, lang)}</td>
                     <td><strong>${n.memberCount}</strong></td>
                     <td>${n.claimCount}</td>
                     <td>${formatNumber(n.citizenCount)}</td>
@@ -444,6 +601,7 @@
                     <div class="nation-rank-row">
                       <span class="nation-rank-badge ${rankCls}">#${n.serverRank}</span>
                       ${tierBadge}
+                      ${renderRecruitBadge(n.recruitmentStatus, lang)}
                     </div>
                     <h2 class="nation-card-title">${W.escapeHtml(n.name)}</h2>
                     <div class="nation-leader-line">${lang === "fr" ? "Chef" : "Leader"}: <strong>${W.escapeHtml(n.leaderName)}</strong></div>
@@ -560,8 +718,10 @@
             <span class="badge badge-gold">${lang === "fr" ? "Dirigeant" : "Leader"}: ${W.escapeHtml(n.leaderName)}</span>
             ${n.capitalName ? `<span class="badge">${lang === "fr" ? "Capitale" : "Capital"}: ${W.escapeHtml(n.capitalName)}</span>` : ""}
             ${tm ? `<span class="badge ${tm.badgeCls}">Tier ${tm.id} • ${W.escapeHtml(lang === "fr" ? tm.fr : tm.en)}</span>` : ""}
+            ${renderRecruitBadge(n.recruitmentStatus, lang)}
           </div>
-          <a class="oreui-btn oreui-btn-sm oreui-btn-info" href="${mapHref}">
+          ${n.recruitmentNote ? `<div class="nation-recruit-note">${W.escapeHtml(n.recruitmentNote)}</div>` : ""}
+          <a class="oreui-btn oreui-btn-sm oreui-btn-info" style="margin-top:10px;" href="${mapHref}">
             ${lang === "fr" ? "Voir sur la Carte" : "Locate on World Map"}
           </a>
         </div>
@@ -731,22 +891,24 @@
       state.continentFilter = e.target.value;
       renderNations();
     });
+    document.getElementById("nationRecruitFilter")?.addEventListener("change", (e) => {
+      state.recruitFilter = e.target.value;
+      renderNations();
+    });
     document.getElementById("nationSortSelect")?.addEventListener("change", (e) => {
       state.sortBy = e.target.value;
       renderNations();
     });
-    document.getElementById("btnViewCards")?.addEventListener("click", () => {
-      state.viewMode = "cards";
-      document.getElementById("btnViewCards")?.classList.add("active");
-      document.getElementById("btnViewTable")?.classList.remove("active");
+    const setView = (mode, activeId) => {
+      state.viewMode = mode;
+      ["btnViewCards", "btnViewTable", "btnViewWeekly"].forEach((id) => {
+        document.getElementById(id)?.classList.toggle("active", id === activeId);
+      });
       renderNations();
-    });
-    document.getElementById("btnViewTable")?.addEventListener("click", () => {
-      state.viewMode = "table";
-      document.getElementById("btnViewTable")?.classList.add("active");
-      document.getElementById("btnViewCards")?.classList.remove("active");
-      renderNations();
-    });
+    };
+    document.getElementById("btnViewCards")?.addEventListener("click", () => setView("cards", "btnViewCards"));
+    document.getElementById("btnViewTable")?.addEventListener("click", () => setView("table", "btnViewTable"));
+    document.getElementById("btnViewWeekly")?.addEventListener("click", () => setView("weekly", "btnViewWeekly"));
 
     document.getElementById("nationModalClose")?.addEventListener("click", closeModal);
     document.getElementById("nationModal")?.addEventListener("click", (e) => {
