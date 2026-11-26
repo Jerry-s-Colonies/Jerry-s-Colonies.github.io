@@ -33,8 +33,8 @@
   --ok: #7be356;
   --warning: #e67e22;
   --danger: #e74c3c;
-  --text-outline-lg: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 2px 3px rgba(0, 0, 0, 0.9);
-  --text-outline-sm: -1px -1px 0 #090a0d, 1px -1px 0 #090a0d, -1px 1px 0 #090a0d, 1px 1px 0 #090a0d, 0 1px 2px rgba(0, 0, 0, 0.9);
+  --text-outline-lg: 0 2px 0 rgba(0, 0, 0, 0.85), 0 3px 6px rgba(0, 0, 0, 0.5);
+  --text-outline-sm: 0 1px 0 rgba(0, 0, 0, 0.8);
   --shadow-lg: 0 12px 30px rgba(0, 0, 0, 0.55);
 }
 
@@ -65,18 +65,26 @@
 @font-face {
   font-family: "MinecraftRegular";
   src: url("../fonts/MinecraftRegular-Bmg3.otf") format("opentype");
+  font-weight: 100 900;
+  font-style: normal;
   font-display: swap;
 }
 
 @font-face {
   font-family: "MinecraftTen";
   src: url("../fonts/MinecraftTen-VGORe.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
   font-display: swap;
 }
 
 * { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; overflow-x: clip; }
+html {
+  scroll-behavior: smooth;
+  overflow-x: clip;
+  font-synthesis: none;
+}
 
 body {
   margin: 0;
@@ -88,6 +96,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   font-size: 14px;
   line-height: 1.65;
+  font-synthesis: none;
 }
 
 img, canvas { max-width: 100%; }
@@ -108,10 +117,16 @@ code {
 .hidden { display: none !important; }
 .pixel-font {
   font-family: "MinecraftTen", "MinecraftRegular", Consolas, monospace;
-  letter-spacing: 0.6px;
+  font-weight: 400;
+  letter-spacing: 0.085em;
+  word-spacing: 0.16em;
+  line-height: 1.28;
 }
 .mc-font {
   font-family: "MinecraftRegular", Consolas, monospace;
+  font-weight: 400;
+  letter-spacing: 0.065em;
+  word-spacing: 0.12em;
 }
 
 /* ---------- OreUI Primitives ---------- */
@@ -136,8 +151,10 @@ code {
   justify-content: center;
   gap: 7px;
   font-family: "MinecraftRegular", Consolas, monospace;
-  font-size: 12px;
-  letter-spacing: 0.4px;
+  font-size: 12.5px;
+  font-weight: 400;
+  letter-spacing: 0.07em;
+  word-spacing: 0.12em;
   text-transform: uppercase;
   color: #fff;
   text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.75);
@@ -161,7 +178,7 @@ a.oreui-btn:visited {
   text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.75);
 }
 
-.oreui-btn-sm { padding: 5px 10px; font-size: 11px; }
+.oreui-btn-sm { padding: 5px 10px; font-size: 11.5px; letter-spacing: 0.07em; }
 .oreui-btn-primary { background: linear-gradient(var(--green-top), var(--green-bot)); border-color: #1f4611; }
 .oreui-btn-crimson { background: linear-gradient(#e0525f, #8a1220); border-color: #4a0c13; }
 .oreui-btn-info { background: linear-gradient(var(--blue-top), var(--blue-bot)); border-color: #1a3550; }
@@ -229,15 +246,20 @@ a.oreui-btn:visited {
 .brand-title {
   font-family: "MinecraftTen", sans-serif;
   font-size: 18px;
-  letter-spacing: 0.7px;
-  line-height: 1.1;
+  font-weight: 400;
+  letter-spacing: 0.085em;
+  word-spacing: 0.15em;
+  line-height: 1.2;
   white-space: nowrap;
   color: var(--text-main);
   text-shadow: var(--text-outline-lg);
 }
 .brand-sub {
-  font-size: 10px;
+  font-size: 11px;
+  font-weight: 400;
   font-family: "MinecraftRegular", monospace;
+  letter-spacing: 0.075em;
+  word-spacing: 0.1em;
   color: var(--gold);
   text-transform: uppercase;
   display: block;
@@ -2230,6 +2252,36 @@ body.theme-knights .search-hit-cat { color: var(--accent); }
 .smithing-box {
   border-color: #7c4dff !important;
   background: rgba(124, 77, 255, 0.08) !important;
+}
+
+/* ---------- Minecraft Pixel Font Readability (No Faux-Bold + Wider Tracking) ---------- */
+.hub-hero h1,
+.hub-card-title,
+.portal-hero h1,
+.section-heading h2,
+.wiki-section h1,
+.wiki-section h2,
+.wiki-section h3,
+.card-title,
+.modal-title,
+.role-hero-title,
+.ek-card-title,
+.stat-num {
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  word-spacing: 0.15em;
+}
+
+.hub-hero-badge,
+.nav-section-title,
+.filter-tab,
+.tag,
+.badge,
+.callout-title,
+.hub-pill {
+  font-weight: 400;
+  letter-spacing: 0.065em;
+  word-spacing: 0.1em;
 }
 
 /* ---------- Mobile & Tablet Responsive Overhaul ---------- */

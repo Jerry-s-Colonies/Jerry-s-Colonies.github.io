@@ -5,6 +5,7 @@ html, body {
     background: #17181a;
     color: #e8e8e8;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-synthesis: none;
     scroll-behavior: smooth;
     overflow-x: hidden;
 }
@@ -19,17 +20,24 @@ html, body {
 .ip-box-value,
 .discord-panel-name {
     font-family: 'MinecraftTen', 'MinecraftRegular', monospace;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    word-spacing: 0.14em;
 }
 
 @font-face {
     font-family: 'MinecraftRegular';
     src: url('assets/fonts/MinecraftRegular-Bmg3.otf') format('opentype');
+    font-weight: 100 900;
+    font-style: normal;
     font-display: swap;
 }
 
 @font-face {
     font-family: 'MinecraftTen';
     src: url('assets/fonts/MinecraftTen-VGORe.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: normal;
     font-display: swap;
 }
 
@@ -63,7 +71,9 @@ a {
     gap: 8px;
     font-family: 'MinecraftRegular', 'MinecraftTen', monospace;
     font-size: 13px;
-    letter-spacing: .5px;
+    font-weight: 400;
+    letter-spacing: 0.07em;
+    word-spacing: 0.12em;
     text-transform: uppercase;
     color: #fff;
     text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.65);
@@ -252,7 +262,9 @@ a {
     gap: 7px;
     font-family: 'MinecraftRegular', 'MinecraftTen', monospace;
     font-size: 14px;
-    letter-spacing: .5px;
+    font-weight: 400;
+    letter-spacing: 0.07em;
+    word-spacing: 0.12em;
     text-transform: uppercase;
     color: #e6e8ec;
     text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.65);
@@ -320,7 +332,9 @@ a {
     border-radius: 3px;
     font-family: 'MinecraftRegular', 'MinecraftTen', monospace;
     font-size: 13px;
-    letter-spacing: .5px;
+    font-weight: 400;
+    letter-spacing: 0.07em;
+    word-spacing: 0.12em;
     text-transform: uppercase;
     text-decoration: none;
     color: #e2e5ea;
@@ -463,8 +477,10 @@ a {
 
 .hero-title {
     font-size: clamp(36px, 8vw, 68px);
+    font-weight: 400;
     margin: 0;
-    letter-spacing: 2px;
+    letter-spacing: 0.06em;
+    word-spacing: 0.12em;
     text-transform: uppercase;
     color: #fff;
     text-shadow:
@@ -574,7 +590,9 @@ a {
     min-width: 0;
     padding: 15px 24px;
     font-size: 18px;
-    letter-spacing: 1px;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    word-spacing: 0.14em;
     box-shadow:
         inset 0 1px 0 rgba(255, 255, 255, 0.35),
         inset 0 -3px 0 rgba(0, 0, 0, 0.38),
