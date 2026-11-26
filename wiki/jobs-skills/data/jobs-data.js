@@ -1,7 +1,7 @@
 /* Auto-generated from JobsSkillsBP & JobsSkillsRP — DO NOT HAND-EDIT */
 window.JS_DATA = {
-  "version": "1.0.2",
-  "skillCostLevels": 10,
+  "version": "1.1.0",
+  "skillCostLevels": 2,
   "totalJobs": 8,
   "totalSkills": 156,
   "jobs": [
@@ -61,6 +61,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Sneak + right-click a Furnace or Blast Furnace with raw iron, gold, or copper: instantly smelts up to 16 items using fuel from your inventory.",
             "fr": "Sneak + clic droit sur un Four ou Haut-Fourneau avec fer, or ou cuivre brut : fond instantanement jusqu'a 16 objets en consommant le combustible adequat."
+          },
+          "objective": {
+            "stat": "b_ore",
+            "target": 25,
+            "label": {
+              "fr": "Minerais extraits",
+              "en": "Ores mined"
+            }
           }
         },
         {
@@ -82,6 +90,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Sneak + right-click an Anvil with damaged gear: starts the Forge Hammer minigame (repairs 25% durability, 35% on Perfect, 0 XP).",
             "fr": "Sneak + clic droit sur une Enclume avec equipement endommage : lance le mini-jeu au Marteau de Forge (repare 25%, 35% si Parfait, 0 XP)."
+          },
+          "objective": {
+            "stat": "b_ore",
+            "target": 30,
+            "label": {
+              "fr": "Minerais extraits",
+              "en": "Ores mined"
+            }
           }
         },
         {
@@ -102,6 +118,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Reduces damage taken from fire, flames, and magma blocks by 50%.",
             "fr": "Reduit de 50% les degats subis par le feu, les flammes et les blocs de magma."
+          },
+          "objective": {
+            "stat": "b_ore",
+            "target": 35,
+            "label": {
+              "fr": "Minerais extraits",
+              "en": "Ores mined"
+            }
           }
         },
         {
@@ -124,6 +148,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Unlocks 3-zone Blast Furnace Steel smelting, Anvil Steel Plate hammering with the Forge Hammer (3 Steel -> 1 Plate, no Diamond needed), and 10% Fast Smelt bonus.",
             "fr": "Debloque la forge de l'Acier (Haut-Fourneau 3 zones : Vert 100%, Jaune pertes, Rouge echec), les Plaques d'Acier sur Enclume au Marteau (3 Acier -> 1 Plaque sans diamant) et +10% bonus Fonte Rapide."
+          },
+          "objective": {
+            "stat": "b_smelt",
+            "target": 64,
+            "label": {
+              "fr": "Lingots / Acier fondus",
+              "en": "Ingots / Steel smelted"
+            }
           }
         },
         {
@@ -147,6 +179,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Expands Fast Smelting to 64 items per batch and unlocks ancient debris, sand, cobble, deepslate, clay, netherrack, and quartz.",
             "fr": "Etend la Fonte Rapide jusqu'a 64 objets par lot et inclut les debris antiques, le sable, les pierres, l'argile et le quartz."
+          },
+          "objective": {
+            "stat": "b_smelt",
+            "target": 128,
+            "label": {
+              "fr": "Lingots / Acier fondus",
+              "en": "Ingots / Steel smelted"
+            }
           }
         },
         {
@@ -170,6 +210,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Repairs 50% durability (60% on Perfect) per Anvil Sharpening with a 25% chance not to consume the repair material.",
             "fr": "Repare 50% (60% si Parfait) a chaque Affutage sur Enclume avec 25% de chance d'economiser le materiau de reparation."
+          },
+          "objective": {
+            "stat": "b_forge",
+            "target": 15,
+            "label": {
+              "fr": "Operations de forge",
+              "en": "Forge actions"
+            }
           }
         },
         {
@@ -193,6 +241,14 @@ window.JS_DATA = {
           "desc": {
             "en": "2-stage leather craft: soak Rotten Flesh for 5s in a water Cauldron (blue gauge) then dry on a 3D Furnace, Blast Furnace, or Smoker to cure Leather.",
             "fr": "Traitement artisanal en 2 etapes : trempez la Chair Putrefiee 5s dans un chaudron d'eau (jauge bleue) puis sechez-la sur Fourneau/Haut-Fourneau/Fumoir 3D pour produire du Cuir."
+          },
+          "objective": {
+            "stat": "b_forge",
+            "target": 10,
+            "label": {
+              "fr": "Operations de forge",
+              "en": "Forge actions"
+            }
           }
         },
         {
@@ -215,6 +271,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Grants Fire Resistance for 10 seconds upon taking fire or lava damage (30-second internal cooldown).",
             "fr": "Au contact du feu ou de la lave, applique Resistance au Feu pendant 10 secondes (recharge interne : 30 secondes)."
+          },
+          "objective": {
+            "stat": "b_ore",
+            "target": 120,
+            "label": {
+              "fr": "Minerais extraits",
+              "en": "Ores mined"
+            }
           }
         },
         {
@@ -237,6 +301,14 @@ window.JS_DATA = {
           "desc": {
             "en": "20% chance per smelted item to gain a bonus ingot or result (including Steel) during Fast Smelting. Replaces Pure Alloy I.",
             "fr": "20% de chance par objet d'obtenir un lingot ou resultat supplementaire (Acier inclus) lors d'une Fonte Rapide. Remplace Alliage Pur I."
+          },
+          "objective": {
+            "stat": "b_smelt",
+            "target": 320,
+            "label": {
+              "fr": "Lingots / Acier fondus",
+              "en": "Ingots / Steel smelted"
+            }
           }
         },
         {
@@ -260,6 +332,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Sneak + right-click a Grindstone with iron, gold, chainmail, or diamond gear: Forge Hammer minigame (+1 material and +25% XP on Perfect).",
             "fr": "Sneak + clic droit sur une Meule avec piece en fer, or, mailles ou diamant : mini-jeu au Marteau de Forge (+1 materiau et +25% XP si Parfait)."
+          },
+          "objective": {
+            "stat": "b_smelt",
+            "target": 450,
+            "label": {
+              "fr": "Lingots / Acier fondus",
+              "en": "Ingots / Steel smelted"
+            }
           }
         },
         {
@@ -283,6 +363,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Unlocks 3-stage Forging (Furnace Bellows -> Anvil Hammer -> Water Cauldron) for weapons, axes, armor & tools up to rating 4/5 with custom category stats.",
             "fr": "Debloque la Forge en 3 etapes (Fourneau soufflet -> Enclume Marteau -> Chaudron d'eau) jusqu'au rang 4/5 avec bonus exclusifs par type d'objet."
+          },
+          "objective": {
+            "stat": "b_forge",
+            "target": 35,
+            "label": {
+              "fr": "Operations de forge",
+              "en": "Forge actions"
+            }
           }
         },
         {
@@ -305,6 +393,14 @@ window.JS_DATA = {
           "desc": {
             "en": "20% chance to negate durability loss on weapons and armor in combat.",
             "fr": "20% de chance d'annuler l'usure de vos armes et de votre armure en combat."
+          },
+          "objective": {
+            "stat": "b_forge",
+            "target": 45,
+            "label": {
+              "fr": "Operations de forge",
+              "en": "Forge actions"
+            }
           }
         },
         {
@@ -327,6 +423,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Cuts tanning fuel cost by 50%, guarantees at least 1 Leather per flesh, and adds a 25% chance for a bonus Leather.",
             "fr": "Reduit de 50% le cout en charbon/blaze du tannage, garantit au moins 1 Cuir par chair et accorde 25% de chance d'en produire un second."
+          },
+          "objective": {
+            "stat": "b_forge",
+            "target": 40,
+            "label": {
+              "fr": "Operations de forge",
+              "en": "Forge actions"
+            }
           }
         },
         {
@@ -350,6 +454,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Grants +25% XP from forging and tanning and slightly widens the sweet-spot zone on Furnace and Anvil minigames.",
             "fr": "Accorde +25% d'XP sur toute forge ou tannage et elargit legerement la zone cible sur le Fourneau et l'Enclume."
+          },
+          "objective": {
+            "stat": "b_ore",
+            "target": 350,
+            "label": {
+              "fr": "Minerais extraits",
+              "en": "Ores mined"
+            }
           }
         },
         {
@@ -373,6 +485,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Activate from the menu (1 XP level, 5 min cooldown): immediately restores 30% durability on all equipped armor and your held item.",
             "fr": "Activable depuis le menu (1 niveau XP, recharge 5 min) : repare immediatement 30% de toute votre armure equipee et de l'objet en main."
+          },
+          "objective": {
+            "stat": "b_forge",
+            "target": 90,
+            "label": {
+              "fr": "Operations de forge",
+              "en": "Forge actions"
+            }
           }
         },
         {
@@ -395,6 +515,14 @@ window.JS_DATA = {
           "desc": {
             "en": "40% chance to negate durability loss on weapons and armor in combat. Replaces Steel Tempering I.",
             "fr": "40% de chance d'annuler l'usure de vos armes et de votre armure en combat. Remplace Trempe de l'Acier I."
+          },
+          "objective": {
+            "stat": "b_forge",
+            "target": 120,
+            "label": {
+              "fr": "Operations de forge",
+              "en": "Forge actions"
+            }
           }
         },
         {
@@ -418,6 +546,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Improves Grindstone gear recycling yield (85% ratio) and adds a 25% chance for +1 Forge rating on Cauldron quench.",
             "fr": "Recupere plus de lingots au Recyclage sur Meule (85% ratio) et accorde 25% de chance de gagner +1 rang lors de la Trempe au chaudron."
+          },
+          "objective": {
+            "stat": "b_smelt",
+            "target": 900,
+            "label": {
+              "fr": "Lingots / Acier fondus",
+              "en": "Ingots / Steel smelted"
+            }
           }
         },
         {
@@ -439,6 +575,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Automatically pulls dropped raw ores, ingots, nuggets, fuel, and metal gear around you (togglable in settings).",
             "fr": "Attire automatiquement les minerais bruts, lingots, pepites, combustibles et equipements droppes autour de vous (desactivable dans les parametres)."
+          },
+          "objective": {
+            "stat": "b_smelt",
+            "target": 2000,
+            "label": {
+              "fr": "Lingots / Acier fondus",
+              "en": "Ingots / Steel smelted"
+            }
           }
         },
         {
@@ -461,6 +605,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Unlocks Masterpiece 5/5 Forging quality (3 exclusive stats & stronger effects) and widens all Furnace & Anvil minigame target zones.",
             "fr": "Debloque les Chefs-d'Oeuvre rang 5/5 (3 stats exclusives et effets ameliores) et elargit les zones de precision au Fourneau et sur l'Enclume."
+          },
+          "objective": {
+            "stat": "b_forge",
+            "target": 250,
+            "label": {
+              "fr": "Operations de forge",
+              "en": "Forge actions"
+            }
           }
         }
       ],
@@ -772,7 +924,7 @@ window.JS_DATA = {
           "hub": true
         }
       ],
-      "totalXpLevels": 930
+      "totalXpLevels": 160
     },
     {
       "id": "miner",
@@ -823,6 +975,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Grants Haste I while holding a pickaxe.",
             "fr": "Applique Celerite I (Haste I) tant que vous tenez une pioche en main."
+          },
+          "objective": {
+            "stat": "m_blk",
+            "target": 50,
+            "label": {
+              "fr": "Blocs mines",
+              "en": "Blocks mined"
+            }
           }
         },
         {
@@ -844,6 +1004,14 @@ window.JS_DATA = {
           "desc": {
             "en": "While sneaking with a pickaxe, mining an ore breaks up to 4 connected ores of the same type (26 neighbors).",
             "fr": "Accroupi avec une pioche, casser un minerai detruit jusqu'a 4 minerais connectes du meme type (26 voisins)."
+          },
+          "objective": {
+            "stat": "m_ore",
+            "target": 20,
+            "label": {
+              "fr": "Minerais extraits",
+              "en": "Ores mined"
+            }
           }
         },
         {
@@ -864,6 +1032,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Automatically grants Night Vision while your Y coordinate is below 50.",
             "fr": "Applique automatiquement Vision Nocturne tant que votre altitude Y est inferieure a 50."
+          },
+          "objective": {
+            "stat": "m_blk",
+            "target": 80,
+            "label": {
+              "fr": "Blocs mines",
+              "en": "Blocks mined"
+            }
           }
         },
         {
@@ -886,6 +1062,14 @@ window.JS_DATA = {
           "desc": {
             "en": "10% chance to drop 1-2 iron nuggets, gold nuggets, or copper ingots when breaking gravel.",
             "fr": "10% de chance d'obtenir 1 a 2 pepites de fer, pepites d'or ou lingots de cuivre en cassant du gravier."
+          },
+          "objective": {
+            "stat": "m_blk",
+            "target": 250,
+            "label": {
+              "fr": "Blocs mines",
+              "en": "Blocks mined"
+            }
           }
         },
         {
@@ -909,6 +1093,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Grants Haste II while holding a pickaxe. Replaces Iron Grip I.",
             "fr": "Applique Celerite II (Haste II) tant que vous tenez une pioche en main. Remplace Poigne d'Acier I."
+          },
+          "objective": {
+            "stat": "m_blk",
+            "target": 350,
+            "label": {
+              "fr": "Blocs mines",
+              "en": "Blocks mined"
+            }
           }
         },
         {
@@ -932,6 +1124,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Increases Vein Miner limit to 8 connected ores of the same type. Replaces Vein Miner I.",
             "fr": "Augmente la limite du Vein Miner a 8 minerais connectes du meme type. Remplace Vein Miner I."
+          },
+          "objective": {
+            "stat": "m_ore",
+            "target": 80,
+            "label": {
+              "fr": "Minerais extraits",
+              "en": "Ores mined"
+            }
           }
         },
         {
@@ -954,6 +1154,14 @@ window.JS_DATA = {
           "desc": {
             "en": "5% chance to double raw ore loot when mining an ore (disabled with Silk Touch).",
             "fr": "5% de chance de doubler le loot brut d'un minerai mine (hors Toucher de Soie)."
+          },
+          "objective": {
+            "stat": "m_ore",
+            "target": 120,
+            "label": {
+              "fr": "Minerais extraits",
+              "en": "Ores mined"
+            }
           }
         },
         {
@@ -976,6 +1184,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Reduces fall damage by 50% while your Y coordinate is below 0.",
             "fr": "Reduit les degats de chute de 50% lorsque votre altitude Y est inferieure a 0."
+          },
+          "objective": {
+            "stat": "m_deep",
+            "target": 150,
+            "label": {
+              "fr": "Deepslate & Abimes",
+              "en": "Deepslate & Deepstone"
+            }
           }
         },
         {
@@ -998,6 +1214,14 @@ window.JS_DATA = {
           "desc": {
             "en": "20% chance to drop nuggets/copper when breaking gravel. Replaces Scavenger I.",
             "fr": "20% de chance d'obtenir des pepites/cuivre en cassant du gravier. Remplace Le Fouilleur I."
+          },
+          "objective": {
+            "stat": "m_blk",
+            "target": 900,
+            "label": {
+              "fr": "Blocs mines",
+              "en": "Blocks mined"
+            }
           }
         },
         {
@@ -1020,6 +1244,14 @@ window.JS_DATA = {
           "desc": {
             "en": "25% chance to save/restore 1 durability point on your pickaxe when breaking a block.",
             "fr": "25% de chance de preserver/restaurer 1 point de durabilite de votre pioche apres avoir casse un bloc."
+          },
+          "objective": {
+            "stat": "m_blk",
+            "target": 1200,
+            "label": {
+              "fr": "Blocs mines",
+              "en": "Blocks mined"
+            }
           }
         },
         {
@@ -1043,6 +1275,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Automatically grants Haste when aiming at or mining any deepslate block.",
             "fr": "Applique automatiquement Haste en visant ou minant un bloc contenant de l'ardoise des abimes (deepslate)."
+          },
+          "objective": {
+            "stat": "m_deep",
+            "target": 500,
+            "label": {
+              "fr": "Deepslate & Abimes",
+              "en": "Deepslate & Deepstone"
+            }
           }
         },
         {
@@ -1065,6 +1305,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Increases Vein Miner limit to 12 connected ores of the same type. Replaces Vein Miner II.",
             "fr": "Augmente la limite du Vein Miner a 12 minerais connectes du meme type. Remplace Vein Miner II."
+          },
+          "objective": {
+            "stat": "m_ore",
+            "target": 250,
+            "label": {
+              "fr": "Minerais extraits",
+              "en": "Ores mined"
+            }
           }
         },
         {
@@ -1087,6 +1335,14 @@ window.JS_DATA = {
           "desc": {
             "en": "10% chance to double raw ore loot when mining an ore. Replaces Double Vein I.",
             "fr": "10% de chance de doubler le loot brut d'un minerai mine. Remplace Double Veine I."
+          },
+          "objective": {
+            "stat": "m_ore",
+            "target": 350,
+            "label": {
+              "fr": "Minerais extraits",
+              "en": "Ores mined"
+            }
           }
         },
         {
@@ -1109,6 +1365,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Immediately removes the Darkness effect whenever it is applied.",
             "fr": "Retire immediatement l'effet Obscurite (Darkness) des qu'il est applique."
+          },
+          "objective": {
+            "stat": "m_deep",
+            "target": 700,
+            "label": {
+              "fr": "Deepslate & Abimes",
+              "en": "Deepslate & Deepstone"
+            }
           }
         },
         {
@@ -1131,6 +1395,14 @@ window.JS_DATA = {
           "desc": {
             "en": "30% chance to drop nuggets/copper when breaking gravel. Replaces Scavenger II.",
             "fr": "30% de chance d'obtenir des pepites/cuivre en cassant du gravier. Remplace Le Fouilleur II."
+          },
+          "objective": {
+            "stat": "m_blk",
+            "target": 2500,
+            "label": {
+              "fr": "Blocs mines",
+              "en": "Blocks mined"
+            }
           }
         },
         {
@@ -1153,6 +1425,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Grants Haste IV while aiming at obsidian or crying obsidian.",
             "fr": "Applique Celerite IV (Haste IV) lorsque vous visez de l'obsidienne ou de l'obsidienne pleureuse."
+          },
+          "objective": {
+            "stat": "m_obs",
+            "target": 60,
+            "label": {
+              "fr": "Obsidienne & Gemmes",
+              "en": "Obsidian & Gems"
+            }
           }
         },
         {
@@ -1175,6 +1455,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Activate in menu (1 XP level, 10 min): mining a block with a pickaxe also mines the pickaxe-mineable block directly beneath it (y - 1).",
             "fr": "Activable via le menu (1 niveau XP, duree 10 min) : miner un bloc a la pioche casse aussi le bloc juste en dessous (y - 1)."
+          },
+          "objective": {
+            "stat": "m_blk",
+            "target": 3200,
+            "label": {
+              "fr": "Blocs mines",
+              "en": "Blocks mined"
+            }
           }
         },
         {
@@ -1197,6 +1485,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Increases Vein Miner limit to 16 connected ores of the same type. Replaces Vein Miner III.",
             "fr": "Augmente la limite du Vein Miner a 16 minerais connectes du meme type. Remplace Vein Miner III."
+          },
+          "objective": {
+            "stat": "m_ore",
+            "target": 650,
+            "label": {
+              "fr": "Minerais extraits",
+              "en": "Ores mined"
+            }
           }
         },
         {
@@ -1217,6 +1513,14 @@ window.JS_DATA = {
           "desc": {
             "en": "15% chance to double raw ore loot when mining an ore. Replaces Double Vein II.",
             "fr": "15% de chance de doubler le loot brut d'un minerai mine. Remplace Double Veine II."
+          },
+          "objective": {
+            "stat": "m_ore",
+            "target": 850,
+            "label": {
+              "fr": "Minerais extraits",
+              "en": "Ores mined"
+            }
           }
         },
         {
@@ -1237,6 +1541,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Grants Speed II while sneaking below Y = 0.",
             "fr": "Applique Vitesse II tant que vous etes accroupi sous la couche Y = 0."
+          },
+          "objective": {
+            "stat": "m_deep",
+            "target": 1500,
+            "label": {
+              "fr": "Deepslate & Abimes",
+              "en": "Deepslate & Deepstone"
+            }
           }
         },
         {
@@ -1258,6 +1570,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Directly inserts items dropped around broken blocks into your inventory (togglable in settings).",
             "fr": "Insere directement dans votre inventaire les objets droppes autour des blocs mines (desactivable dans les parametres)."
+          },
+          "objective": {
+            "stat": "m_blk",
+            "target": 6000,
+            "label": {
+              "fr": "Blocs mines",
+              "en": "Blocks mined"
+            }
           }
         },
         {
@@ -1278,6 +1598,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Breaking a block with a pickaxe instantly breaks directly adjacent (6 faces) gravel and dirt blocks.",
             "fr": "Casser un bloc a la pioche detruit instantanement les blocs de gravier et de terre directement adjacents (6 faces)."
+          },
+          "objective": {
+            "stat": "m_blk",
+            "target": 7500,
+            "label": {
+              "fr": "Blocs mines",
+              "en": "Blocks mined"
+            }
           }
         },
         {
@@ -1298,6 +1626,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Applies Vein Miner (up to 16 blocks) to calcite, andesite, diorite, granite, and tuff while sneaking.",
             "fr": "Applique le Vein Miner (jusqu'a 16 blocs) sur la calcite, l'andesite, la diorite, le granite et le tuf en sneak."
+          },
+          "objective": {
+            "stat": "m_ore",
+            "target": 1500,
+            "label": {
+              "fr": "Minerais extraits",
+              "en": "Ores mined"
+            }
           }
         }
       ],
@@ -1537,7 +1873,7 @@ window.JS_DATA = {
           "hub": false
         }
       ],
-      "totalXpLevels": 1330
+      "totalXpLevels": 224
     },
     {
       "id": "lumberjack",
@@ -1577,6 +1913,14 @@ window.JS_DATA = {
           "desc": {
             "en": "While sneaking with an axe, chopping a log fells up to 16 connected logs of the same type.",
             "fr": "Accroupi avec une hache, casser une buche abat jusqu'a 16 buches connectees du meme type."
+          },
+          "objective": {
+            "stat": "l_log",
+            "target": 35,
+            "label": {
+              "fr": "Buches abattues",
+              "en": "Logs chopped"
+            }
           }
         },
         {
@@ -1598,6 +1942,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Grants Speed I while holding an axe.",
             "fr": "Applique Vitesse I tant que vous tenez une hache en main."
+          },
+          "objective": {
+            "stat": "l_log",
+            "target": 50,
+            "label": {
+              "fr": "Buches abattues",
+              "en": "Logs chopped"
+            }
           }
         },
         {
@@ -1620,6 +1972,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Automatically plants the matching sapling when chopping a base log standing on natural soil.",
             "fr": "Replant automatiquement la pousse correspondante lorsqu'une buche de base posee sur sol naturel est abattue."
+          },
+          "objective": {
+            "stat": "l_log",
+            "target": 150,
+            "label": {
+              "fr": "Buches abattues",
+              "en": "Logs chopped"
+            }
           }
         },
         {
@@ -1642,6 +2002,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Increases Tree Capitator limit to 48 connected logs. Replaces Tree Capitator I.",
             "fr": "Augmente la limite du Tree Capitator a 48 buches connectees. Remplace Tree Capitator I."
+          },
+          "objective": {
+            "stat": "l_log",
+            "target": 250,
+            "label": {
+              "fr": "Buches abattues",
+              "en": "Logs chopped"
+            }
           }
         },
         {
@@ -1665,6 +2033,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Grants Haste I while holding an axe.",
             "fr": "Applique Celerite I (Haste I) tant que vous tenez une hache en main."
+          },
+          "objective": {
+            "stat": "l_leaf",
+            "target": 120,
+            "label": {
+              "fr": "Feuilles coupees",
+              "en": "Leaves cleared"
+            }
           }
         },
         {
@@ -1687,6 +2063,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Increases melee damage dealt with an axe by +15%.",
             "fr": "Augmente les degats infliges avec une hache de +15%."
+          },
+          "objective": {
+            "stat": "l_axe",
+            "target": 40,
+            "label": {
+              "fr": "Coups de hache",
+              "en": "Axe hits"
+            }
           }
         },
         {
@@ -1709,6 +2093,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Triples the chance of obtaining apples when breaking oak or dark oak leaves.",
             "fr": "Triple les chances d'obtenir des pommes lors de la destruction de feuilles de chene ou de chene noir."
+          },
+          "objective": {
+            "stat": "l_leaf",
+            "target": 350,
+            "label": {
+              "fr": "Feuilles coupees",
+              "en": "Leaves cleared"
+            }
           }
         },
         {
@@ -1731,6 +2123,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Fells up to 128 connected logs and automatically breaks connected tree leaves with natural drops.",
             "fr": "Abat jusqu'a 128 buches connectees et detruit automatiquement les feuilles de l'arbre avec leurs loots naturels."
+          },
+          "objective": {
+            "stat": "l_log",
+            "target": 750,
+            "label": {
+              "fr": "Buches abattues",
+              "en": "Logs chopped"
+            }
           }
         },
         {
@@ -1753,6 +2153,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Grants Haste II while holding an axe. Replaces Flash Cut I.",
             "fr": "Applique Celerite II (Haste II) tant que vous tenez une hache en main. Remplace Taille Eclair I."
+          },
+          "objective": {
+            "stat": "l_log",
+            "target": 950,
+            "label": {
+              "fr": "Buches abattues",
+              "en": "Logs chopped"
+            }
           }
         },
         {
@@ -1775,6 +2183,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Increases melee damage dealt with an axe by +30%. Replaces Heavy Strike I.",
             "fr": "Augmente les degats infliges avec une hache de +30%. Remplace Frappe Lourde I."
+          },
+          "objective": {
+            "stat": "l_axe",
+            "target": 140,
+            "label": {
+              "fr": "Coups de hache",
+              "en": "Axe hits"
+            }
           }
         },
         {
@@ -1795,6 +2211,14 @@ window.JS_DATA = {
           "desc": {
             "en": "1% chance to drop a Golden Apple when felling a dark oak tree.",
             "fr": "1% de chance d'obtenir une Pomme d'Or lors de l'abattage d'un arbre de chene noir."
+          },
+          "objective": {
+            "stat": "l_leaf",
+            "target": 800,
+            "label": {
+              "fr": "Feuilles coupees",
+              "en": "Leaves cleared"
+            }
           }
         },
         {
@@ -1817,6 +2241,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Sneak + right-click a log with an axe to strip all logs within a 3x3x3 cube.",
             "fr": "Sneak + clic droit avec une hache sur une buche pour ecorcer toutes les buches dans un rayon de 3x3x3."
+          },
+          "objective": {
+            "stat": "l_log",
+            "target": 2000,
+            "label": {
+              "fr": "Buches abattues",
+              "en": "Logs chopped"
+            }
           }
         },
         {
@@ -1837,6 +2269,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Hitting an entity with an axe applies Slowness II for 1 second (10-second internal cooldown).",
             "fr": "Frapper une entite a la hache lui applique Lenteur II pendant 1 seconde (cooldown interne : 10 secondes)."
+          },
+          "objective": {
+            "stat": "l_axe",
+            "target": 350,
+            "label": {
+              "fr": "Coups de hache",
+              "en": "Axe hits"
+            }
           }
         },
         {
@@ -1858,6 +2298,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Directly inserts chopped logs, leaves, apples, and saplings into your inventory (togglable in settings).",
             "fr": "Insere directement les buches, feuilles, pommes et pousses coupees dans votre inventaire (desactivable dans les parametres)."
+          },
+          "objective": {
+            "stat": "l_log",
+            "target": 4500,
+            "label": {
+              "fr": "Buches abattues",
+              "en": "Logs chopped"
+            }
           }
         }
       ],
@@ -2052,7 +2500,7 @@ window.JS_DATA = {
           "hub": true
         }
       ],
-      "totalXpLevels": 660
+      "totalXpLevels": 116
     },
     {
       "id": "rancher",
@@ -2107,6 +2555,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Sneak + right-click a Hay Block holding animal food: gathers & heals up to 6 matching animals within 7 blocks.",
             "fr": "Sneak + clic droit sur un Bloc de Foin avec nourriture : rassemble et soigne jusqu'a 6 animaux compatibles dans un rayon de 7 blocs."
+          },
+          "objective": {
+            "stat": "r_care",
+            "target": 12,
+            "label": {
+              "fr": "Soins / Tontes troupeau",
+              "en": "Animals cared / sheared"
+            }
           }
         },
         {
@@ -2129,6 +2585,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Shearing sheep grants +1 to +2 bonus matching wool and a 30% chance to save shear durability.",
             "fr": "Tondre un mouton donne +1 a +2 laines supplementaires et 30% de chance de preserver la durabilite des cisailles."
+          },
+          "objective": {
+            "stat": "r_care",
+            "target": 15,
+            "label": {
+              "fr": "Soins / Tontes troupeau",
+              "en": "Animals cared / sheared"
+            }
           }
         },
         {
@@ -2149,6 +2613,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Harvesting livestock yields +1 bonus meat drop.",
             "fr": "Octroie +1 viande bonus a la mort des animaux d'elevage que vous tuez."
+          },
+          "objective": {
+            "stat": "r_kill",
+            "target": 15,
+            "label": {
+              "fr": "Abattages elevage",
+              "en": "Livestock harvested"
+            }
           }
         },
         {
@@ -2171,6 +2643,14 @@ window.JS_DATA = {
           "desc": {
             "en": "35% chance for a twin baby to spawn whenever animals breed near you (14-block radius).",
             "fr": "35% de chance de faire naitre un bebe jumeau supplementaire lors de la reproduction d'animaux dans un rayon de 14 blocs."
+          },
+          "objective": {
+            "stat": "r_care",
+            "target": 45,
+            "label": {
+              "fr": "Soins / Tontes troupeau",
+              "en": "Animals cared / sheared"
+            }
           }
         },
         {
@@ -2193,6 +2673,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Gathers & heals up to 12 animals within 12 blocks and grants them Regeneration I for 6 seconds. Replaces Herd Feeding I.",
             "fr": "Rassemble et soigne jusqu'a 12 animaux dans un rayon de 12 blocs avec Regeneration I pendant 6 secondes. Remplace Nourrissage I."
+          },
+          "objective": {
+            "stat": "r_care",
+            "target": 60,
+            "label": {
+              "fr": "Soins / Tontes troupeau",
+              "en": "Animals cared / sheared"
+            }
           }
         },
         {
@@ -2216,6 +2704,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Sneak + right-click a cow, mooshroom, or goat with an empty bucket to craft shareable Rich Milk (Regeneration II 12s & Absorption I 45s for anyone).",
             "fr": "Sneak + clic droit sur vache, champimeuh ou chevre avec seau vide : obtient du Lait Riche partageable (Regeneration II 12s & Absorption I 45s pour tout joueur)."
+          },
+          "objective": {
+            "stat": "r_care",
+            "target": 75,
+            "label": {
+              "fr": "Soins / Tontes troupeau",
+              "en": "Animals cared / sheared"
+            }
           }
         },
         {
@@ -2238,6 +2734,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Grants +2 to +3 bonus wool, 50% shear durability save, and a 35% chance for sheep to regrow wool instantly. Replaces Golden Shears I.",
             "fr": "Donne +2 a +3 laines, 50% d'economie de cisailles et 35% de chance que la laine repousse immediatement. Remplace Tonte Doree I."
+          },
+          "objective": {
+            "stat": "r_care",
+            "target": 90,
+            "label": {
+              "fr": "Soins / Tontes troupeau",
+              "en": "Animals cared / sheared"
+            }
           }
         },
         {
@@ -2261,6 +2765,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Grants Speed I while holding wheat, shears, a lead, or a brush, and permanently reduces fall damage by 35%.",
             "fr": "Applique Vitesse I en tenant ble, cisailles, laisse ou pinceau et reduit les degats de chute de 35%."
+          },
+          "objective": {
+            "stat": "r_care",
+            "target": 55,
+            "label": {
+              "fr": "Soins / Tontes troupeau",
+              "en": "Animals cared / sheared"
+            }
           }
         },
         {
@@ -2284,6 +2796,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Increases bonus meat yield from livestock to +2 per kill. Replaces Butcher I.",
             "fr": "Augmente le bonus de viande a +2 par animal d'elevage tue. Remplace Boucher I."
+          },
+          "objective": {
+            "stat": "r_kill",
+            "target": 60,
+            "label": {
+              "fr": "Abattages elevage",
+              "en": "Livestock harvested"
+            }
           }
         },
         {
@@ -2306,6 +2826,14 @@ window.JS_DATA = {
           "desc": {
             "en": "70% chance for twin births within 16 blocks (preserves sheep wool color). Replaces Twin Birth I.",
             "fr": "70% de chance de jumeaux dans un rayon de 16 blocs (conserve la couleur des moutons). Remplace Naissances Gemellaires I."
+          },
+          "objective": {
+            "stat": "r_care",
+            "target": 160,
+            "label": {
+              "fr": "Soins / Tontes troupeau",
+              "en": "Animals cared / sheared"
+            }
           }
         },
         {
@@ -2329,6 +2857,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Sneak + right-click a baby animal with matching food to mature it into an adult instantly.",
             "fr": "Sneak + clic droit sur un bebe animal avec sa nourriture favorite pour le faire grandir instantanement."
+          },
+          "objective": {
+            "stat": "r_care",
+            "target": 200,
+            "label": {
+              "fr": "Soins / Tontes troupeau",
+              "en": "Animals cared / sheared"
+            }
           }
         },
         {
@@ -2351,6 +2887,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Sneak + right-click a full Beehive (honey 5) without angering bees: harvests 2-3 Honey Bottles or 5-6 Honeycombs.",
             "fr": "Sneak + clic droit sur une Ruche pleine (miel 5) sans facher les abeilles : recolte 2 a 3 fioles de miel ou 5 a 6 rayons de miel."
+          },
+          "objective": {
+            "stat": "r_care",
+            "target": 180,
+            "label": {
+              "fr": "Soins / Tontes troupeau",
+              "en": "Animals cared / sheared"
+            }
           }
         },
         {
@@ -2374,6 +2918,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Mounts you ride (horse, donkey, mule, camel, llama, pig, strider) continuously gain Speed II, Jump Boost I, and Resistance I.",
             "fr": "Votre monture actuelle (cheval, ane, mulet, chameau, lama, cochon, arpenteur) recoit Vitesse II, Detente I et Resistance I en continu."
+          },
+          "objective": {
+            "stat": "r_care",
+            "target": 220,
+            "label": {
+              "fr": "Soins / Tontes troupeau",
+              "en": "Animals cared / sheared"
+            }
           }
         },
         {
@@ -2397,6 +2949,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Livestock yields +1 to +2 bonus leather, rabbit hide, wool, feathers, or ink sacs.",
             "fr": "Les animaux d'elevage donnent +1 a +2 cuirs, peaux de lapin, laines, plumes ou poches d'encre supplementaires."
+          },
+          "objective": {
+            "stat": "r_kill",
+            "target": 160,
+            "label": {
+              "fr": "Abattages elevage",
+              "en": "Livestock harvested"
+            }
           }
         },
         {
@@ -2419,6 +2979,14 @@ window.JS_DATA = {
           "desc": {
             "en": "50% chance (100% while sneaking) for Butcher bonus meat to drop pre-cooked.",
             "fr": "50% de chance (100% en sneak) que le bonus de viande du Boucher soit cuit directement."
+          },
+          "objective": {
+            "stat": "r_kill",
+            "target": 220,
+            "label": {
+              "fr": "Abattages elevage",
+              "en": "Livestock harvested"
+            }
           }
         },
         {
@@ -2442,6 +3010,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Upgrades hive bottles into shareable Royal Honey (Speed II 20s, Haste I 30s & Saturation for any player).",
             "fr": "Transforme les fioles recoltees aux ruches en Miel Royal partageable (Vitesse II 20s, Celerite I 30s & Saturation pour tout joueur)."
+          },
+          "objective": {
+            "stat": "r_care",
+            "target": 400,
+            "label": {
+              "fr": "Soins / Tontes troupeau",
+              "en": "Animals cared / sheared"
+            }
           }
         },
         {
@@ -2464,6 +3040,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Tamed pets (wolves, cats, parrots) owned by you within 16 blocks gain Strength I, Resistance I, and Regeneration I.",
             "fr": "Vos familiers apprivoises (loups, chats, perroquets) dans un rayon de 16 blocs recoivent Force I, Resistance I et Regeneration I."
+          },
+          "objective": {
+            "stat": "r_kill",
+            "target": 420,
+            "label": {
+              "fr": "Abattages elevage",
+              "en": "Livestock harvested"
+            }
           }
         },
         {
@@ -2487,6 +3071,14 @@ window.JS_DATA = {
           "desc": {
             "en": "While at least 2 passive animals are within 10 blocks, reduces incoming physical damage by 15% and grants slow Regeneration.",
             "fr": "Tant qu'au moins 2 animaux passifs se trouvent dans un rayon de 10 blocs, reduit les degats physiques subis de 15% et regenere lentement."
+          },
+          "objective": {
+            "stat": "r_care",
+            "target": 480,
+            "label": {
+              "fr": "Soins / Tontes troupeau",
+              "en": "Animals cared / sheared"
+            }
           }
         },
         {
@@ -2508,6 +3100,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Directly inserts dropped wool, leather, feathers, meat, eggs, and honeycomb around you (togglable in settings).",
             "fr": "Attire directement dans votre inventaire laine, cuir, plumes, viandes, oeufs et rayons de miel (desactivable dans les parametres)."
+          },
+          "objective": {
+            "stat": "r_kill",
+            "target": 800,
+            "label": {
+              "fr": "Abattages elevage",
+              "en": "Livestock harvested"
+            }
           }
         },
         {
@@ -2530,6 +3130,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Menu active (1 XP Lvl, 5m CD): heals, grows babies & buffs all animals in 16b. Also Sneak+Click mounts/pets with a Brush to bless them for 5 minutes!",
             "fr": "Actif menu (1 Niv. XP, CD 5m) : soigne, fait grandir et buff tous les animaux en 16b. Aussi Sneak+Clic avec un Pinceau sur monture/familier pour le benir 5 min !"
+          },
+          "objective": {
+            "stat": "r_care",
+            "target": 900,
+            "label": {
+              "fr": "Soins / Tontes troupeau",
+              "en": "Animals cared / sheared"
+            }
           }
         }
       ],
@@ -2859,7 +3467,7 @@ window.JS_DATA = {
           "hub": true
         }
       ],
-      "totalXpLevels": 950
+      "totalXpLevels": 164
     },
     {
       "id": "farmer",
@@ -2914,6 +3522,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Sneak + right-click a mature crop with a hoe: harvests & automatically replants a 3x3 area.",
             "fr": "Sneak + clic droit sur une culture mure avec une houe : recolte et replante automatiquement en zone 3x3."
+          },
+          "objective": {
+            "stat": "f_crop",
+            "target": 40,
+            "label": {
+              "fr": "Cultures recoltees",
+              "en": "Crops harvested"
+            }
           }
         },
         {
@@ -2936,6 +3552,14 @@ window.JS_DATA = {
           "desc": {
             "en": "15% chance to gain +1 extra crop drop when harvesting mature crops.",
             "fr": "15% de chance d'obtenir +1 ressource bonus lors de la recolte d'une culture mure."
+          },
+          "objective": {
+            "stat": "f_crop",
+            "target": 60,
+            "label": {
+              "fr": "Cultures recoltees",
+              "en": "Crops harvested"
+            }
           }
         },
         {
@@ -2956,6 +3580,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Grants Haste I while holding a hoe and a 30% chance to preserve hoe durability during field work.",
             "fr": "Applique Celerite I (Haste I) houe en main et 30% de chance d'economiser la durabilite de votre houe."
+          },
+          "objective": {
+            "stat": "f_till",
+            "target": 30,
+            "label": {
+              "fr": "Terres / Compostages",
+              "en": "Tilled / Composted"
+            }
           }
         },
         {
@@ -2978,6 +3610,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Sneak + right-click dirt or grass with a hoe to till a 3x3 farmland plot at once.",
             "fr": "Sneak + clic droit sur de la terre ou de l'herbe avec une houe pour labourer une parcelle 3x3 d'un coup."
+          },
+          "objective": {
+            "stat": "f_till",
+            "target": 120,
+            "label": {
+              "fr": "Terres / Compostages",
+              "en": "Tilled / Composted"
+            }
           }
         },
         {
@@ -3000,6 +3640,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Expands hoe area harvest & auto-replanting to a 5x5 grid. Replaces Area Harvest I.",
             "fr": "Etend la recolte et la replantation automatique a la houe a une grille 5x5. Remplace Recolte en Zone I."
+          },
+          "objective": {
+            "stat": "f_crop",
+            "target": 220,
+            "label": {
+              "fr": "Cultures recoltees",
+              "en": "Crops harvested"
+            }
           }
         },
         {
@@ -3023,6 +3671,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Sneak + right-click a Composter with seeds, crops, or leaves (up to 32) for instant enriched Bone Meal.",
             "fr": "Sneak + clic droit sur un Composteur avec graines, recoltes ou feuilles (jusqu'a 32) pour obtenir instantanement de la Poudre d'Os."
+          },
+          "objective": {
+            "stat": "f_till",
+            "target": 160,
+            "label": {
+              "fr": "Terres / Compostages",
+              "en": "Tilled / Composted"
+            }
           }
         },
         {
@@ -3045,6 +3701,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Increases bonus crop drop chance to 30% on mature crops. Replaces Bountiful Harvest I.",
             "fr": "Augmente a 30% la chance de ressource bonus sur cultures mures. Remplace Recolte Abondante I."
+          },
+          "objective": {
+            "stat": "f_crop",
+            "target": 300,
+            "label": {
+              "fr": "Cultures recoltees",
+              "en": "Crops harvested"
+            }
           }
         },
         {
@@ -3068,6 +3732,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Grants Speed I and gently restores hunger while holding a hoe, seeds, or Bone Meal.",
             "fr": "Applique Vitesse I et restaure doucement la faim tant que vous tenez une houe, des graines ou de la Poudre d'Os."
+          },
+          "objective": {
+            "stat": "f_crop",
+            "target": 260,
+            "label": {
+              "fr": "Cultures recoltees",
+              "en": "Crops harvested"
+            }
           }
         },
         {
@@ -3091,6 +3763,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Grants Haste II while holding a hoe and 50% hoe durability preservation. Replaces Hoe Mastery I.",
             "fr": "Applique Celerite II houe en main et 50% d'economie de durabilite. Remplace Maitrise de la Houe I."
+          },
+          "objective": {
+            "stat": "f_till",
+            "target": 220,
+            "label": {
+              "fr": "Terres / Compostages",
+              "en": "Tilled / Composted"
+            }
           }
         },
         {
@@ -3113,6 +3793,14 @@ window.JS_DATA = {
           "desc": {
             "en": "35% chance for crops auto-replanted by Area Harvest to start immediately at growth stage 2.",
             "fr": "35% de chance que les cultures replantees en zone demarrent directement au stade de croissance 2."
+          },
+          "objective": {
+            "stat": "f_crop",
+            "target": 650,
+            "label": {
+              "fr": "Cultures recoltees",
+              "en": "Crops harvested"
+            }
           }
         },
         {
@@ -3136,6 +3824,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Sneak + right-click any crop holding Bone Meal to boost growth across a 3x3 area using 1 Bone Meal.",
             "fr": "Sneak + clic droit sur une culture avec de la Poudre d'Os pour stimuler toute une zone 3x3 avec 1 seule poudre."
+          },
+          "objective": {
+            "stat": "f_till",
+            "target": 450,
+            "label": {
+              "fr": "Terres / Compostages",
+              "en": "Tilled / Composted"
+            }
           }
         },
         {
@@ -3158,6 +3854,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Sneak + right-click a Smoker with cooked food, bread, pies, or soups: 3D heat minigame cooking up to 4 shareable dishes (max [4/5]).",
             "fr": "Sneak + clic droit sur un Fumoir avec plat, pain, tarte ou soupe : mini-jeu 3D preparant jusqu'a 4 plats partageables (max [4/5])."
+          },
+          "objective": {
+            "stat": "f_crop",
+            "target": 800,
+            "label": {
+              "fr": "Cultures recoltees",
+              "en": "Crops harvested"
+            }
           }
         },
         {
@@ -3181,6 +3885,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Automatically hydrates nearby farmland (9x3x9) and gently nurtures immature crops around you.",
             "fr": "Hydrate automatiquement la terre labouree autour de vous (9x3x9) et accelere doucement vos cultures."
+          },
+          "objective": {
+            "stat": "f_till",
+            "target": 550,
+            "label": {
+              "fr": "Terres / Compostages",
+              "en": "Tilled / Composted"
+            }
           }
         },
         {
@@ -3204,6 +3916,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Increases bonus crop drop chance to 50% on mature crops. Replaces Bountiful Harvest II.",
             "fr": "Augmente a 50% la chance de ressource bonus sur cultures mures. Remplace Recolte Abondante II."
+          },
+          "objective": {
+            "stat": "f_crop",
+            "target": 1000,
+            "label": {
+              "fr": "Cultures recoltees",
+              "en": "Crops harvested"
+            }
           }
         },
         {
@@ -3226,6 +3946,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Instantly clears Hunger and Nausea effects and reduces incoming Poison / Magic damage by 50%.",
             "fr": "Retire immediatement Faim et Nausee et reduit de 50% les degats de Poison et Magie."
+          },
+          "objective": {
+            "stat": "f_crop",
+            "target": 900,
+            "label": {
+              "fr": "Cultures recoltees",
+              "en": "Crops harvested"
+            }
           }
         },
         {
@@ -3249,6 +3977,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Unlocks [5/5] Master Chef dishes (up to 8 per Smoker batch) and widens the Smoker heat target zone.",
             "fr": "Debloque les plats rang [5/5] Grand Chef (jusqu'a 8 par fournee) et elargit la zone cible du Fumoir."
+          },
+          "objective": {
+            "stat": "f_crop",
+            "target": 2000,
+            "label": {
+              "fr": "Cultures recoltees",
+              "en": "Crops harvested"
+            }
           }
         },
         {
@@ -3271,6 +4007,14 @@ window.JS_DATA = {
           "desc": {
             "en": "5% chance when harvesting mature crops to unearth a Golden Apple, Golden Carrot, or Glistering Melon.",
             "fr": "5% de chance en recoltant une culture mure de trouver une Pomme d'Or, Carotte Doree ou Tranche Scintillante."
+          },
+          "objective": {
+            "stat": "f_crop",
+            "target": 2600,
+            "label": {
+              "fr": "Cultures recoltees",
+              "en": "Crops harvested"
+            }
           }
         },
         {
@@ -3294,6 +4038,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Grants +2 max hearts (Health Boost I) while outdoors above altitude Y = 55.",
             "fr": "Ajoute +2 coeurs max (Boost de Vie I) tant que vous travaillez en surface (Y >= 55)."
+          },
+          "objective": {
+            "stat": "f_till",
+            "target": 1200,
+            "label": {
+              "fr": "Terres / Compostages",
+              "en": "Tilled / Composted"
+            }
           }
         },
         {
@@ -3315,6 +4067,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Directly inserts harvested crops, seeds, berries, and bone meal into your inventory (togglable in settings).",
             "fr": "Insere directement recoltes, graines, baies et poudre d'os droppes dans votre inventaire (desactivable dans les parametres)."
+          },
+          "objective": {
+            "stat": "f_crop",
+            "target": 4500,
+            "label": {
+              "fr": "Cultures recoltees",
+              "en": "Crops harvested"
+            }
           }
         },
         {
@@ -3337,6 +4097,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Activate from menu (1 XP Lvl, 5m CD): fully hydrates farmland and surges all crops within 16 blocks forward.",
             "fr": "Activable depuis le menu (1 Niv. XP, CD 5 min) : hydrate toutes les terres et pousse les cultures dans un rayon de 16 blocs."
+          },
+          "objective": {
+            "stat": "f_crop",
+            "target": 5500,
+            "label": {
+              "fr": "Cultures recoltees",
+              "en": "Crops harvested"
+            }
           }
         }
       ],
@@ -3666,7 +4434,7 @@ window.JS_DATA = {
           "hub": true
         }
       ],
-      "totalXpLevels": 950
+      "totalXpLevels": 164
     },
     {
       "id": "fisher",
@@ -3720,6 +4488,14 @@ window.JS_DATA = {
           "desc": {
             "en": "20% chance to gain +1 extra item when reeling in a catch with a fishing rod.",
             "fr": "20% de chance d'obtenir +1 prise bonus en remontant votre ligne de peche."
+          },
+          "objective": {
+            "stat": "p_fish",
+            "target": 10,
+            "label": {
+              "fr": "Prises pechees",
+              "en": "Fish & catches reeled"
+            }
           }
         },
         {
@@ -3742,6 +4518,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Automatically grants Water Breathing and Night Vision while submerged in water.",
             "fr": "Applique automatiquement Respiration Aquatique et Vision Nocturne lorsque vous etes dans l'eau."
+          },
+          "objective": {
+            "stat": "p_fish",
+            "target": 12,
+            "label": {
+              "fr": "Prises pechees",
+              "en": "Fish & catches reeled"
+            }
           }
         },
         {
@@ -3762,6 +4546,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Deals +15% melee & thrown Trident damage with a 20% chance to preserve Trident durability.",
             "fr": "Ajoute +15% de degats au Trident (melee et lance) et 20% d'economie de durabilite."
+          },
+          "objective": {
+            "stat": "p_sea",
+            "target": 12,
+            "label": {
+              "fr": "Creatures marines",
+              "en": "Sea creatures slain"
+            }
           }
         },
         {
@@ -3784,6 +4576,14 @@ window.JS_DATA = {
           "desc": {
             "en": "45% chance to preserve 1 durability point on your fishing rod on each catch.",
             "fr": "45% de chance de preserver 1 point de durabilite de votre canne a peche a chaque prise."
+          },
+          "objective": {
+            "stat": "p_fish",
+            "target": 35,
+            "label": {
+              "fr": "Prises pechees",
+              "en": "Fish & catches reeled"
+            }
           }
         },
         {
@@ -3806,6 +4606,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Increases extra catch chance to 40% when fishing. Replaces Double Catch I.",
             "fr": "Passe a 40% la chance d'obtenir une prise bonus. Remplace Double Prise I."
+          },
+          "objective": {
+            "stat": "p_fish",
+            "target": 50,
+            "label": {
+              "fr": "Prises pechees",
+              "en": "Fish & catches reeled"
+            }
           }
         },
         {
@@ -3829,6 +4637,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Sneak + right-click a Barrel holding fish or dried kelp (+ kelp, coal, or sugar): 3D heat minigame curing up to 4 shareable Marine Rations (max [4/5]).",
             "fr": "Sneak + clic droit sur un Tonneau avec poisson ou varech (+ Varech/Charbon/Sucre) : mini-jeu 3D creant jusqu'a 4 Rations partageables (max [4/5])."
+          },
+          "objective": {
+            "stat": "p_fish",
+            "target": 45,
+            "label": {
+              "fr": "Prises pechees",
+              "en": "Fish & catches reeled"
+            }
           }
         },
         {
@@ -3851,6 +4667,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Grants Speed I while swimming in water.",
             "fr": "Applique Vitesse I tant que vous nagez dans l'eau."
+          },
+          "objective": {
+            "stat": "p_fish",
+            "target": 55,
+            "label": {
+              "fr": "Prises pechees",
+              "en": "Fish & catches reeled"
+            }
           }
         },
         {
@@ -3874,6 +4698,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Grants +12 bonus XP per catch and Speed I while holding a Fishing Rod.",
             "fr": "Accorde +12 XP bonus par prise et Vitesse I canne a peche en main."
+          },
+          "objective": {
+            "stat": "p_fish",
+            "target": 65,
+            "label": {
+              "fr": "Prises pechees",
+              "en": "Fish & catches reeled"
+            }
           }
         },
         {
@@ -3897,6 +4729,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Deals +25% damage to Guardians, Elder Guardians, Drowned & Squid with a 45% chance for bonus marine drops.",
             "fr": "+25% de degats contre Gardiens, Anciens Gardiens, Noyes et Poulpes + 45% de loots marins bonus."
+          },
+          "objective": {
+            "stat": "p_sea",
+            "target": 45,
+            "label": {
+              "fr": "Creatures marines",
+              "en": "Sea creatures slain"
+            }
           }
         },
         {
@@ -3919,6 +4759,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Sneak + right-click a Barrel holding fishing junk or kelp (boots, rotten flesh, bowls, lily pads, kelp, hooks) to salvage Prismarine, Leather, Bone Meal & XP.",
             "fr": "Sneak + clic droit sur un Tonneau avec detrituts de peche ou varech (bottes, chair, bols, nenuphars, crochets, kelp) : recycle en Prismarine, Cuir, Poudre d'Os et XP."
+          },
+          "objective": {
+            "stat": "p_fish",
+            "target": 120,
+            "label": {
+              "fr": "Prises pechees",
+              "en": "Fish & catches reeled"
+            }
           }
         },
         {
@@ -3942,6 +4790,14 @@ window.JS_DATA = {
           "desc": {
             "en": "15% chance per catch to hook a bonus marine treasure (Nautilus Shell, Prismarine, Emerald, Gold, or Name Tag).",
             "fr": "15% de chance par prise de repecher un tresor bonus (Coquille de Nautile, Prismarine, Emeraude, Or ou Etiquette)."
+          },
+          "objective": {
+            "stat": "p_fish",
+            "target": 150,
+            "label": {
+              "fr": "Prises pechees",
+              "en": "Fish & catches reeled"
+            }
           }
         },
         {
@@ -3964,6 +4820,14 @@ window.JS_DATA = {
           "desc": {
             "en": "65% extra catch chance plus a 20% chance to triple raw fish catches. Replaces Double Catch II.",
             "fr": "65% de prise bonus plus 20% de chance de tripler les poissons crus. Remplace Double Prise II."
+          },
+          "objective": {
+            "stat": "p_fish",
+            "target": 180,
+            "label": {
+              "fr": "Prises pechees",
+              "en": "Fish & catches reeled"
+            }
           }
         },
         {
@@ -3987,6 +4851,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Grants Speed II and Conduit Power while swimming in water. Replaces Swift Swim I.",
             "fr": "Applique Vitesse II et Force de Conduit dans l'eau. Remplace Nage Rapide I."
+          },
+          "objective": {
+            "stat": "p_fish",
+            "target": 160,
+            "label": {
+              "fr": "Prises pechees",
+              "en": "Fish & catches reeled"
+            }
           }
         },
         {
@@ -4010,6 +4882,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Automatically clears Mining Fatigue and grants Regeneration I in water when injured.",
             "fr": "Retire immediatement Fatigue de Minage et applique Regeneration I dans l'eau si vous etes blesse."
+          },
+          "objective": {
+            "stat": "p_fish",
+            "target": 200,
+            "label": {
+              "fr": "Prises pechees",
+              "en": "Fish & catches reeled"
+            }
           }
         },
         {
@@ -4032,6 +4912,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Deals +30% melee & thrown Trident damage with a 40% durability save. Replaces Trident Mastery I.",
             "fr": "Passe a +30% les degats au Trident (melee et lance) et 40% d'economie. Remplace Trident I."
+          },
+          "objective": {
+            "stat": "p_sea",
+            "target": 130,
+            "label": {
+              "fr": "Creatures marines",
+              "en": "Sea creatures slain"
+            }
           }
         },
         {
@@ -4055,6 +4943,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Unlocks [5/5] Master Catch Rations (up to 8 per Barrel batch) and widens the Barrel heat target zone.",
             "fr": "Debloque les Rations rang [5/5] Maitre (jusqu'a 8 par fournee) et elargit la zone cible du Tonneau."
+          },
+          "objective": {
+            "stat": "p_fish",
+            "target": 320,
+            "label": {
+              "fr": "Prises pechees",
+              "en": "Fish & catches reeled"
+            }
           }
         },
         {
@@ -4077,6 +4973,14 @@ window.JS_DATA = {
           "desc": {
             "en": "35% bonus treasure chance per catch, adding Enchanted Books, Saddles, Turtle Scutes & rare Hearts of the Sea. Replaces Treasure Hunter I.",
             "fr": "35% de tresor bonus par prise avec Livres Enchantes, Selles, Ecailles de Tortue et rare Coeur de la Mer. Remplace Chasseur I."
+          },
+          "objective": {
+            "stat": "p_fish",
+            "target": 400,
+            "label": {
+              "fr": "Prises pechees",
+              "en": "Fish & catches reeled"
+            }
           }
         },
         {
@@ -4100,6 +5004,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Reduces Drowning & Magic (Guardian beam) damage by 50% and adds +15% physical defense while in water.",
             "fr": "Reduit de 50% les degats de Noyade et Magie (rayon Gardien) et ajoute +15% de defense physique dans l'eau."
+          },
+          "objective": {
+            "stat": "p_sea",
+            "target": 260,
+            "label": {
+              "fr": "Creatures marines",
+              "en": "Sea creatures slain"
+            }
           }
         },
         {
@@ -4121,6 +5033,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Directly inserts caught fish, kelp, prismarine, shells, and treasures into your inventory (togglable in settings).",
             "fr": "Insere directement prises, poissons, varech, prismarine et tresors marins dans votre inventaire (desactivable dans les parametres)."
+          },
+          "objective": {
+            "stat": "p_fish",
+            "target": 650,
+            "label": {
+              "fr": "Prises pechees",
+              "en": "Fish & catches reeled"
+            }
           }
         },
         {
@@ -4143,6 +5063,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Menu active (1 XP Lvl, 5m CD): grants Conduit Power, Water Breathing & Speed II, plus 3-5 fresh fish and 1-2 marine treasures.",
             "fr": "Actif menu (1 Niv. XP, CD 5m) : donne Force de Conduit, Respiration Aquatique & Vitesse II, plus 3-5 poissons et 1-2 tresors marins."
+          },
+          "objective": {
+            "stat": "p_fish",
+            "target": 800,
+            "label": {
+              "fr": "Prises pechees",
+              "en": "Fish & catches reeled"
+            }
           }
         }
       ],
@@ -4472,7 +5400,7 @@ window.JS_DATA = {
           "hub": true
         }
       ],
-      "totalXpLevels": 950
+      "totalXpLevels": 164
     },
     {
       "id": "hunter",
@@ -4526,6 +5454,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Increases arrow damage from bows & crossbows (including FrontierEK bows) by +15%.",
             "fr": "Augmente les degats de vos fleches (arc & arbalete, y compris arcs FrontierEK) de +15%."
+          },
+          "objective": {
+            "stat": "h_bow",
+            "target": 25,
+            "label": {
+              "fr": "Tirs a l'arc touches",
+              "en": "Bow shots landed"
+            }
           }
         },
         {
@@ -4548,6 +5484,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Grants Speed I while holding a bow, crossbow, or melee weapon and reduces fall damage by 30%.",
             "fr": "Applique Vitesse I en tenant un arc, une arbalete ou une arme de melee et reduit les degats de chute de 30%."
+          },
+          "objective": {
+            "stat": "h_mob",
+            "target": 20,
+            "label": {
+              "fr": "Monstres chasses",
+              "en": "Hostiles hunted"
+            }
           }
         },
         {
@@ -4568,6 +5512,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Increases melee weapon damage (swords, axes, spears & FrontierEK weapons) by +15% vs hostile mobs and +8% in PvP.",
             "fr": "Augmente les degats de melee (epees, haches, lances et armes FrontierEK) de +15% contre les monstres hostiles et +8% en PvP."
+          },
+          "objective": {
+            "stat": "h_mob",
+            "target": 30,
+            "label": {
+              "fr": "Monstres chasses",
+              "en": "Hostiles hunted"
+            }
           }
         },
         {
@@ -4590,6 +5542,14 @@ window.JS_DATA = {
           "desc": {
             "en": "35% chance to recover your arrow on shot and 30% chance to preserve bow or crossbow durability.",
             "fr": "35% de chance de recuperer votre fleche au tir et 30% de chance de preserver la durabilite de votre arc/arbalete."
+          },
+          "objective": {
+            "stat": "h_bow",
+            "target": 90,
+            "label": {
+              "fr": "Tirs a l'arc touches",
+              "en": "Bow shots landed"
+            }
           }
         },
         {
@@ -4612,6 +5572,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Increases arrow damage by +30%. Replaces Keen Bow I.",
             "fr": "Augmente les degats de vos fleches de +30%. Remplace Tir Precis I."
+          },
+          "objective": {
+            "stat": "h_bow",
+            "target": 140,
+            "label": {
+              "fr": "Tirs a l'arc touches",
+              "en": "Bow shots landed"
+            }
           }
         },
         {
@@ -4635,6 +5603,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Sneak + right-click a Fletching Table holding flint (+ stick/feather), bones, rotten flesh, or spider eyes to craft arrows or leather.",
             "fr": "Sneak + clic droit sur Table d'Archerie avec silex (+ baton/plume), os, chair putrefiee ou oeil d'araignee : fabrique fleches ou cuir."
+          },
+          "objective": {
+            "stat": "h_bow",
+            "target": 110,
+            "label": {
+              "fr": "Tirs a l'arc touches",
+              "en": "Bow shots landed"
+            }
           }
         },
         {
@@ -4657,6 +5633,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Grants Night Vision at night or underground (Y < 55) and Speed II while sneaking.",
             "fr": "Accorde Vision Nocturne la nuit ou sous terre (Y < 55) et Vitesse II en etant accroupi."
+          },
+          "objective": {
+            "stat": "h_mob",
+            "target": 85,
+            "label": {
+              "fr": "Monstres chasses",
+              "en": "Hostiles hunted"
+            }
           }
         },
         {
@@ -4680,6 +5664,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Grants +15 bonus XP per hostile mob slain (+35 XP for elites/bosses) and shows damage dealt + target HP on your ActionBar.",
             "fr": "Octroie +15 XP bonus par monstre hostile elimine (+35 XP sur monstres d'elite et boss) et affiche en ActionBar vos degats infliges + PV de la cible."
+          },
+          "objective": {
+            "stat": "h_mob",
+            "target": 110,
+            "label": {
+              "fr": "Monstres chasses",
+              "en": "Hostiles hunted"
+            }
           }
         },
         {
@@ -4703,6 +5695,14 @@ window.JS_DATA = {
           "desc": {
             "en": "30% chance to gain a bonus trophy or material drop when slaying hostile mobs.",
             "fr": "30% de chance d'obtenir un trophee ou materiau bonus sur les monstres hostiles que vous eliminez."
+          },
+          "objective": {
+            "stat": "h_mob",
+            "target": 130,
+            "label": {
+              "fr": "Monstres chasses",
+              "en": "Hostiles hunted"
+            }
           }
         },
         {
@@ -4725,6 +5725,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Arrows inflict Slowness II and Weakness I for 3 seconds (6-second internal cooldown).",
             "fr": "Vos fleches appliquent Lenteur II et Faiblesse I pendant 3 secondes (cooldown interne : 6 secondes)."
+          },
+          "objective": {
+            "stat": "h_bow",
+            "target": 280,
+            "label": {
+              "fr": "Tirs a l'arc touches",
+              "en": "Bow shots landed"
+            }
           }
         },
         {
@@ -4748,6 +5756,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Increases arrow damage by +45% with a 20% chance for a Critical Shot (+35% bonus damage). Replaces Keen Bow II.",
             "fr": "Augmente les degats des fleches de +45% avec 20% de chance de Tir Critique (+35% degats bonus). Remplace Tir Precis II."
+          },
+          "objective": {
+            "stat": "h_bow",
+            "target": 380,
+            "label": {
+              "fr": "Tirs a l'arc touches",
+              "en": "Bow shots landed"
+            }
           }
         },
         {
@@ -4770,6 +5786,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Sneak + right-click a Fletching Table with rabbit foot, blaze powder/rod, phantom membrane, or ender pearl (+ string/feather/leather): 3D shareable Talisman (max [4/5]).",
             "fr": "Sneak + clic droit sur Table d'Archerie avec patte de lapin, poudre/baton de blaze, membrane ou perle (+ ficelle/plume/cuir) : Talisman 3D partageable (max [4/5])."
+          },
+          "objective": {
+            "stat": "h_mob",
+            "target": 280,
+            "label": {
+              "fr": "Monstres chasses",
+              "en": "Hostiles hunted"
+            }
           }
         },
         {
@@ -4793,6 +5817,14 @@ window.JS_DATA = {
           "desc": {
             "en": "20% chance when taking physical damage to evade 50% of the hit and gain Speed II for 3 seconds (8-second cooldown).",
             "fr": "20% de chance face aux degats physiques d'esquiver 50% des degats et d'obtenir Vitesse II pendant 3 secondes (cooldown : 8 secondes)."
+          },
+          "objective": {
+            "stat": "h_mob",
+            "target": 320,
+            "label": {
+              "fr": "Monstres chasses",
+              "en": "Hostiles hunted"
+            }
           }
         },
         {
@@ -4816,6 +5848,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Each hostile mob kill restores +2 HP and grants Regeneration I (4s) + Speed I (5s).",
             "fr": "Chaque elimination de monstre hostile restaure +2 PV et applique Regeneration I (4s) + Vitesse I (5s)."
+          },
+          "objective": {
+            "stat": "h_mob",
+            "target": 380,
+            "label": {
+              "fr": "Monstres chasses",
+              "en": "Hostiles hunted"
+            }
           }
         },
         {
@@ -4838,6 +5878,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Increases melee damage to +30% vs hostiles (+15% PvP) with a 30% chance to preserve weapon durability. Replaces Slayer I.",
             "fr": "Augmente les degats de melee a +30% contre hostiles (+15% en PvP) avec 30% de chance de preserver la durabilite. Remplace Tueur I."
+          },
+          "objective": {
+            "stat": "h_mob",
+            "target": 450,
+            "label": {
+              "fr": "Monstres chasses",
+              "en": "Hostiles hunted"
+            }
           }
         },
         {
@@ -4861,6 +5909,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Unlocks [5/5] Master Hunter Talismans & Balms (up to 6 per batch) and widens the Fletching Table target zone.",
             "fr": "Debloque les Talismans & Baumes rang [5/5] Maitre (jusqu'a 6 par fournee) et elargit la zone cible de la Table d'Archerie."
+          },
+          "objective": {
+            "stat": "h_bow",
+            "target": 750,
+            "label": {
+              "fr": "Tirs a l'arc touches",
+              "en": "Bow shots landed"
+            }
           }
         },
         {
@@ -4883,6 +5939,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Deals +25% melee and ranged damage against elite mobs and bosses (Warden, Wither, Ravager, Blaze, Enderman, etc.).",
             "fr": "Augmente de +25% tous vos degats (melee et distance) contre les monstres d'elite et boss (Warden, Wither, Ravager, Blaze, Enderman, etc.)."
+          },
+          "objective": {
+            "stat": "h_mob",
+            "target": 850,
+            "label": {
+              "fr": "Monstres chasses",
+              "en": "Hostiles hunted"
+            }
           }
         },
         {
@@ -4906,6 +5970,14 @@ window.JS_DATA = {
           "desc": {
             "en": "60% bonus drop chance plus a 15% rare drop chance (ender pearl, blaze powder, ghast tear, iron ingot). Replaces Skinning I.",
             "fr": "60% de trophee bonus plus 15% de chance de drop rare (perle, poudre de blaze, larme de ghast, lingot). Remplace Depecage I."
+          },
+          "objective": {
+            "stat": "h_mob",
+            "target": 950,
+            "label": {
+              "fr": "Monstres chasses",
+              "en": "Hostiles hunted"
+            }
           }
         },
         {
@@ -4927,6 +5999,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Directly inserts dropped arrows, bones, pearls, blaze rods, membranes, leather, and trophies into your inventory (togglable in settings).",
             "fr": "Attire directement fleches, os, perles, poudres, membranes, cuir et trophees de monstres dans votre inventaire (desactivable dans les parametres)."
+          },
+          "objective": {
+            "stat": "h_mob",
+            "target": 1600,
+            "label": {
+              "fr": "Monstres chasses",
+              "en": "Hostiles hunted"
+            }
           }
         },
         {
@@ -4949,6 +6029,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Menu active (1 XP Lvl, 5m CD): grants Strength II, Speed II, Resistance I & Night Vision while slowing and weakening hostiles within 24 blocks.",
             "fr": "Actif menu (1 Niv. XP, CD 5m) : accorde Force II, Vitesse II, Resistance I & Vision Nocturne, et affaiblit/ralentit les hostiles dans 24 blocs."
+          },
+          "objective": {
+            "stat": "h_mob",
+            "target": 2000,
+            "label": {
+              "fr": "Monstres chasses",
+              "en": "Hostiles hunted"
+            }
           }
         }
       ],
@@ -5278,7 +6366,7 @@ window.JS_DATA = {
           "hub": true
         }
       ],
-      "totalXpLevels": 950
+      "totalXpLevels": 164
     },
     {
       "id": "knight",
@@ -5332,6 +6420,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Increases melee weapon damage (swords, axes, maces, spears & FrontierEK weapons) by +10% PvE (+5% PvP).",
             "fr": "Augmente les degats de melee (epees, haches, masses, lances et armes FrontierEK) de +10% PvE (+5% PvP)."
+          },
+          "objective": {
+            "stat": "k_hit",
+            "target": 40,
+            "label": {
+              "fr": "Coups de melee",
+              "en": "Melee hits landed"
+            }
           }
         },
         {
@@ -5354,6 +6450,14 @@ window.JS_DATA = {
           "desc": {
             "en": "While wearing at least 2 metal/chainmail/diamond/netherite armor pieces or sneaking, reduces incoming physical damage by 10%.",
             "fr": "Avec au moins 2 pieces d'armure en metal/mailles/diamant/netherite (ou en vous accroupissant), reduit les degats physiques de 10%."
+          },
+          "objective": {
+            "stat": "k_tank",
+            "target": 25,
+            "label": {
+              "fr": "Degats encaisses",
+              "en": "Damage endured"
+            }
           }
         },
         {
@@ -5374,6 +6478,14 @@ window.JS_DATA = {
           "desc": {
             "en": "While mounted, grants Speed I + Resistance I to your mount and increases your melee damage by +15% PvE (+6% PvP).",
             "fr": "A dos de monture, accorde Vitesse I + Resistance I a la monture et augmente vos degats de melee de +15% PvE (+6% PvP)."
+          },
+          "objective": {
+            "stat": "k_kill",
+            "target": 20,
+            "label": {
+              "fr": "Eliminations melee",
+              "en": "Melee kills"
+            }
           }
         },
         {
@@ -5396,6 +6508,14 @@ window.JS_DATA = {
           "desc": {
             "en": "30% chance to preserve melee weapon and worn armor durability during combat.",
             "fr": "30% de chance de preserver la durabilite de vos armes de melee et de vos pieces d'armure au combat."
+          },
+          "objective": {
+            "stat": "k_hit",
+            "target": 150,
+            "label": {
+              "fr": "Coups de melee",
+              "en": "Melee hits landed"
+            }
           }
         },
         {
@@ -5418,6 +6538,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Increases melee weapon damage (swords, axes & FrontierEK weapons) by +20% PvE (+10% PvP). Replaces Swordsmanship I.",
             "fr": "Augmente les degats de melee (epees, haches et armes FrontierEK) de +20% PvE (+10% PvP). Remplace Escrime I."
+          },
+          "objective": {
+            "stat": "k_hit",
+            "target": 220,
+            "label": {
+              "fr": "Coups de melee",
+              "en": "Melee hits landed"
+            }
           }
         },
         {
@@ -5441,6 +6569,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Sneak + right-click a Grindstone holding a melee weapon (catalyst: iron ingot, coal, or flint) to repair 20% durability and gain Strength I + Haste I (15s).",
             "fr": "Sneak + clic droit sur une Meule avec votre arme de melee (catalyseur : fer, charbon ou silex) : repare 20% de durabilite et octroie Force I + Celerite I (15s)."
+          },
+          "objective": {
+            "stat": "k_kill",
+            "target": 70,
+            "label": {
+              "fr": "Eliminations melee",
+              "en": "Melee kills"
+            }
           }
         },
         {
@@ -5463,6 +6599,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Continuously clears Slowness and Weakness effects and reduces incoming projectile damage by 25%.",
             "fr": "Dissipe continuellement Lenteur et Faiblesse et reduit de 25% les degats de projectiles recus."
+          },
+          "objective": {
+            "stat": "k_tank",
+            "target": 90,
+            "label": {
+              "fr": "Degats encaisses",
+              "en": "Damage endured"
+            }
           }
         },
         {
@@ -5486,6 +6630,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Displays damage dealt, enemy name, and remaining HP bar on your ActionBar on hit, plus +10 bonus XP per kill.",
             "fr": "Affiche en ActionBar vos degats infliges, le nom et les PV de l'adversaire a chaque coup, et accorde +10 XP bonus par elimination."
+          },
+          "objective": {
+            "stat": "k_hit",
+            "target": 180,
+            "label": {
+              "fr": "Coups de melee",
+              "en": "Melee hits landed"
+            }
           }
         },
         {
@@ -5509,6 +6661,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Sprint-striking in melee deals +20% PvE bonus damage (+8% PvP, 6-second cooldown).",
             "fr": "Votre coup de melee porte en sprintant inflige +20% de degats PvE (+8% PvP, recharge : 6 secondes)."
+          },
+          "objective": {
+            "stat": "k_kill",
+            "target": 95,
+            "label": {
+              "fr": "Eliminations melee",
+              "en": "Melee kills"
+            }
           }
         },
         {
@@ -5531,6 +6691,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Hitting a foe with a metal, steel, diamond, or netherite weapon inflicts Weakness I for 3 seconds (8-second cooldown).",
             "fr": "Frapper un ennemi avec une arme en metal, acier, diamant ou netherite lui applique Faiblesse I pendant 3 secondes (cooldown : 8s)."
+          },
+          "objective": {
+            "stat": "k_hit",
+            "target": 480,
+            "label": {
+              "fr": "Coups de melee",
+              "en": "Melee hits landed"
+            }
           }
         },
         {
@@ -5554,6 +6722,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Grants an 18% chance on melee hits to land a critical strike (+30% PvE damage, +12% PvP, anti-one-tap cap).",
             "fr": "Accorde 18% de chance sur vos coups de melee de porter une frappe critique (+30% degats PvE, +12% PvP, plafond anti-one-tap)."
+          },
+          "objective": {
+            "stat": "k_hit",
+            "target": 600,
+            "label": {
+              "fr": "Coups de melee",
+              "en": "Melee hits landed"
+            }
           }
         },
         {
@@ -5576,6 +6752,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Sneak + right-click a Grindstone with Gold Ingot (Assault), Iron Nugget (Bulwark), or Sugar (Charge) + catalyst: crafts shareable 3D War Seals [1/5]-[4/5].",
             "fr": "Sneak + clic droit sur une Meule avec lingot d'or (Assaut), pepite de fer (Pavois) ou sucre (Charge) + catalyseur : forge des Sceaux 3D partageables [1/5]-[4/5]."
+          },
+          "objective": {
+            "stat": "k_kill",
+            "target": 220,
+            "label": {
+              "fr": "Eliminations melee",
+              "en": "Melee kills"
+            }
           }
         },
         {
@@ -5599,6 +6783,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Increases Shield Wall physical damage reduction to 18%. Replaces Shield Wall I.",
             "fr": "Augmente la reduction physique du Mur de Boucliers a 18%. Remplace Mur de Boucliers I."
+          },
+          "objective": {
+            "stat": "k_tank",
+            "target": 260,
+            "label": {
+              "fr": "Degats encaisses",
+              "en": "Damage endured"
+            }
           }
         },
         {
@@ -5622,6 +6814,14 @@ window.JS_DATA = {
           "desc": {
             "en": "While sneaking or wearing 3+ metal armor pieces: 25% chance when hit to gain Resistance I (3s) and reflect 25% damage back (6-second cooldown).",
             "fr": "Accroupi ou avec 3+ pieces d'armure metal : 25% de chance sur un coup recu d'obtenir Resistance I (3s) et de renvoyer 25% des degats (cooldown : 6s)."
+          },
+          "objective": {
+            "stat": "k_tank",
+            "target": 320,
+            "label": {
+              "fr": "Degats encaisses",
+              "en": "Damage endured"
+            }
           }
         },
         {
@@ -5644,6 +6844,14 @@ window.JS_DATA = {
           "desc": {
             "en": "When struck below 35% HP, triggers Regeneration II (5s) and Absorption I (15s) (45-second cooldown).",
             "fr": "Sous 35% de vos PV lors d'un coup recu, declenche Regeneration II (5s) et Absorption I (15s) (cooldown : 45 secondes)."
+          },
+          "objective": {
+            "stat": "k_tank",
+            "target": 380,
+            "label": {
+              "fr": "Degats encaisses",
+              "en": "Damage endured"
+            }
           }
         },
         {
@@ -5667,6 +6875,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Unlocks [5/5] Master War Seals (up to 6 per batch) and widens the 3D Grindstone sweet-spot zone.",
             "fr": "Debloque les Sceaux de Guerre rang [5/5] Maitre (jusqu'a 6 par fournee) et elargit la zone cible de la Meule 3D."
+          },
+          "objective": {
+            "stat": "k_kill",
+            "target": 500,
+            "label": {
+              "fr": "Eliminations melee",
+              "en": "Melee kills"
+            }
           }
         },
         {
@@ -5689,6 +6905,14 @@ window.JS_DATA = {
           "desc": {
             "en": "While wearing 3+ metal armor pieces, grants Health Boost (+4 HP) and reduces projectile and explosion damage by 20%.",
             "fr": "Avec 3+ pieces d'armure en metal, accorde Bonus de Vie (+4 PV) et reduit de 20% les degats de projectiles et d'explosions."
+          },
+          "objective": {
+            "stat": "k_tank",
+            "target": 750,
+            "label": {
+              "fr": "Degats encaisses",
+              "en": "Damage endured"
+            }
           }
         },
         {
@@ -5712,6 +6936,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Increases melee damage by +20% PvE (+8% PvP) against foes at or below 35% max HP (PvP anti-one-tap capped).",
             "fr": "Augmente de +20% PvE (+8% PvP) vos degats de melee contre tout ennemi ayant 35% ou moins de ses PV max (plafond anti-one-tap PvP)."
+          },
+          "objective": {
+            "stat": "k_kill",
+            "target": 620,
+            "label": {
+              "fr": "Eliminations melee",
+              "en": "Melee kills"
+            }
           }
         },
         {
@@ -5733,6 +6965,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Pulls dropped ingots, steel, gems, arrows, bones, and combat trophies directly into your inventory (togglable in settings).",
             "fr": "Attire directement lingots, acier, gemmes, fleches, os et trophees de combat dans votre inventaire (desactivable dans les parametres)."
+          },
+          "objective": {
+            "stat": "k_kill",
+            "target": 1200,
+            "label": {
+              "fr": "Eliminations melee",
+              "en": "Melee kills"
+            }
           }
         },
         {
@@ -5755,6 +6995,14 @@ window.JS_DATA = {
           "desc": {
             "en": "Menu active (1 XP Lvl, 5m CD): rallies you and allies within 12 blocks with Strength I (35s), Resistance II (25s), Absorption II (35s), and Regeneration I (15s).",
             "fr": "Actif menu (1 Niv. XP, CD 5m) : rallie vous et vos allies dans 12 blocs avec Force I (35s), Resistance II (25s), Absorption II (35s) et Regeneration I (15s)."
+          },
+          "objective": {
+            "stat": "k_hit",
+            "target": 2000,
+            "label": {
+              "fr": "Coups de melee",
+              "en": "Melee hits landed"
+            }
           }
         }
       ],
@@ -6084,7 +7332,7 @@ window.JS_DATA = {
           "hub": true
         }
       ],
-      "totalXpLevels": 950
+      "totalXpLevels": 164
     }
   ],
   "items": [
@@ -6735,10 +7983,10 @@ window.JS_DATA = {
     }
   },
   "skillTierCosts": {
-    "0": 160,
-    "2": 80,
-    "4": 40,
-    "6": 20,
-    "8": 10
+    "0": 22,
+    "2": 14,
+    "4": 8,
+    "6": 4,
+    "8": 2
   }
 };
