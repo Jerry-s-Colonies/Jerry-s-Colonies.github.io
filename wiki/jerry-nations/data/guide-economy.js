@@ -41,10 +41,10 @@ window.JN_GUIDE_MODULES.push(
               <thead><tr><th>Level</th><th>Coin Cost</th><th>Required Tech</th><th>Cost Discount Tech</th><th>Default Radius</th><th>Nation XP</th></tr></thead>
               <tbody>
                 <tr><td><strong>1</strong></td><td>0 (Craft/Place)</td><td>None</td><td>—</td><td>8 (17x17) | Courier: 16</td><td>—</td></tr>
-                <tr><td><strong>2</strong></td><td><strong>100 coins</strong></td><td><code>station_level_2</code></td><td>-5% (<code>station_efficiency_i</code>)</td><td>10 (21x21) | Courier: 24</td><td><strong>+150 XP</strong></td></tr>
-                <tr><td><strong>3</strong></td><td><strong>250 coins</strong></td><td><code>station_level_3</code></td><td>-10% (<code>ii</code>)</td><td>12 (25x25) | Courier: 32</td><td><strong>+225 XP</strong></td></tr>
-                <tr><td><strong>4</strong></td><td><strong>600 coins</strong></td><td><code>station_level_4</code></td><td>-15% (<code>iii</code>)</td><td>14 (29x29) | Courier: 48</td><td><strong>+300 XP</strong></td></tr>
-                <tr><td><strong>5</strong></td><td><strong>1,500 coins</strong></td><td><code>station_level_5</code></td><td>-20% (<code>iv</code>)</td><td>16 (33x33) | Courier: 64</td><td><strong>+375 XP</strong></td></tr>
+                <tr><td><strong>2</strong></td><td><strong>100 coins</strong></td><td><code>station_level_2</code> (T1)</td><td>-5% (<code>station_efficiency_i</code> T1)</td><td>10 (21x21) | Courier: 24</td><td><strong>+150 XP</strong></td></tr>
+                <tr><td><strong>3</strong></td><td><strong>250 coins</strong></td><td><code>station_level_3</code> (T2)</td><td>-10% (<code>ii</code> T2)</td><td>12 (25x25) | Courier: 32</td><td><strong>+225 XP</strong></td></tr>
+                <tr><td><strong>4</strong></td><td><strong>600 coins</strong></td><td><code>station_level_4</code> (T3)</td><td>-15% (<code>iii</code> T3)</td><td>14 (29x29) | Courier: 48</td><td><strong>+300 XP</strong></td></tr>
+                <tr><td><strong>5</strong></td><td><strong>1,500 coins</strong></td><td><code>station_level_5</code> (T4)</td><td>-20% (<code>iv</code> T4)</td><td>16 (33x33) | Courier: 64</td><td><strong>+375 XP</strong></td></tr>
               </tbody>
             </table></div>
           `,
@@ -60,10 +60,10 @@ window.JN_GUIDE_MODULES.push(
               <thead><tr><th>Niveau</th><th>Cout</th><th>Recherche requise</th><th>Reduction cout</th><th>Rayon defaut</th><th>XP Nation</th></tr></thead>
               <tbody>
                 <tr><td><strong>1</strong></td><td>0</td><td>Aucune</td><td>—</td><td>8 (17x17) | Coursier : 16</td><td>—</td></tr>
-                <tr><td><strong>2</strong></td><td><strong>100</strong></td><td><code>station_level_2</code></td><td>-5% (<code>station_efficiency_i</code>)</td><td>10 | Coursier : 24</td><td><strong>+150 XP</strong></td></tr>
-                <tr><td><strong>3</strong></td><td><strong>250</strong></td><td><code>station_level_3</code></td><td>-10% (<code>ii</code>)</td><td>12 | Coursier : 32</td><td><strong>+225 XP</strong></td></tr>
-                <tr><td><strong>4</strong></td><td><strong>600</strong></td><td><code>station_level_4</code></td><td>-15% (<code>iii</code>)</td><td>14 | Coursier : 48</td><td><strong>+300 XP</strong></td></tr>
-                <tr><td><strong>5</strong></td><td><strong>1 500</strong></td><td><code>station_level_5</code></td><td>-20% (<code>iv</code>)</td><td>16 | Coursier : 64</td><td><strong>+375 XP</strong></td></tr>
+                <tr><td><strong>2</strong></td><td><strong>100</strong></td><td><code>station_level_2</code> (T1)</td><td>-5% (<code>station_efficiency_i</code> T1)</td><td>10 | Coursier : 24</td><td><strong>+150 XP</strong></td></tr>
+                <tr><td><strong>3</strong></td><td><strong>250</strong></td><td><code>station_level_3</code> (T2)</td><td>-10% (<code>ii</code> T2)</td><td>12 | Coursier : 32</td><td><strong>+225 XP</strong></td></tr>
+                <tr><td><strong>4</strong></td><td><strong>600</strong></td><td><code>station_level_4</code> (T3)</td><td>-15% (<code>iii</code> T3)</td><td>14 | Coursier : 48</td><td><strong>+300 XP</strong></td></tr>
+                <tr><td><strong>5</strong></td><td><strong>1 500</strong></td><td><code>station_level_5</code> (T4)</td><td>-20% (<code>iv</code> T4)</td><td>16 | Coursier : 64</td><td><strong>+375 XP</strong></td></tr>
               </tbody>
             </table></div>
           `,

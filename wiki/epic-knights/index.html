@@ -300,6 +300,10 @@
               <div style="display:flex;flex-wrap:wrap;gap:6px;">
                 <span class="badge badge-gold">ID: <code>${W.escapeHtml(itemObj.id)}</code></span>
                 ${itemObj.dmg !== undefined ? `<span class="badge badge-crimson">${lang === "fr" ? "Degats" : "Damage"}: <strong>${itemObj.dmg}</strong></span>` : ""}
+                ${itemObj.handedness ? `<span class="badge">${W.escapeHtml(itemObj.handedness === "2H" ? (lang === "fr" ? "2 Mains" : "2-Handed") : (lang === "fr" ? "1 Main" : "1-Handed"))}</span>` : ""}
+                ${itemObj.reachBonus ? `<span class="badge ${itemObj.reachBonus < 0 ? "badge-crimson" : "badge-blue"}">${itemObj.reachBonus > 0 ? `+${itemObj.reachBonus}` : itemObj.reachBonus} ${lang === "fr" ? "Portee" : "Reach"}</span>` : ""}
+                ${itemObj.handedness ? `<span class="badge">${itemObj.speedPenaltyPct === 0 ? (lang === "fr" ? "Rapide" : "Fast") : `-${itemObj.speedPenaltyPct}% ${lang === "fr" ? "Vit." : "Atk Spd"}`}</span>` : ""}
+                ${itemObj.passive ? `<span class="badge badge-gold">${W.escapeHtml(itemObj.passive)}</span>` : ""}
                 ${itemObj.dur ? `<span class="badge">${lang === "fr" ? "Durabilite" : "Durability"}: ${itemObj.dur}</span>` : ""}
                 ${itemObj.fire ? `<span class="badge badge-crimson">Fire Resistant</span>` : ""}
               </div>
@@ -660,9 +664,9 @@
               ${state.weapTab === "weapons" ? `
                 <select class="ore-select" id="weapTierSel">
                   <option value="all">${lang === "fr" ? "Tous Materiaux" : "All Materials"}</option>
-                  <option value="netherite" ${state.weapTier === "netherite" ? "selected" : ""}>Netherite (7–9)</option>
-                  <option value="diamond" ${state.weapTier === "diamond" ? "selected" : ""}>Diamond (6–8)</option>
-                  <option value="steel" ${state.weapTier === "steel" ? "selected" : ""}>Steel (4–8)</option>
+                  <option value="netherite" ${state.weapTier === "netherite" ? "selected" : ""}>Netherite (8–10)</option>
+                  <option value="diamond" ${state.weapTier === "diamond" ? "selected" : ""}>Diamond (7–9)</option>
+                  <option value="steel" ${state.weapTier === "steel" ? "selected" : ""}>Steel (5–8)</option>
                   <option value="iron" ${state.weapTier === "iron" ? "selected" : ""}>Iron / Bronze (5–7)</option>
                   <option value="stone" ${state.weapTier === "stone" ? "selected" : ""}>Stone (5–6)</option>
                   <option value="wood" ${state.weapTier === "wood" ? "selected" : ""}>Wood (3–5)</option>
@@ -690,6 +694,9 @@
                   <div class="gallery-id"><code>${W.escapeHtml(it.id)}</code></div>
                   <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:6px;">
                     ${it.dmg !== undefined ? `<span class="badge badge-crimson">Dmg: ${it.dmg}</span>` : ""}
+                    ${it.handedness ? `<span class="badge">${W.escapeHtml(it.handedness)}</span>` : ""}
+                    ${it.reachBonus ? `<span class="badge ${it.reachBonus < 0 ? "badge-crimson" : "badge-blue"}">${it.reachBonus > 0 ? `+${it.reachBonus}` : it.reachBonus} Reach</span>` : ""}
+                    ${it.passive ? `<span class="badge badge-gold">${W.escapeHtml(it.passive)}</span>` : ""}
                     ${it.dur ? `<span class="badge">Dur: ${it.dur}</span>` : ""}
                     ${it.fire ? `<span class="badge badge-crimson">Fire Res</span>` : ""}
                   </div>

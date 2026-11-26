@@ -6429,7 +6429,7 @@ window.JN_CATALOG = {
       "id": "station_level_2",
       "category": "construction",
       "cost": 1,
-      "minTier": 2,
+      "minTier": 1,
       "prerequisite": null,
       "implemented": true,
       "name": {
@@ -6445,7 +6445,7 @@ window.JN_CATALOG = {
       "id": "station_level_3",
       "category": "construction",
       "cost": 2,
-      "minTier": 3,
+      "minTier": 2,
       "prerequisite": "station_level_2",
       "implemented": true,
       "name": {
@@ -6461,7 +6461,7 @@ window.JN_CATALOG = {
       "id": "station_level_4",
       "category": "construction",
       "cost": 3,
-      "minTier": 4,
+      "minTier": 3,
       "prerequisite": "station_level_3",
       "implemented": true,
       "name": {
@@ -6477,7 +6477,7 @@ window.JN_CATALOG = {
       "id": "station_level_5",
       "category": "construction",
       "cost": 4,
-      "minTier": 5,
+      "minTier": 4,
       "prerequisite": "station_level_4",
       "implemented": true,
       "name": {
@@ -6493,7 +6493,7 @@ window.JN_CATALOG = {
       "id": "station_efficiency_i",
       "category": "construction",
       "cost": 1,
-      "minTier": 2,
+      "minTier": 1,
       "prerequisite": null,
       "implemented": true,
       "name": {
@@ -6509,7 +6509,7 @@ window.JN_CATALOG = {
       "id": "station_efficiency_ii",
       "category": "construction",
       "cost": 2,
-      "minTier": 3,
+      "minTier": 2,
       "prerequisite": "station_efficiency_i",
       "implemented": true,
       "name": {
@@ -6525,7 +6525,7 @@ window.JN_CATALOG = {
       "id": "station_efficiency_iii",
       "category": "construction",
       "cost": 3,
-      "minTier": 4,
+      "minTier": 3,
       "prerequisite": "station_efficiency_ii",
       "implemented": true,
       "name": {
@@ -6541,7 +6541,7 @@ window.JN_CATALOG = {
       "id": "station_efficiency_iv",
       "category": "construction",
       "cost": 4,
-      "minTier": 5,
+      "minTier": 4,
       "prerequisite": "station_efficiency_iii",
       "implemented": true,
       "name": {
@@ -6813,7 +6813,7 @@ window.JN_CATALOG = {
       "id": "mil_rank_knight",
       "category": "defense",
       "cost": 1,
-      "minTier": 2,
+      "minTier": 1,
       "prerequisite": null,
       "implemented": true,
       "name": {
@@ -6861,7 +6861,7 @@ window.JN_CATALOG = {
       "id": "mil_regiment_cohesion",
       "category": "defense",
       "cost": 1,
-      "minTier": 2,
+      "minTier": 1,
       "prerequisite": "mil_rank_knight",
       "implemented": true,
       "name": {
@@ -6989,7 +6989,7 @@ window.JN_CATALOG = {
       "id": "mil_tactics_sword",
       "category": "defense",
       "cost": 1,
-      "minTier": 2,
+      "minTier": 1,
       "prerequisite": null,
       "implemented": true,
       "name": {
@@ -7101,7 +7101,7 @@ window.JN_CATALOG = {
       "id": "mil_class_doctor",
       "category": "defense",
       "cost": 1,
-      "minTier": 2,
+      "minTier": 1,
       "prerequisite": null,
       "implemented": true,
       "name": {
@@ -7133,7 +7133,7 @@ window.JN_CATALOG = {
       "id": "mil_logistics_ammo",
       "category": "defense",
       "cost": 1,
-      "minTier": 2,
+      "minTier": 1,
       "prerequisite": "mil_class_skirmishers",
       "implemented": true,
       "name": {
@@ -7149,7 +7149,7 @@ window.JN_CATALOG = {
       "id": "mil_logistics_rations",
       "category": "defense",
       "cost": 1,
-      "minTier": 2,
+      "minTier": 1,
       "prerequisite": null,
       "implemented": true,
       "name": {
@@ -7197,7 +7197,7 @@ window.JN_CATALOG = {
       "id": "hearth_night_curfew",
       "category": "defense",
       "cost": 2,
-      "minTier": 2,
+      "minTier": 1,
       "prerequisite": null,
       "implemented": true,
       "name": {
@@ -7277,7 +7277,7 @@ window.JN_CATALOG = {
       "id": "sanitary_flu",
       "category": "misc",
       "cost": 1,
-      "minTier": 2,
+      "minTier": 1,
       "prerequisite": null,
       "implemented": true,
       "name": {
@@ -7293,7 +7293,7 @@ window.JN_CATALOG = {
       "id": "sanitary_dysentery",
       "category": "misc",
       "cost": 1,
-      "minTier": 2,
+      "minTier": 1,
       "prerequisite": null,
       "implemented": true,
       "name": {

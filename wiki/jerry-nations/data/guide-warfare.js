@@ -30,9 +30,9 @@ window.JN_GUIDE_MODULES.push(
               <thead><tr><th>Grade</th><th>Max HP</th><th>Base Attack</th><th>Promotion Requirements &amp; Tech</th></tr></thead>
               <tbody>
                 <tr><td><strong>Soldier</strong></td><td>20 HP</td><td>1 (Melee group: 5)</td><td>Initial rank. Classes: Warrior, Archer, Crossbowman, Guardian, Doctor</td></tr>
-                <tr><td><strong>Knight</strong></td><td>40 HP</td><td>2 (Tank: 6)</td><td><code>mil_rank_knight</code> (T1, 2 PR). Classes: Warrior, Elite Guard, Tank, Royal Guard, Cavalry, Doctor</td></tr>
-                <tr><td><strong>Captain</strong></td><td>60 HP</td><td>4 (x1.25 atk)</td><td><code>mil_rank_captain</code> (T2, 4 PR). Must be Knight in regiment with 0 Captains &amp; <strong>Leadership &gt; 10</strong>. Becomes regiment leader</td></tr>
-                <tr><td><strong>General</strong></td><td>100 HP</td><td>6 (x1.3 atk)</td><td><code>mil_rank_general</code> (T4, 6 PR). Must be Captain with <strong>Leadership &gt; 18</strong>. <strong>Max 1 General per nation</strong></td></tr>
+                <tr><td><strong>Knight</strong></td><td>40 HP</td><td>2 (Tank: 6)</td><td><code>mil_rank_knight</code> (T1, 1 RP). Unlocks: Warrior, Elite Guard, Tank, Royal Guard, Cavalry, Doctor</td></tr>
+                <tr><td><strong>Captain</strong></td><td>60 HP</td><td>4 (x1.25 atk)</td><td><code>mil_rank_captain</code> (T4, 2 RP). Must be Knight in regiment with 0 Captains &amp; <strong>Leadership &gt; 10</strong>. Becomes regiment leader</td></tr>
+                <tr><td><strong>General</strong></td><td>100 HP</td><td>6 (x1.3 atk)</td><td><code>mil_rank_general</code> (T6, 4 RP). Must be Captain with <strong>Leadership &gt; 18</strong>. <strong>Max 1 General per nation</strong></td></tr>
               </tbody>
             </table></div>
           `,
@@ -45,9 +45,9 @@ window.JN_GUIDE_MODULES.push(
               <thead><tr><th>Grade</th><th>PV max</th><th>Degats base</th><th>Prerequis de promotion &amp; Recherche</th></tr></thead>
               <tbody>
                 <tr><td><strong>Soldat</strong></td><td>20 PV</td><td>1 (Melee : 5)</td><td>Grade initial. Classes : Guerrier, Archer, Arbaletrier, Gardien, Docteur</td></tr>
-                <tr><td><strong>Chevalier</strong></td><td>40 PV</td><td>2 (Tank : 6)</td><td><code>mil_rank_knight</code> (T1, 2 PR). Classes : Guerrier, Garde Elite, Tank, Garde Royal, Cavalier, Docteur</td></tr>
-                <tr><td><strong>Capitaine</strong></td><td>60 PV</td><td>4 (x1.25 atq)</td><td><code>mil_rank_captain</code> (T2, 4 PR). Chevalier en regiment sans Capitaine + <strong>Commandement &gt; 10</strong>. Chef de regiment</td></tr>
-                <tr><td><strong>General</strong></td><td>100 PV</td><td>6 (x1.3 atq)</td><td><code>mil_rank_general</code> (T4, 6 PR). Capitaine + <strong>Commandement &gt; 18</strong>. <strong>1 seul General par nation</strong></td></tr>
+                <tr><td><strong>Chevalier</strong></td><td>40 PV</td><td>2 (Tank : 6)</td><td><code>mil_rank_knight</code> (T1, 1 PR). Classes : Guerrier, Garde Elite, Tank, Garde Royal, Cavalier, Docteur</td></tr>
+                <tr><td><strong>Capitaine</strong></td><td>60 PV</td><td>4 (x1.25 atq)</td><td><code>mil_rank_captain</code> (T4, 2 PR). Chevalier en regiment sans Capitaine + <strong>Commandement &gt; 10</strong>. Chef de regiment</td></tr>
+                <tr><td><strong>General</strong></td><td>100 PV</td><td>6 (x1.3 atq)</td><td><code>mil_rank_general</code> (T6, 4 PR). Capitaine + <strong>Commandement &gt; 18</strong>. <strong>1 seul General par nation</strong></td></tr>
               </tbody>
             </table></div>
           `,
