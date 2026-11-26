@@ -107,15 +107,15 @@ window.FE_GUIDE_MODULES.push(
     group: "identity-loot",
     kicker: { en: "8. Ranks, Vault & Codes", fr: "8. Rangs, Coffre & Codes" },
     title: {
-      en: "All 14 Ranks, Safe Vault Limits & Gift Codes",
-      fr: "Les 14 Rangs, Coffre-Fort Protege & Codes Cadeaux",
+      en: "All 18 Ranks, Safe Vault Limits & Gift Codes",
+      fr: "Les 18 Rangs, Coffre-Fort Protege & Codes Cadeaux",
     },
     subtitle: {
       en: "Every rank badge rendered in-game via glyph_E5, Safe Vault coin protection caps (100 / 500 / 1,000), and how Gift Codes work.",
       fr: "Tous les badges de rangs affiches en jeu, plafonds de protection du Coffre-Fort (100 / 500 / 1 000 Coins) et systeme de Codes Cadeaux.",
     },
     featuredItems: ["fe:frontier_token_info", "fe:key_rare", "fe:key_epic"],
-    searchKeywords: "rank roturier bourgeois noble conqueror sovereign emperor fre_og frost helper mod smod admin manager owner bank vault coins gift code",
+    searchKeywords: "rank roturier bourgeois noble conqueror sovereign emperor fre_og frost champion hero astral youtuber helper mod smod admin manager owner bank vault coins gift code",
     sections: [
       {
         heading: { en: "Safe Vault Economy (/frontier:menu -> Economy)", fr: "Coffre-Fort Protege (Economie)" },
@@ -137,10 +137,10 @@ window.FE_GUIDE_MODULES.push(
         },
       },
       {
-        heading: { en: "All 14 Server Ranks & Badges", fr: "Tableau Complet des 14 Rangs & Badges" },
+        heading: { en: "All 18 Server Ranks & Badges", fr: "Tableau Complet des 18 Rangs & Badges" },
         html: {
-          en: `<p>Every badge below is extracted directly from the live server's <code>FrontierExtensionRP/font/glyph_E5.png</code> (<code>\\uE500</code>–<code>\\uE511</code>). Note that <strong>CONQUEROR</strong>, <strong>SOVEREIGN</strong>, and <strong>EMPEROR</strong> are currently marked <em>Unavailable</em> in-game, while <strong>FRE-OG</strong> and <strong>FROST</strong> are command-unlock specials.</p>`,
-          fr: `<p>Chaque badge ci-dessous est extrait directement du fichier actif du serveur <code>FrontierExtensionRP/font/glyph_E5.png</code> (<code>\\uE500</code>–<code>\\uE511</code>). A noter que <strong>CONQUEROR</strong>, <strong>SOVEREIGN</strong> et <strong>EMPEROR</strong> sont actuellement marques <em>Indisponibles</em> en jeu, tandis que <strong>FRE-OG</strong> et <strong>FROST</strong> sont des rangs speciaux deblocables par commande.</p>`,
+          en: `<p>Every badge below is extracted directly from the live server's <code>FrontierExtensionRP/font/glyph_E5.png</code> (<code>\\uE500</code>–<code>\\uE515</code>). Note that <strong>CONQUEROR</strong>, <strong>SOVEREIGN</strong>, and <strong>EMPEROR</strong> are currently marked <em>Unavailable</em> in-game, while <strong>FRE-OG</strong>, <strong>FROST</strong>, <strong>CHAMPION</strong>, <strong>HERO</strong>, <strong>ASTRAL</strong>, and <strong>YOUTUBER</strong> are command-unlock specials.</p>`,
+          fr: `<p>Chaque badge ci-dessous est extrait directement du fichier actif du serveur <code>FrontierExtensionRP/font/glyph_E5.png</code> (<code>\\uE500</code>–<code>\\uE515</code>). A noter que <strong>CONQUEROR</strong>, <strong>SOVEREIGN</strong> et <strong>EMPEROR</strong> sont actuellement marques <em>Indisponibles</em> en jeu, tandis que <strong>FRE-OG</strong>, <strong>FROST</strong>, <strong>CHAMPION</strong>, <strong>HERO</strong>, <strong>ASTRAL</strong> et <strong>YOUTUBER</strong> sont des rangs speciaux deblocables par commande.</p>`,
         },
         dynamicWidget: "ranks_table",
       },

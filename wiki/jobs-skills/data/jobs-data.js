@@ -1,6 +1,6 @@
 /* Auto-generated from JobsSkillsBP & JobsSkillsRP — DO NOT HAND-EDIT */
 window.JS_DATA = {
-  "version": "1.0.0",
+  "version": "1.0.2",
   "skillCostLevels": 10,
   "totalJobs": 8,
   "totalSkills": 156,
@@ -771,7 +771,8 @@ window.JS_DATA = {
           "r": false,
           "hub": true
         }
-      ]
+      ],
+      "totalXpLevels": 930
     },
     {
       "id": "miner",
@@ -1535,7 +1536,8 @@ window.JS_DATA = {
           "r": false,
           "hub": false
         }
-      ]
+      ],
+      "totalXpLevels": 1330
     },
     {
       "id": "lumberjack",
@@ -2049,7 +2051,8 @@ window.JS_DATA = {
           "r": false,
           "hub": true
         }
-      ]
+      ],
+      "totalXpLevels": 660
     },
     {
       "id": "rancher",
@@ -2855,7 +2858,8 @@ window.JS_DATA = {
           "r": false,
           "hub": true
         }
-      ]
+      ],
+      "totalXpLevels": 950
     },
     {
       "id": "farmer",
@@ -3661,7 +3665,8 @@ window.JS_DATA = {
           "r": false,
           "hub": true
         }
-      ]
+      ],
+      "totalXpLevels": 950
     },
     {
       "id": "fisher",
@@ -4466,7 +4471,8 @@ window.JS_DATA = {
           "r": false,
           "hub": true
         }
-      ]
+      ],
+      "totalXpLevels": 950
     },
     {
       "id": "hunter",
@@ -5271,7 +5277,8 @@ window.JS_DATA = {
           "r": false,
           "hub": true
         }
-      ]
+      ],
+      "totalXpLevels": 950
     },
     {
       "id": "knight",
@@ -6076,7 +6083,8 @@ window.JS_DATA = {
           "r": false,
           "hub": true
         }
-      ]
+      ],
+      "totalXpLevels": 950
     }
   ],
   "items": [
@@ -6725,5 +6733,12 @@ window.JS_DATA = {
         ]
       }
     }
+  },
+  "skillTierCosts": {
+    "0": 160,
+    "2": 80,
+    "4": 40,
+    "6": 20,
+    "8": 10
   }
 };

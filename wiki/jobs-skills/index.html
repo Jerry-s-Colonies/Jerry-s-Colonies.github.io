@@ -15,7 +15,7 @@
         <img class="brand-icon" src="../assets/img/jobs_skills_icon.png" alt="Jobs &amp; Skill Trees" />
         <div>
           <div class="brand-title">JOBS &amp; SKILL TREES</div>
-          <span class="brand-sub" data-en="The Frontier Wiki • v1.0.0" data-fr="Wiki The Frontier • v1.0.0">The Frontier Wiki • v1.0.0</span>
+          <span class="brand-sub" data-en="The Frontier Wiki • v1.0.2" data-fr="Wiki The Frontier • v1.0.2">The Frontier Wiki • v1.0.2</span>
         </div>
       </a>
     </div>
@@ -230,6 +230,14 @@
         });
       }
 
+      const SKILL_TIER_COSTS = { 8: 10, 6: 20, 4: 40, 2: 80, 0: 160 };
+      function getNodeXpCost(y) { return SKILL_TIER_COSTS[y] ?? 10; }
+      function getNodeTier(y) { return Math.max(1, Math.min(5, Math.floor((8 - y) / 2) + 1)); }
+      function getJobTotalXp(job) {
+        if (typeof job.totalXpLevels === "number") return job.totalXpLevels;
+        return (job.skills || []).reduce((s, sk) => s + getNodeXpCost(sk.y), 0);
+      }
+
       function renderRoleHeroHtml(jobId) {
         const job = jobById[jobId];
         if (!job) return "";
@@ -252,7 +260,7 @@
               <img src="assets/items/skill_book.png" alt="Skills" />
               <div>
                 <span class="role-stat-lbl">${lang === "fr" ? "Arbre de Talents" : "Skill Tree"}</span>
-                <span class="role-stat-val">${job.skillCount} ${lang === "fr" ? "Noeuds" : "Nodes"} (10 XP)</span>
+                <span class="role-stat-val">${job.skillCount} ${lang === "fr" ? "Noeuds" : "Nodes"} (${getJobTotalXp(job)} ${lang === "fr" ? "Niv. XP max" : "XP Lvls max"})</span>
               </div>
             </div>
             <div class="role-stat-tile">
@@ -308,7 +316,7 @@
                   <img src="${j.icon}" alt="${W.escapeHtml(W.t(j.name))}" />
                   <div>
                     <div class="role-mini-title">${W.escapeHtml(W.t(j.name))}</div>
-                    <div class="role-mini-sub">${j.skillCount} ${lang === "fr" ? "competences" : "skills"} • ${j.connectorCount} ${lang === "fr" ? "liens" : "links"}</div>
+                    <div class="role-mini-sub">${j.skillCount} ${lang === "fr" ? "competences" : "skills"} • ${getJobTotalXp(j)} ${lang === "fr" ? "Niv. XP" : "XP Lvls"} • ${j.connectorCount} ${lang === "fr" ? "liens" : "links"}</div>
                   </div>
                 </div>
                 <p style="margin:0;font-size:12.5px;color:var(--text-secondary);">${W.escapeHtml(W.t(j.subtitle))}</p>
@@ -570,7 +578,7 @@
             </div>
             <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;">
               <span class="badge badge-gold">ID: <code>${W.escapeHtml(selected.id)}</code></span>
-              <span class="badge">${lang === "fr" ? "Cout : 10 XP Vanilla" : "Cost: 10 Vanilla XP"}</span>
+              <span class="badge">${lang === "fr" ? `Palier ${getNodeTier(selected.y)} • Cout : ${getNodeXpCost(selected.y)} Niv. XP` : `Tier ${getNodeTier(selected.y)} • Cost: ${getNodeXpCost(selected.y)} XP Lvls`}</span>
               <span class="badge">(${selected.x}, ${selected.y})</span>
             </div>
             <p style="font-size:13px;color:var(--text-secondary);margin:0 0 12px;">${W.escapeHtml(W.t(selected.desc))}</p>

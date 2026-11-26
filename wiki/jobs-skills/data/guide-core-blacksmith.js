@@ -41,13 +41,13 @@ window.JS_GUIDE_MODULES = [
             items: {
               en: [
                 "<strong>1 Active Profession:</strong> Each player commits to one profession at a time (saved compactly in Dynamic Property <code>jobskills_data</code>).",
-                "<strong>Fixed Skill Cost — 10 Vanilla XP Levels:</strong> There is no separate custom job XP bar. Every node costs a flat <code>10 player XP levels</code> (free in Creative).",
+                "<strong>Progressive Skill Cost (x2 per Tree Tier):</strong> There is no separate custom job XP bar. Unlock costs double with each vertical tier from bottom to top: <code>10</code> (Roots) &rarr; <code>20</code> &rarr; <code>40</code> &rarr; <code>80</code> &rarr; <code>160</code> vanilla XP levels (free in Creative). Direct path to 1 ultimate = <code>310</code> lvls; full job mastery = <code>660</code> (Lumberjack), <code>930</code> (Blacksmith), <code>950</code> (Rancher/Farmer/Fisher/Hunter/Knight), or <code>1,330</code> (Miner).",
                 "<strong>2 Personal Toggles (Settings Menu):</strong> <strong>Magnet</strong> (pulls matching profession drops within <code>6.5 blocks</code> every 10 ticks) and <strong>Sneak Skills</strong> (disables Sneak+Use workstation/vein/treecap triggers when building).",
                 "<strong>Reset / Switch Profession:</strong> Available inside Settings. Resets the active profession and all unlocked nodes — <strong>spent XP levels are not refunded</strong>.",
               ],
               fr: [
                 "<strong>1 Metier Actif :</strong> Chaque joueur choisit un seul metier a la fois (sauvegarde compacte dans <code>jobskills_data</code>).",
-                "<strong>Cout Fixe — 10 Niveaux d'XP Vanilla :</strong> Aucune jauge d'XP metier separee. Chaque competence coute exactement <code>10 niveaux d'XP joueur</code> (gratuit en Creatif).",
+                "<strong>Cout Progressif par Palier (x2 / Palier) :</strong> Aucune jauge d'XP metier separee. Le cout double a chaque palier de bas en haut : <code>10</code> (Racines) &rarr; <code>20</code> &rarr; <code>40</code> &rarr; <code>80</code> &rarr; <code>160</code> niveaux d'XP vanilla (gratuit en Creatif). Une branche directe jusqu'a 1 ultime coute <code>310</code> niv. ; tout maxer coute <code>660</code> (Bucheron), <code>930</code> (Forgeron), <code>950</code> (Eleveur/Fermier/Pecheur/Chasseur/Chevalier) ou <code>1 330</code> (Mineur).",
                 "<strong>2 Options Personnelles (Parametres) :</strong> <strong>Aimant (Magnet)</strong> (attire les drops du metier sous <code>6.5 blocs</code> toutes les 10 ticks) et <strong>Competences Sneak</strong> (desactive les triggers Sneak+Clic pour construire tranquille).",
                 "<strong>Reinitialisation / Changement :</strong> Disponible dans les Parametres. Efface le metier actif et les talents — <strong>l'XP depensee n'est pas remboursee</strong>.",
               ],
@@ -57,12 +57,28 @@ window.JS_GUIDE_MODULES = [
       },
       {
         num: "02",
-        title: { en: "Overview of All 8 Professions", fr: "Presentation des 8 Metiers" },
+        title: { en: "Overview of All 8 Professions & Total XP Costs", fr: "Presentation des 8 Metiers & Couts Totaux XP" },
         lead: {
-          en: "Click any role card below to jump directly to its complete illustrated guide, workstation workflows, and stat tables.",
-          fr: "Cliquez sur n'importe quelle carte metier ci-dessous pour ouvrir sa presentation complete, ses schema d'artisanat et ses tableaux de stats.",
+          en: "Click any role card below to jump directly to its complete illustrated guide, workstation workflows, and stat tables. Costs scale x2 per tree tier (10 / 20 / 40 / 80 / 160 XP levels).",
+          fr: "Cliquez sur n'importe quelle carte metier ci-dessous pour ouvrir sa presentation complete, ses schemas d'artisanat et ses tableaux de stats. Le cout double a chaque palier (10 / 20 / 40 / 80 / 160 niveaux XP).",
         },
         widget: "jobs-overview-cards",
+        table: {
+          headers: {
+            en: ["Profession", "Total Nodes", "Tier Breakdown (T1 / T2 / T3 / T4 / T5)", "Full Mastery Total"],
+            fr: ["Metier", "Total Noeuds", "Repartition (P1=10 / P2=20 / P3=40 / P4=80 / P5=160)", "Total pour Maxer"],
+          },
+          rows: [
+            [{ en: "Miner", fr: "Mineur" }, "<code>23</code>", "<code>3 / 5 / 6 / 6 / 3</code>", "<strong>1,330 XP Lvls</strong>"],
+            [{ en: "Lumberjack", fr: "Bucheron" }, "<code>14</code>", "<code>2 / 4 / 4 / 3 / 1</code>", "<strong>660 XP Lvls</strong>"],
+            [{ en: "Blacksmith", fr: "Forgeron" }, "<code>19</code>", "<code>3 / 5 / 6 / 3 / 2</code>", "<strong>930 XP Lvls</strong>"],
+            [{ en: "Rancher", fr: "Eleveur" }, "<code>20</code>", "<code>3 / 6 / 6 / 3 / 2</code>", "<strong>950 XP Lvls</strong>"],
+            [{ en: "Farmer", fr: "Fermier" }, "<code>20</code>", "<code>3 / 6 / 6 / 3 / 2</code>", "<strong>950 XP Lvls</strong>"],
+            [{ en: "Fisher", fr: "Pecheur" }, "<code>20</code>", "<code>3 / 6 / 6 / 3 / 2</code>", "<strong>950 XP Lvls</strong>"],
+            [{ en: "Hunter", fr: "Chasseur" }, "<code>20</code>", "<code>3 / 6 / 6 / 3 / 2</code>", "<strong>950 XP Lvls</strong>"],
+            [{ en: "Knight", fr: "Chevalier" }, "<code>20</code>", "<code>3 / 6 / 6 / 3 / 2</code>", "<strong>950 XP Lvls</strong>"],
+          ],
+        },
       },
       {
         num: "03",
