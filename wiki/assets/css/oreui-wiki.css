@@ -2350,7 +2350,8 @@ body.theme-knights .search-hit-cat { color: var(--accent); }
 @media (max-width: 480px) {
   .brand-icon { width: 24px; height: 24px; }
   .brand-title { font-size: 12.5px; }
-  .topbar-actions .oreui-btn-sm { padding: 4px 7px; font-size: 10px; }
+  .topbar-actions { gap: 4px; }
+  .topbar-actions .oreui-btn-sm { padding: 4px 6px; font-size: 9.5px; min-height: 30px; }
   .craft-grid {
     grid-template-columns: repeat(3, 34px);
     grid-template-rows: repeat(3, 34px);

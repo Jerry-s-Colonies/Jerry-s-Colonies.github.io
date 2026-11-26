@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nations Directory — The Frontier</title>
+  <link rel="icon" href="../assets/icons/logo.png" type="image/png" />
+  <link rel="stylesheet" href="../wiki/assets/css/oreui-wiki.css?v=20261126nat" />
+  <link rel="stylesheet" href="./nations.css?v=20261126nat" />
+</head>
+<body class="theme-jn">
+  <header class="topbar">
+    <div class="topbar-left">
+      <a class="brand-link" href="../index.html">
+        <img class="brand-icon" src="../assets/icons/logo.png" alt="The Frontier" />
+        <div>
+          <div class="brand-title">THE FRONTIER NATIONS</div>
+          <span class="brand-sub" data-en="Public Nations Registry" data-fr="Registre Public des Nations">Public Nations Registry</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="topbar-actions">
+      <a class="oreui-btn oreui-btn-sm oreui-btn-crimson" href="../index.html" data-en="Home" data-fr="Accueil">Home</a>
+      <a class="oreui-btn oreui-btn-sm oreui-btn-info" href="../map/" data-en="World Map" data-fr="Carte">World Map</a>
+      <a class="oreui-btn oreui-btn-sm oreui-btn-gold" href="../wiki/" data-en="Wiki" data-fr="Wiki">Wiki</a>
+      <button class="oreui-btn oreui-btn-sm" id="btnLangToggle" type="button">EN / FR [EN]</button>
+      <button class="oreui-btn oreui-btn-sm oreui-btn-info" id="btnThemeToggle" type="button">Light</button>
+    </div>
+  </header>
+
+  <main class="hub-wrap nations-wrap">
+    <section class="oreui-panel nations-hero">
+      <div class="nations-hero-head">
+        <div>
+          <span class="hub-hero-badge" data-en="THE FRONTIER • NATIONS DIRECTORY" data-fr="THE FRONTIER • ANNUAIRE DES NATIONS">THE FRONTIER • NATIONS DIRECTORY</span>
+          <h1 data-en="Nations &amp; Empires of The Frontier" data-fr="Nations &amp; Empires de The Frontier">Nations &amp; Empires of The Frontier</h1>
+          <p data-en="Browse every active nation on the server: level progression, members roster, sub-cities, territory claims, and flags." data-fr="Consultez tous les pays du serveur : niveau de nation, liste des membres, sous-villes, parcelles revendiquees et drapeaux.">Browse every active nation on the server: level progression, members roster, sub-cities, territory claims, and flags.</p>
+        </div>
+        <div class="nations-sync-pill" id="nationsUpdatedBadge">--</div>
+      </div>
+
+      <div class="nations-kpi-grid" id="nationsKpiStrip"></div>
+    </section>
+
+    <div class="callout callout-info hidden" id="nationsSyncNotice">
+      <div class="callout-title" data-en="Limited Snapshot Mode" data-fr="Mode Apercu Partiel">Limited Snapshot Mode</div>
+      <div data-en="Detailed nation levels, XP, sub-cities, and full member lists will appear automatically after the server publishes nations.json." data-fr="Les niveaux détaillés, l'XP, les sous-villes et la liste complète des membres s'afficheront dès la prochaine publication serveur de nations.json.">Detailed nation levels, XP, sub-cities, and full member lists will appear automatically after the server publishes nations.json.</div>
+    </div>
+
+    <section class="oreui-card nations-controls-card">
+      <div class="nations-controls-grid">
+        <div class="nations-ctrl-search">
+          <input class="ore-input" id="nationSearchInput" type="search" autocomplete="off"
+            data-ph-en="Search nation, leader, member, or city..."
+            data-ph-fr="Rechercher une nation, un chef, un membre ou une ville..."
+            placeholder="Search nation, leader, member, or city..." />
+        </div>
+        <select class="ore-select" id="nationTierFilter" aria-label="Filter by tier"></select>
+        <select class="ore-select" id="nationContinentFilter" aria-label="Filter by continent"></select>
+        <select class="ore-select" id="nationSortSelect" aria-label="Sort nations"></select>
+        <div class="nations-view-switch">
+          <button class="filter-tab active" id="btnViewCards" type="button" data-en="Cards" data-fr="Cartes">Cards</button>
+          <button class="filter-tab" id="btnViewTable" type="button" data-en="Ranking Table" data-fr="Classement">Ranking Table</button>
+        </div>
+      </div>
+      <div class="nations-results-bar">
+        <span id="nationsCountLabel">--</span>
+      </div>
+    </section>
+
+    <section id="nationsContainer"></section>
+  </main>
+
+  <div class="modal-backdrop" id="nationModal" role="dialog" aria-modal="true">
+    <div class="oreui-panel modal-dialog nations-modal-dialog">
+      <button class="oreui-btn oreui-btn-sm oreui-btn-crimson modal-close" id="nationModalClose" type="button" data-en="Close" data-fr="Fermer">Close</button>
+      <div id="nationModalBody"></div>
+    </div>
+  </div>
+
+  <script src="../wiki/assets/js/wiki-core.js?v=20261126nat"></script>
+  <script src="./nations.js?v=20261126nat"></script>
+</body>
+</html>
