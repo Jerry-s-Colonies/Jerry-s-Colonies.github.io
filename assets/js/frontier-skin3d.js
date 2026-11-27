@@ -645,46 +645,76 @@
   }
 
   // ---------------------------------------------------------------------------
-  // Nation Pyramid 3D Formation Renderer (Leader in Front + Depth Echelon)
+  // Nation V-Chevron / Echelon 3D Formation Renderer (Team-Photo Spacing)
   // ---------------------------------------------------------------------------
   function computePyramidSlots(members) {
     const list = Array.isArray(members) ? members.slice(0, 21) : [];
     const slots = [];
-    if (!list.length) return slots;
+    if (!list.length) return { slots, rows: 0 };
 
-    // Leader stays centered at Row 0 in foreground
-    let cursor = 0;
-    let row = 0;
-    while (cursor < list.length) {
-      const targetInRow = row === 0 ? 1 : row + 1;
-      const take = Math.min(targetInRow, list.length - cursor);
-      const rowMembers = list.slice(cursor, cursor + take);
-      const z = 14 - row * 23;
-      const y = row === 0 ? 0.5 : row * 1.4;
-      const xStep = Math.max(15.5, 19.5 - row * 0.7);
-      for (let i = 0; i < take; i++) {
-        const member = rowMembers[i];
-        const x = take === 1 ? 0 : (i - (take - 1) / 2) * xStep;
-        const yaw = row === 0 ? 0 : -Math.max(-0.24, Math.min(0.24, x * 0.01));
-        const pose = row === 0 ? "leader" : (i % 2 === 0 ? "left" : "right");
-        slots.push({
-          member,
-          row,
-          x,
-          y,
-          z,
-          yaw,
-          scale: row === 0 ? 1.06 : 1.0,
-          pose,
-          texSource: getDefaultGreySkinCanvas(),
-          slim: Boolean(member?.slim),
-          screenPos: null,
-        });
+    // Front V-chevron holds up to 11 players (Leader centered front + 5 wings per side).
+    // Additional players (12..21) stand in a staggered rear chevron centered between front shoulders.
+    const xStep = 23.5;
+    let maxRow = 0;
+
+    for (let i = 0; i < list.length; i++) {
+      const member = list[i];
+      let row = 0;
+      let x = 0;
+      let y = 0;
+      let z = 18;
+      let scale = 1.0;
+      let pose = "idle";
+      let yaw = 0;
+
+      if (i === 0) {
+        row = 0;
+        x = 0;
+        y = 0;
+        z = 16;
+        scale = 1.08;
+        pose = "leader";
+        yaw = 0;
+      } else if (i <= 10) {
+        const wingStep = Math.floor((i + 1) / 2); // 1..5
+        const side = i % 2 === 1 ? -1 : 1;
+        row = wingStep;
+        x = side * wingStep * xStep;
+        y = wingStep * 0.35;
+        z = 16 - wingStep * 6.8;
+        scale = Math.max(0.97, 1.04 - wingStep * 0.012);
+        yaw = -side * Math.min(0.22, wingStep * 0.044);
+        pose = i % 2 === 1 ? "left" : "right";
+      } else {
+        const backIdx = i - 11; // 0..9
+        const wingStep = Math.floor(backIdx / 2); // 0..4
+        const side = backIdx % 2 === 0 ? -1 : 1;
+        row = 6 + wingStep;
+        x = side * (wingStep + 0.5) * xStep;
+        y = 11.5 + wingStep * 0.45;
+        z = -12 - wingStep * 6.0;
+        scale = 0.96;
+        yaw = -side * Math.min(0.20, (wingStep + 0.5) * 0.042);
+        pose = wingStep % 2 === 0 ? "right" : "left";
       }
-      cursor += take;
-      row++;
+
+      if (row > maxRow) maxRow = row;
+      slots.push({
+        member,
+        row,
+        x,
+        y,
+        z,
+        yaw,
+        scale,
+        pose,
+        texSource: getDefaultGreySkinCanvas(),
+        slim: Boolean(member?.slim),
+        screenPos: null,
+      });
     }
-    return { slots, rows: row };
+
+    return { slots, rows: maxRow + 1 };
   }
 
   function mountNationPyramidViewer(canvas, opts = {}) {
@@ -693,12 +723,35 @@
     const members = Array.isArray(opts.members) ? opts.members : [];
     const layout = computePyramidSlots(members);
     const slots = layout.slots || [];
-    const totalRows = layout.rows || 1;
     const onSelectMember = typeof opts.onSelectMember === "function" ? opts.onSelectMember : null;
     const onFrameProject = typeof opts.onFrameProject === "function" ? opts.onFrameProject : null;
 
+    let minX = 0, maxX = 0, minY = 0, maxY = 36, minZ = 18, maxZ = 18;
+    if (slots.length) {
+      minX = Infinity;
+      maxX = -Infinity;
+      minY = Infinity;
+      maxY = -Infinity;
+      minZ = Infinity;
+      maxZ = -Infinity;
+      for (const s of slots) {
+        const hw = 10.5 * s.scale;
+        if (s.x - hw < minX) minX = s.x - hw;
+        if (s.x + hw > maxX) maxX = s.x + hw;
+        if (s.y < minY) minY = s.y;
+        if (s.y + 36 * s.scale > maxY) maxY = s.y + 36 * s.scale;
+        if (s.z < minZ) minZ = s.z;
+        if (s.z > maxZ) maxZ = s.z;
+      }
+    }
+    const centerX = (minX + maxX) * 0.5;
+    const halfSpanW = Math.max(18, (maxX - minX) * 0.5);
+    const centerZ = (minZ + maxZ) * 0.5;
+    const centerY = minY + (maxY - minY) * 0.52;
+    const halfSpanH = Math.max(18, (maxY - minY) * 0.5);
+
     let yaw = 0;
-    let pitch = 8.5;
+    let pitch = 4.8;
     let zoom = 1.0;
     let dragging = false;
     let dragMoved = false;
@@ -777,18 +830,21 @@
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         const aspect = canvas.width / Math.max(1, canvas.height);
-        const proj = mat4Perspective(38 * DEG, aspect, 1, 500);
-        // Frame automatically based on pyramid depth/width so both 1 and 20 members fit gracefully
-        const depthSpan = Math.max(1, totalRows - 1);
-        const baseCamDist = (62 + depthSpan * 24) / zoom;
-        const centerZ = 14 - depthSpan * 11;
-        const centerY = 17 + depthSpan * 1.1;
+        const fovRad = 36 * DEG;
+        const proj = mat4Perspective(fovRad, aspect, 1, 600);
+        const halfTanY = Math.tan(fovRad * 0.5);
+        const halfTanX = halfTanY * aspect;
+        const frontHalfZ = Math.max(0, maxZ - centerZ);
+        const backHalfZ = Math.max(0, centerZ - minZ);
+        const distForHeight = (halfSpanH / (0.65 * halfTanY)) + frontHalfZ;
+        const distForWidth = Math.max(50, (halfSpanW / (0.86 * halfTanX)) - backHalfZ * 0.65);
+        const baseCamDist = Math.max(66, distForHeight, distForWidth) / zoom;
 
         const view = mat4Mul(
           mat4Translate(0, -centerY, -baseCamDist),
           mat4Mul(
             mat4RotateX(pitch * DEG),
-            mat4Mul(mat4RotateY(yaw * DEG), mat4Translate(0, 0, -centerZ)),
+            mat4Mul(mat4RotateY(yaw * DEG), mat4Translate(-centerX, 0, -centerZ)),
           ),
         );
         const vp = mat4Mul(proj, view);
@@ -825,7 +881,7 @@
     return {
       resetCamera() {
         yaw = 0;
-        pitch = 8.5;
+        pitch = 4.8;
         zoom = 1.0;
       },
       destroy() {

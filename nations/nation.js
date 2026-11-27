@@ -454,13 +454,54 @@
           if (!pyrLabels) return;
           pyrLabels.style.display = state.showLabels ? "block" : "none";
           if (!state.showLabels) return;
-          for (const item of list) {
+          const hero = pyrLabels.parentElement;
+          const cLeft = pyrCanvas.offsetLeft || 0;
+          const cTop = pyrCanvas.offsetTop || 0;
+          const cW = pyrCanvas.offsetWidth || pyrCanvas.clientWidth || 1;
+          const cH = pyrCanvas.offsetHeight || pyrCanvas.clientHeight || 1;
+          const hW = hero?.clientWidth || cW;
+          const minTop = Math.max(38, cTop + 22);
+          const maxTop = cTop + cH - 8;
+
+          const ordered = [...list].sort((a, b) => a.row - b.row || a.depth - b.depth);
+          const placed = [];
+
+          for (const item of ordered) {
             const el = labelEls.get(item.member?.name);
             if (!el) continue;
-            el.style.left = `${item.xPct.toFixed(2)}%`;
-            el.style.top = `${Math.max(8, Math.min(82, item.yPct - 4)).toFixed(2)}%`;
-            el.style.zIndex = String(Math.max(1, 50 - item.row * 5));
-            const s = Math.max(0.76, Math.min(1.05, 1.04 - item.row * 0.08));
+            const s = Math.max(0.82, Math.min(1.06, 1.05 - Math.min(item.row, 5) * 0.035));
+            const tagW = (el.offsetWidth || Math.max(76, String(item.member?.name || "").length * 7 + 44)) * s;
+            const tagH = (el.offsetHeight || 22) * s;
+            const halfW = tagW * 0.5 + 4;
+            const rawX = cLeft + (item.xPct / 100) * cW;
+            const cx = Math.max(halfW + 6, Math.min(hW - halfW - 6, rawX));
+            const baseBottomY = cTop + (item.yPct / 100) * cH - 6;
+
+            let chosenY = Math.max(minTop + tagH, Math.min(maxTop, baseBottomY));
+            const offsets = [0, -(tagH + 5), -(tagH + 5) * 2, tagH + 5, -(tagH + 5) * 3];
+            for (const off of offsets) {
+              const cand = baseBottomY + off;
+              if (cand - tagH < 36 || cand > maxTop) continue;
+              const x1 = cx - tagW * 0.5 - 3;
+              const x2 = cx + tagW * 0.5 + 3;
+              const y1 = cand - tagH - 3;
+              const y2 = cand + 3;
+              const collides = placed.some((p) => !(x2 < p.x1 || x1 > p.x2 || y2 < p.y1 || y1 > p.y2));
+              if (!collides) {
+                chosenY = cand;
+                break;
+              }
+            }
+
+            placed.push({
+              x1: cx - tagW * 0.5 - 3,
+              x2: cx + tagW * 0.5 + 3,
+              y1: chosenY - tagH - 3,
+              y2: chosenY + 3,
+            });
+            el.style.left = `${cx.toFixed(1)}px`;
+            el.style.top = `${chosenY.toFixed(1)}px`;
+            el.style.zIndex = String(Math.max(1, 50 - item.row * 4));
             el.style.transform = `translate(-50%, -100%) scale(${s.toFixed(2)})`;
           }
         },
