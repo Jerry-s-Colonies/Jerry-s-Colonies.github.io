@@ -920,7 +920,11 @@
 
     window.addEventListener("frontier:langchange", refreshAll);
 
-    if (window.location.hash.startsWith("#nation=")) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramNation = urlParams.get("nation");
+    if (paramNation && state.nations.some((n) => n.id === paramNation)) {
+      openNationModal(paramNation);
+    } else if (window.location.hash.startsWith("#nation=")) {
       const targetId = decodeURIComponent(window.location.hash.slice("#nation=".length));
       if (state.nations.some((n) => n.id === targetId)) openNationModal(targetId);
     }

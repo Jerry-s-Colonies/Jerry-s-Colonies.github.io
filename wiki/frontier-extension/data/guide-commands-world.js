@@ -60,7 +60,7 @@ window.FE_GUIDE_MODULES.push(
             <ul>
               <li><strong><code>/frontier:menu</code></strong>: Opens the central OreUI Hub displaying your 8-line Profile card (Name, Rank badge, Nation from Jerry's Nations, Religion, Safe Vault balance/cap, Frontier Tokens, Prestige, Playtime) alongside <strong>FrontierPass</strong>, <strong>Profile &amp; Custom</strong>, <strong>Economy &amp; Vault</strong>, <strong>Jobs &amp; Skills</strong>, and <strong>Gift Codes</strong>.</li>
               <li><strong><code>/frontier:cmd</code> / <code>!cmd</code></strong>: 1-click launcher with <strong>15 direct shortcuts</strong> including <code>/jn:tp</code>, <code>/jn:global</code>, <code>/jn:nation</code>, <code>/jn:org</code>, <code>/frontier:hub</code>, <code>/frontier:back</code>, and <code>/frontierengine:tps</code>.</li>
-              <li><strong>Player Inspection</strong>: <strong>Sneak + Right-Click</strong> any online player (or run <code>/frontier:profile</code>) to inspect their Profile, Nation, Rank, Economy, or jump to Rank/Guild menus.</li>
+              <li><strong>Player Inspection &amp; Transfers</strong>: <strong>Sneak + Right-Click</strong> any online player (or run <code>/frontier:profile</code>) to inspect their Profile, transfer Vault Coins directly, or jump to Rank/Guild menus. Also use <code>/frontier:pay &lt;player&gt; &lt;amount&gt;</code>.</li>
               <li><strong>Chat UI Helper (<code>ui/chat_screen.json</code>)</strong>: Includes a quick drawer toggle showing curated <strong>Frontier</strong>, <strong>Server</strong>, and <strong>Nations</strong> command tabs plus an autocomplete <code>TAB</code> button.</li>
             </ul>
           `,
@@ -68,7 +68,7 @@ window.FE_GUIDE_MODULES.push(
             <ul>
               <li><strong><code>/frontier:menu</code></strong> : Hub OreUI central affichant votre fiche 8 lignes (Pseudo, Rang, Nation synchro Jerry's Nations, Religion, Coffre-Fort, Jetons Frontier, Prestige, Temps de jeu) et les acces directs vers <strong>FrontierPass</strong>, <strong>Profil &amp; Custom</strong>, <strong>Economie &amp; Coffre</strong>, <strong>Metiers</strong> et <strong>Codes Cadeaux</strong>.</li>
               <li><strong><code>/frontier:cmd</code> / <code>!cmd</code></strong> : Lanceur rapide a <strong>15 boutons en 1 clic</strong> incluant <code>/jn:tp</code>, <code>/jn:global</code>, <code>/jn:nation</code>, <code>/jn:org</code>, <code>/frontier:hub</code>, <code>/frontier:back</code> et <code>/frontierengine:tps</code>.</li>
-              <li><strong>Inspection d'un joueur</strong> : Faites <strong>Sneak + Clic droit</strong> sur un joueur en jeu (ou <code>/frontier:profile</code>) pour afficher sa carte complete.</li>
+              <li><strong>Inspection d'un joueur &amp; Virements</strong> : Faites <strong>Sneak + Clic droit</strong> sur un joueur en jeu (ou <code>/frontier:profile</code>) pour afficher sa carte complete et lui transferer des Coins (ou utilisez <code>/frontier:pay &lt;joueur&gt; &lt;montant&gt;</code>).</li>
               <li><strong>Tiroir du Chat (<code>ui/chat_screen.json</code>)</strong> : Bouton integre ouvrant un guide a 3 onglets (<code>Frontier</code>, <code>Serveur</code>, <code>Nations</code>) ainsi qu'un bouton d'autocompletion <code>TAB</code>.</li>
             </ul>
           `,

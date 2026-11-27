@@ -111,26 +111,28 @@ window.FE_GUIDE_MODULES.push(
       fr: "Les 18 Rangs, Coffre-Fort Protege & Codes Cadeaux",
     },
     subtitle: {
-      en: "Every rank badge rendered in-game via glyph_E5, Safe Vault coin protection caps (100 / 500 / 1,000), and how Gift Codes work.",
-      fr: "Tous les badges de rangs affiches en jeu, plafonds de protection du Coffre-Fort (100 / 500 / 1 000 Coins) et systeme de Codes Cadeaux.",
+      en: "Every rank badge rendered in-game via glyph_E5, Safe Vault coin protection caps (10,000 to 2,000,000), player transfers, and Gift Codes.",
+      fr: "Tous les badges de rangs affiches en jeu, plafonds de protection du Coffre-Fort (10 000 a 2 000 000 Coins), transferts et Codes Cadeaux.",
     },
     featuredItems: ["fe:frontier_token_info", "fe:key_rare", "fe:key_epic"],
-    searchKeywords: "rank roturier bourgeois noble conqueror sovereign emperor fre_og frost champion hero astral youtuber helper mod smod admin manager owner bank vault coins gift code",
+    searchKeywords: "rank roturier bourgeois noble conqueror sovereign emperor fre_og frost champion hero astral youtuber helper mod smod admin manager owner bank vault coins transfer pay gift code",
     sections: [
       {
         heading: { en: "Safe Vault Economy (/frontier:menu -> Economy)", fr: "Coffre-Fort Protege (Economie)" },
         html: {
           en: `
             <ul>
-              <li>Deposit and withdraw physical Coins (<code>jn:coin</code>) safely into your player-bound Vault (<code>bankBalance</code>) via quick presets (<code>1, 5, 10, 50, 100</code>, custom amount, Deposit All, Withdraw All).</li>
-              <li><strong>Capacity Formula</strong>: Your maximum Vault limit equals the <strong>highest bankLimit among your equipped rank and ALL ranks you have ever unlocked</strong> (<code>100</code> Commoner, <code>500</code> Burgher, <code>1,000</code> Noble and above).</li>
+              <li>Deposit and withdraw physical Coins (<code>jn:coin</code>) safely into your player-bound Vault (<code>bankBalance</code>) via quick presets (<code>10, 50, 100, 500, 1,000, 5,000</code>, custom amount, Deposit All, Withdraw All).</li>
+              <li><strong>Capacity Formula</strong>: Your maximum Vault limit equals the <strong>highest bankLimit among your equipped rank and ALL ranks you have ever unlocked</strong> (<code>10,000</code> Commoner, <code>250,000</code> Burgher, <code>1,000,000</code> Noble / Special, <code>1,500,000</code> Champion / Sovereign, up to <code>2,000,000</code> Emperor / Hero / Astral / Staff).</li>
+              <li><strong>Player-to-Player Transfers</strong>: Send Coins directly between online players' Safe Vaults via <strong>Economy &rarr; Transfer Coins</strong>, <strong>Sneak + Right-Click &rarr; Send Coins</strong>, or <code>/frontier:pay &lt;player&gt; &lt;amount&gt;</code>.</li>
               <li><strong>Gift Codes</strong>: Redeem promotional codes inside <code>/frontier:menu</code> &rarr; <strong>Gift Codes</strong> (1 use per player, case-insensitive). Can grant Frontier Tokens, Coins, Pass XP, Items, Ranks, or Cosmetics.</li>
             </ul>
           `,
           fr: `
             <ul>
-              <li>Deposez et retirez vos pieces physiques (<code>jn:coin</code>) dans votre Coffre-Fort personnel (<code>bankBalance</code>) via boutons rapides (<code>1, 5, 10, 50, 100</code>, montant libre, Tout deposer/retirer).</li>
-              <li><strong>Regle du Plafond</strong> : Votre capacite maximale prend toujours le <strong>maximum entre votre rang equipe et tous les rangs debloques</strong> (<code>100</code> Roturier, <code>500</code> Bourgeois, <code>1 000</code> Noble et superieurs).</li>
+              <li>Deposez et retirez vos pieces physiques (<code>jn:coin</code>) dans votre Coffre-Fort personnel (<code>bankBalance</code>) via boutons rapides (<code>10, 50, 100, 500, 1 000, 5 000</code>, montant libre, Tout deposer/retirer).</li>
+              <li><strong>Regle du Plafond</strong> : Votre capacite maximale prend toujours le <strong>maximum entre votre rang equipe et tous les rangs debloques</strong> (<code>10 000</code> Roturier, <code>250 000</code> Bourgeois, <code>1 000 000</code> Noble / Speciaux, <code>1 500 000</code> Champion / Souverain, jusqu'a <code>2 000 000</code> Empereur / Hero / Astral / Staff).</li>
+              <li><strong>Transferts entre joueurs</strong> : Envoyez des Coins directement d'un Coffre-Fort a un autre joueur en ligne via <strong>Economie &rarr; Transferer Coins</strong>, <strong>Sneak + Clic droit &rarr; Transferer Coins</strong> ou <code>/frontier:pay &lt;joueur&gt; &lt;montant&gt;</code>.</li>
               <li><strong>Codes Cadeaux</strong> : Echangeables dans <code>/frontier:menu</code> &rarr; <strong>Codes Cadeaux</strong> (1 fois par joueur). Permettent de gagner Jetons, Coins, XP Pass, items, rangs ou cosmetiques.</li>
             </ul>
           `,

@@ -1,0 +1,294 @@
+/* ============================================================================
+ * THE FRONTIER — Public Player Leaderboard (OreUI matching /nations/)
+ * ========================================================================== */
+
+.players-sync-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.players-live-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: Consolas, monospace;
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-soft);
+  color: var(--text-secondary);
+}
+
+.players-live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #6b7280;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.players-live-dot.is-online {
+  background: #4ce36d;
+  box-shadow: 0 0 8px rgba(76, 227, 109, 0.75);
+}
+
+.players-controls-grid {
+  display: grid;
+  grid-template-columns: minmax(210px, 1.6fr) repeat(3, minmax(135px, 1fr)) auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.players-results-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.players-vault-note {
+  font-family: Consolas, monospace;
+  font-size: 11.5px;
+  color: var(--text-secondary);
+}
+
+.players-table-wrap {
+  overflow-x: auto;
+}
+
+.player-row-clickable {
+  cursor: pointer;
+}
+
+.player-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 150px;
+}
+
+.player-rank-icon {
+  height: 16px;
+  width: auto;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+}
+
+.player-rank-icon-lg {
+  height: 22px;
+  width: auto;
+  image-rendering: pixelated;
+}
+
+.player-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #5c6573;
+  flex-shrink: 0;
+}
+
+.player-status-dot.is-online {
+  background: #4ce36d;
+  box-shadow: 0 0 6px rgba(76, 227, 109, 0.7);
+}
+
+.player-nation-link,
+.player-nation-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  text-decoration: none;
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.player-nation-link:hover {
+  color: var(--accent-bright);
+  text-decoration: underline;
+}
+
+.player-nation-flag {
+  width: 26px;
+  height: 16px;
+  border: 1px solid var(--border-dark);
+  border-radius: 2px;
+  image-rendering: pixelated;
+  background: #0d0f13;
+  flex-shrink: 0;
+}
+
+.player-job-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 600;
+}
+
+.player-job-icon {
+  width: 18px;
+  height: 18px;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+}
+
+.player-progress-wrap {
+  min-width: 125px;
+}
+
+.player-progress-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  margin-bottom: 3px;
+}
+
+.player-progress-track {
+  height: 6px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-dark);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.player-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-deep), var(--accent-bright));
+}
+
+.player-money-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: "MinecraftRegular", Consolas, monospace;
+  font-weight: 700;
+  color: #f4d35e;
+  white-space: nowrap;
+}
+
+[data-theme="light"] .player-money-cell {
+  color: #9e6b08;
+}
+
+.player-coin-icon {
+  width: 16px;
+  height: 16px;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+}
+
+.players-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 305px), 1fr));
+  gap: 16px;
+}
+
+.player-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: var(--bg-card);
+  border: 2px solid var(--border-dark);
+  border-top: 4px solid var(--accent);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.12s ease, border-color 0.12s ease;
+}
+
+.player-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--gold);
+}
+
+.player-card.podium-1 { border-top-color: #ffd166; }
+.player-card.podium-2 { border-top-color: #cfd8e3; }
+.player-card.podium-3 { border-top-color: #e09153; }
+
+.player-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.player-card-title {
+  font-family: "MinecraftTen", sans-serif;
+  font-size: 19px;
+  font-weight: 400;
+  letter-spacing: 0.07em;
+  margin: 4px 0 0;
+  color: var(--text-main);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.player-card-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.players-modal-dialog {
+  max-width: 720px;
+}
+
+.player-modal-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid var(--border-soft);
+  margin-bottom: 16px;
+}
+
+.player-modal-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.player-modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+@media (max-width: 1120px) {
+  .players-controls-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .nations-ctrl-search {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 720px) {
+  .players-sync-col {
+    align-items: flex-start;
+  }
+  .players-controls-grid {
+    grid-template-columns: 1fr;
+  }
+  .players-controls-grid input,
+  .players-controls-grid select {
+    font-size: 16px;
+    min-height: 38px;
+  }
+  .player-modal-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
