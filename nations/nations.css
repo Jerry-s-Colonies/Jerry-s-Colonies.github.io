@@ -513,3 +513,250 @@ body.theme-jn .topbar .brand-sub {
     height: 70px;
   }
 }
+
+/* ---------- Dedicated Nation Showcase Page (/nations/nation.html) ---------- */
+
+.nation-showcase-banner {
+  position: relative;
+  overflow: hidden;
+  min-height: 410px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #0d1016;
+}
+
+.nation-banner-flag-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  image-rendering: pixelated;
+  opacity: 0.42;
+  filter: saturate(1.15) contrast(1.05);
+  transform: scale(1.03);
+  pointer-events: none;
+}
+
+.nation-banner-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 42%, rgba(16, 19, 26, 0.12) 0%, rgba(10, 12, 17, 0.78) 88%),
+    linear-gradient(180deg, rgba(10, 12, 16, 0.55) 0%, rgba(10, 12, 16, 0.08) 45%, rgba(10, 12, 16, 0.88) 100%);
+  pointer-events: none;
+}
+
+.nation-pyramid-canvas {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 310px;
+  display: block;
+  cursor: grab;
+  touch-action: none;
+}
+
+.nation-pyramid-canvas:active {
+  cursor: grabbing;
+}
+
+.nation-pyramid-labels {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.nation-3d-tag {
+  position: absolute;
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(12, 14, 19, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #eef0f3;
+  font-size: 11px;
+  white-space: nowrap;
+  text-decoration: none;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+}
+
+.nation-3d-tag.is-leader {
+  border-color: #f5b942;
+  background: rgba(34, 24, 9, 0.88);
+}
+
+.nation-3d-tag .tag-role {
+  color: #f5b942;
+  font-family: "MinecraftRegular", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.nation-banner-top-bar {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px 0;
+  flex-wrap: wrap;
+}
+
+.nation-banner-bottom-ribbon {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 14px;
+  padding: 12px 18px 16px;
+  flex-wrap: wrap;
+}
+
+.nation-banner-mini-flag {
+  width: 96px;
+  height: 60px;
+  border: 2px solid #0c0d0f;
+  border-radius: 5px;
+  image-rendering: pixelated;
+  background: #101218;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55);
+  flex-shrink: 0;
+}
+
+.nation-showcase-title {
+  margin: 0;
+  font-family: "MinecraftTen", "MinecraftRegular", sans-serif;
+  font-size: 30px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-shadow: 0 3px 0 rgba(0, 0, 0, 0.88);
+}
+
+.nation-showcase-sub {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  font-size: 13px;
+  color: #dfe4ec;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+.nation-desc-card {
+  margin-bottom: 14px;
+}
+
+.nation-desc-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.nation-sec-title {
+  margin: 0;
+  font-family: "MinecraftRegular", monospace;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.nation-desc-body {
+  margin: 10px 0 0;
+  line-height: 1.65;
+  color: var(--text-main);
+  font-size: 13.5px;
+}
+
+.nation-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.nation-research-cats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.nation-org-box {
+  padding: 10px 12px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+}
+
+.nation-diplo-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nation-diplo-lbl {
+  font-family: "MinecraftRegular", monospace;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.nation-rel-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.nation-rel-link {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.nation-rel-link:hover {
+  filter: brightness(1.15);
+  text-decoration: none;
+}
+
+.nation-member-head {
+  width: 24px;
+  height: 24px;
+  border-radius: 3px;
+  border: 1px solid var(--border-dark);
+  image-rendering: pixelated;
+  background: #4b5058;
+  flex-shrink: 0;
+}
+
+@media (max-width: 860px) {
+  .nation-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .nation-pyramid-canvas {
+    height: 255px;
+  }
+  .nation-showcase-title {
+    font-size: 22px;
+  }
+  .nation-banner-mini-flag {
+    width: 64px;
+    height: 40px;
+  }
+  .nation-research-cats {
+    grid-template-columns: 1fr;
+  }
+}

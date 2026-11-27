@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="../wiki/assets/css/oreui-wiki.css?v=20261126font" />
   <link rel="stylesheet" href="../nations/nations.css?v=20261126wk" />
   <link rel="stylesheet" href="./players.css?v=20261127pl" />
+  <link rel="stylesheet" href="../assets/css/frontier-account.css?v=20261127acc" />
 </head>
 <body class="theme-jn">
   <header class="topbar">
@@ -37,7 +38,7 @@
         <div>
           <span class="hub-hero-badge" data-en="THE FRONTIER • PLAYER LEADERBOARD" data-fr="THE FRONTIER • CLASSEMENT JOUEURS">THE FRONTIER • PLAYER LEADERBOARD</span>
           <h1 data-en="Player Rankings of The Frontier" data-fr="Classement des Joueurs de The Frontier">Player Rankings of The Frontier</h1>
-          <p data-en="Live server leaderboard showing every player's playtime, nation allegiance, profession mastery, and protected vault wealth." data-fr="Classement en direct du serveur : heures de jeu, nation, profession, progression dans le metier et argent en banque.">Live server leaderboard showing every player's playtime, nation allegiance, profession mastery, and protected vault wealth.</p>
+          <p data-en="Live server leaderboard showing playtime, nation allegiance, profession mastery, protected vault wealth, bounties, kills/deaths, and player skins." data-fr="Classement en direct du serveur : heures de jeu, nation, profession, argent en banque, primes actives, kills/morts, bio et skins joueurs.">Live server leaderboard showing playtime, nation allegiance, profession mastery, protected vault wealth, bounties, kills/deaths, and player skins.</p>
         </div>
         <div class="players-sync-col">
           <div class="nations-sync-pill" id="playersUpdatedBadge">--</div>
@@ -75,6 +76,7 @@
       </div>
     </section>
 
+    <section id="playersPodiumStrip" class="nations-podium-grid"></section>
     <section id="playersContainer"></section>
   </main>
 
@@ -86,6 +88,8 @@
   </div>
 
   <script src="../wiki/assets/js/wiki-core.js?v=20261126nat"></script>
-  <script src="./players.js?v=20261127pl"></script>
+  <script src="../assets/js/frontier-skin3d.js?v=20261127s3d"></script>
+  <script src="../assets/js/frontier-account.js?v=20261127acc"></script>
+  <script src="./players.js?v=20261127pl2"></script>
 </body>
 </html>

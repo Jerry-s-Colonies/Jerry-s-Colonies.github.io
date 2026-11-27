@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nation Profile — The Frontier</title>
+  <link rel="icon" href="../assets/icons/logo.png" type="image/png" />
+  <link rel="stylesheet" href="../wiki/assets/css/oreui-wiki.css?v=20261126font" />
+  <link rel="stylesheet" href="./nations.css?v=20261127nat2" />
+  <link rel="stylesheet" href="../assets/css/frontier-account.css?v=20261127acc" />
+</head>
+<body class="theme-jn">
+  <header class="topbar">
+    <div class="topbar-left">
+      <a class="brand-link" href="./index.html">
+        <img class="brand-icon" src="../wiki/assets/img/jerry_nations_icon.png" alt="Nations" />
+        <div>
+          <div class="brand-title" id="nationTopbarTitle">THE FRONTIER NATIONS</div>
+          <span class="brand-sub" data-en="Nation Showcase &amp; Diplomacy" data-fr="Fiche Officielle de Nation">Nation Showcase &amp; Diplomacy</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="topbar-actions">
+      <a class="oreui-btn oreui-btn-sm oreui-btn-crimson" href="../index.html" data-en="Home" data-fr="Accueil">Home</a>
+      <a class="oreui-btn oreui-btn-sm oreui-btn-gold" href="./index.html" data-en="Rankings" data-fr="Classement">Rankings</a>
+      <a class="oreui-btn oreui-btn-sm" href="../players/" data-en="Players" data-fr="Joueurs">Players</a>
+      <a class="oreui-btn oreui-btn-sm oreui-btn-info" href="../map/" data-en="Map" data-fr="Carte">Map</a>
+      <button class="oreui-btn oreui-btn-sm" id="btnLangToggle" type="button">EN / FR [EN]</button>
+      <button class="oreui-btn oreui-btn-sm oreui-btn-info" id="btnThemeToggle" type="button">Light</button>
+    </div>
+  </header>
+
+  <main class="hub-wrap nations-wrap" id="nationDetailMain">
+    <section class="oreui-panel nations-empty-state" id="nationLoadingBox">
+      <span data-en="Loading nation profile..." data-fr="Chargement de la fiche nation...">Loading nation profile...</span>
+    </section>
+  </main>
+
+  <script src="../wiki/assets/js/wiki-core.js?v=20261126nat"></script>
+  <script src="../assets/js/frontier-skin3d.js?v=20261127s3d"></script>
+  <script src="../assets/js/frontier-account.js?v=20261127acc"></script>
+  <script src="./nation-shared.js?v=20261127sh"></script>
+  <script src="./nation.js?v=20261127det"></script>
+</body>
+</html>

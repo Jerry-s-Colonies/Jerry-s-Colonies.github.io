@@ -252,6 +252,12 @@
       if (state.sortBy === "money") {
         return b.bankBalance - a.bankBalance || b.playTimeSeconds - a.playTimeSeconds || a.name.localeCompare(b.name);
       }
+      if (state.sortBy === "bounty") {
+        return b.bounty - a.bounty || b.kills - a.kills || b.playTimeSeconds - a.playTimeSeconds || a.name.localeCompare(b.name);
+      }
+      if (state.sortBy === "kills") {
+        return b.kills - a.kills || a.deaths - b.deaths || b.playTimeSeconds - a.playTimeSeconds || a.name.localeCompare(b.name);
+      }
       if (state.sortBy === "job") {
         return b.jobSkills - a.jobSkills || b.jobPct - a.jobPct || b.playTimeSeconds - a.playTimeSeconds || a.name.localeCompare(b.name);
       }
@@ -304,6 +310,8 @@
     if (sortSel) {
       sortSel.innerHTML = [
         `<option value="hours">${isFr ? "Tri : Heures de jeu" : "Sort: Playtime Hours"}</option>`,
+        `<option value="kills">${isFr ? "Tri : Kills (Combat)" : "Sort: Combat Kills"}</option>`,
+        `<option value="bounty">${isFr ? "Tri : Primes Actives" : "Sort: Active Bounties"}</option>`,
         `<option value="money">${isFr ? "Tri : Argent (Banque)" : "Sort: Vault Money"}</option>`,
         `<option value="job">${isFr ? "Tri : Niveau Metier" : "Sort: Profession Level"}</option>`,
         `<option value="pass">${isFr ? "Tri : Palier FrontierPass" : "Sort: FrontierPass Tier"}</option>`,
@@ -319,8 +327,8 @@
     const onlinePlayers = state.players.filter((p) => p.online).length;
     const totalHours = state.players.reduce((s, p) => s + p.playTimeSeconds, 0) / 3600;
     const totalCoins = state.players.reduce((s, p) => s + p.bankBalance, 0);
-    const withJob = state.players.filter((p) => Boolean(p.jobId)).length;
-    const withNation = state.players.filter((p) => Boolean(p.nationName)).length;
+    const totalBounties = state.players.reduce((s, p) => s + (p.bounty || 0), 0);
+    const totalKills = state.players.reduce((s, p) => s + (p.kills || 0), 0);
 
     const kpiStrip = document.getElementById("playersKpiStrip");
     if (kpiStrip) {
@@ -338,8 +346,8 @@
           val: `${fmtInt(totalCoins)} Coins`,
         },
         {
-          lbl: isFr ? "Metiers / Nations" : "Jobs / Nations",
-          val: `${fmtInt(withJob)} / ${fmtInt(withNation)}`,
+          lbl: isFr ? "Kills / Primes Actives" : "Kills / Bounties",
+          val: `${fmtInt(totalKills)} / ${fmtInt(totalBounties)}`,
         },
       ]
         .map(
@@ -395,7 +403,7 @@
       : "";
 
     if (player.nationId) {
-      return `<a class="player-nation-link" href="../nations/?nation=${encodeURIComponent(player.nationId)}" onclick="event.stopPropagation()">${flagImg}<span>${esc(player.nationName)}</span>${leaderMark}</a>`;
+      return `<a class="player-nation-link" href="../nations/nation.html?id=${encodeURIComponent(player.nationId)}" onclick="event.stopPropagation()">${flagImg}<span>${esc(player.nationName)}</span>${leaderMark}</a>`;
     }
     return `<span class="player-nation-pill">${flagImg}<span>${esc(player.nationName)}</span></span>`;
   }
@@ -445,9 +453,98 @@
     }
   }
 
+  let modalSkinViewer = null;
+  const RELAY_BASE_URL = "https://frontier-webpanel-relay.frontiermc.workers.dev";
+
+  function renderBountyBadgeHtml(p, isFr) {
+    if (!p.bounty || p.bounty <= 0) {
+      return `<span class="badge badge-muted">--</span>`;
+    }
+    return `<span class="player-bounty-pill" title="${isFr ? "Prime active sur la tete du joueur" : "Active bounty"}"><img class="player-coin-icon" src="${COIN_ICON_PATH}" alt="" />${fmtInt(p.bounty)}</span>`;
+  }
+
+  function renderKdHtml(p) {
+    return `<span class="player-kd-cell"><strong style="color:var(--ok)">${fmtInt(p.kills)}</strong><span style="opacity:0.55">/</span><strong style="color:var(--crimson-bright)">${fmtInt(p.deaths)}</strong></span>`;
+  }
+
+  function hydratePlayerHeads(root) {
+    const S3D = window.FrontierSkin3D;
+    if (!S3D || !root) return;
+    const defaultHead = S3D.getDefaultGreyHeadDataUrl(32);
+    root.querySelectorAll("img[data-skin-player]").forEach((img) => {
+      if (img.dataset.skinHydrated === "1") return;
+      img.dataset.skinHydrated = "1";
+      const hasSkin = img.dataset.hasSkin === "1";
+      const name = img.dataset.skinPlayer || "";
+      const ver = Number(img.dataset.skinVer) || 1;
+      if (!hasSkin || !name) {
+        img.src = defaultHead;
+        return;
+      }
+      const url = `${RELAY_BASE_URL}/api/public/skin/${encodeURIComponent(name.toLowerCase())}?v=${ver}`;
+      S3D.getSkinHeadDataUrl(url, 32).then((dataUrl) => {
+        img.src = dataUrl;
+      });
+    });
+  }
+
+  function renderTopPodium(list, isFr) {
+    const podiumEl = document.getElementById("playersPodiumStrip");
+    if (!podiumEl) return;
+    const top3 = list.slice(0, 3);
+    if (!top3.length) {
+      podiumEl.innerHTML = "";
+      return;
+    }
+    podiumEl.innerHTML = top3
+      .map((p, idx) => {
+        const rankNo = idx + 1;
+        const rankMeta = RANKS_META[p.rankId] || RANKS_META.roturier;
+        return `
+          <article class="nations-podium-card podium-${rankNo}" data-player-name="${esc(p.name)}">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <img class="player-head-lg" data-skin-player="${esc(p.name)}" data-has-skin="${p.hasSkin ? "1" : "0"}" data-skin-ver="${p.skinVersion || 0}" alt="" />
+              <div style="min-width:0; flex:1;">
+                <div class="nation-rank-row">
+                  <span class="nation-rank-badge rank-${rankNo}">#${rankNo}</span>
+                  ${rankMeta.img ? `<img class="player-rank-icon" src="${esc(rankMeta.img)}" alt="" />` : ""}
+                  <span class="badge ${p.online ? "badge-green" : "badge-muted"}">${p.online ? (isFr ? "En ligne" : "Online") : (isFr ? "Hors ligne" : "Offline")}</span>
+                </div>
+                <h3 class="player-card-title" style="margin-top:4px;">${esc(p.name)}</h3>
+              </div>
+            </div>
+            <div class="nation-stats-mini">
+              <div class="nation-stat-cell">
+                <span class="nation-stat-lbl">${isFr ? "Heures" : "Hours"}</span>
+                <span class="nation-stat-val">${esc(fmtHours(p.playTimeSeconds))}</span>
+              </div>
+              <div class="nation-stat-cell">
+                <span class="nation-stat-lbl">K / D</span>
+                <span class="nation-stat-val">${renderKdHtml(p)}</span>
+              </div>
+              <div class="nation-stat-cell">
+                <span class="nation-stat-lbl">${isFr ? "Prime" : "Bounty"}</span>
+                <span class="nation-stat-val">${p.bounty > 0 ? fmtInt(p.bounty) : "--"}</span>
+              </div>
+            </div>
+            <div class="nation-card-foot">
+              <span>${renderNationHtml(p, isFr)}</span>
+              <span class="player-money-cell"><img class="player-coin-icon" src="${COIN_ICON_PATH}" alt="" />${fmtInt(p.bankBalance)}</span>
+            </div>
+          </article>`;
+      })
+      .join("");
+    podiumEl.querySelectorAll("[data-player-name]").forEach((el) => {
+      el.addEventListener("click", () => openPlayerModal(el.dataset.playerName));
+    });
+    hydratePlayerHeads(podiumEl);
+  }
+
   function renderPlayers() {
     const isFr = W.getLang() === "fr";
     const list = getFilteredAndSorted();
+
+    renderTopPodium(list, isFr);
 
     const countEl = document.getElementById("playersCountLabel");
     if (countEl) {
@@ -475,11 +572,13 @@
           return `
             <article class="player-card${podiumCls}" data-player-name="${esc(p.name)}">
               <div class="player-card-head">
+                <img class="player-head-lg" style="width:36px;height:36px;" data-skin-player="${esc(p.name)}" data-has-skin="${p.hasSkin ? "1" : "0"}" data-skin-ver="${p.skinVersion || 0}" alt="" />
                 <div style="min-width:0;flex:1;">
                   <div class="nation-rank-row">
                     <span class="nation-rank-badge${badgeCls}">#${rankNo}</span>
                     ${rankMeta.img ? `<img class="player-rank-icon" src="${esc(rankMeta.img)}" alt="${esc(isFr ? rankMeta.fr : rankMeta.en)}" />` : ""}
                     <span class="badge ${p.online ? "badge-green" : "badge-muted"}">${esc(onlineText)}</span>
+                    ${p.bounty > 0 ? renderBountyBadgeHtml(p, isFr) : ""}
                   </div>
                   <h3 class="player-card-title">${esc(p.name)}</h3>
                 </div>
@@ -492,6 +591,14 @@
                 <div class="nation-stat-cell">
                   <span class="nation-stat-lbl">${isFr ? "Banque" : "Vault"}</span>
                   <span class="nation-stat-val"><span class="player-money-cell" style="justify-content:center;"><img class="player-coin-icon" src="${COIN_ICON_PATH}" alt="" />${fmtInt(p.bankBalance)}</span></span>
+                </div>
+                <div class="nation-stat-cell">
+                  <span class="nation-stat-lbl">${isFr ? "Kills / Morts" : "Kills / Deaths"}</span>
+                  <span class="nation-stat-val">${renderKdHtml(p)}</span>
+                </div>
+                <div class="nation-stat-cell">
+                  <span class="nation-stat-lbl">${isFr ? "Prime" : "Bounty"}</span>
+                  <span class="nation-stat-val">${p.bounty > 0 ? `${fmtInt(p.bounty)}` : "--"}</span>
                 </div>
               </div>
               <div class="nation-xp-box">
@@ -516,11 +623,13 @@
               <tr>
                 <th>#</th>
                 <th>${isFr ? "Joueur" : "Player"}</th>
-                <th>${isFr ? "Heures de jeu" : "Hours"}</th>
+                <th>${isFr ? "Heures" : "Hours"}</th>
+                <th>${isFr ? "Kills / Morts" : "Kills / Deaths"}</th>
+                <th>${isFr ? "Prime" : "Bounty"}</th>
                 <th>${isFr ? "Nation" : "Nation"}</th>
                 <th>${isFr ? "Profession" : "Profession"}</th>
-                <th>${isFr ? "Niveau Metier" : "Profession Level"}</th>
-                <th>${isFr ? "Argent (Banque)" : "Vault Money"}</th>
+                <th>${isFr ? "Niveau" : "Level"}</th>
+                <th>${isFr ? "Banque" : "Vault"}</th>
               </tr>
             </thead>
             <tbody>
@@ -535,11 +644,14 @@
                       <td>
                         <div class="player-name-cell">
                           <span class="player-status-dot ${p.online ? "is-online" : ""}" title="${p.online ? (isFr ? "En ligne" : "Online") : isFr ? "Hors ligne" : "Offline"}"></span>
+                          <img class="player-head-thumb" data-skin-player="${esc(p.name)}" data-has-skin="${p.hasSkin ? "1" : "0"}" data-skin-ver="${p.skinVersion || 0}" alt="" />
                           ${rankMeta.img ? `<img class="player-rank-icon" src="${esc(rankMeta.img)}" alt="${esc(isFr ? rankMeta.fr : rankMeta.en)}" />` : ""}
                           <strong>${esc(p.name)}</strong>
                         </div>
                       </td>
                       <td><strong>${esc(fmtHours(p.playTimeSeconds))}</strong></td>
+                      <td>${renderKdHtml(p)}</td>
+                      <td>${renderBountyBadgeHtml(p, isFr)}</td>
                       <td>${renderNationHtml(p, isFr)}</td>
                       <td>${renderJobHtml(p, isFr)}</td>
                       <td>${renderJobProgressHtml(p, isFr)}</td>
@@ -561,6 +673,7 @@
       el.addEventListener("click", () => openPlayerModal(el.dataset.playerName));
     });
 
+    hydratePlayerHeads(container);
     hydrateFlags();
   }
 
@@ -569,6 +682,11 @@
     const p = state.players.find((x) => x.name.toLowerCase() === String(playerName || "").toLowerCase());
     if (!p) return;
     state.selectedPlayerName = p.name;
+
+    if (modalSkinViewer) {
+      modalSkinViewer.destroy();
+      modalSkinViewer = null;
+    }
 
     const modal = document.getElementById("playerModal");
     const body = document.getElementById("playerModalBody");
@@ -582,22 +700,33 @@
       : `<span class="badge badge-muted">${isFr ? "Hors ligne" : "Offline"}</span>`;
 
     const nationBtn = p.nationId
-      ? `<a class="oreui-btn oreui-btn-sm oreui-btn-green" href="../nations/?nation=${encodeURIComponent(p.nationId)}">${isFr ? "Voir sa Nation" : "View Nation"}: ${esc(p.nationName)}</a>`
+      ? `<a class="oreui-btn oreui-btn-sm oreui-btn-green" href="../nations/nation.html?id=${encodeURIComponent(p.nationId)}">${isFr ? "Voir sa Nation" : "View Nation"}: ${esc(p.nationName)}</a>`
       : "";
     const jobBtn = `<a class="oreui-btn oreui-btn-sm oreui-btn-gold" href="../wiki/jobs-skills/">${isFr ? "Guide Metiers" : "Jobs Wiki"}</a>`;
+    const kdVal = p.deaths > 0 ? (p.kills / p.deaths).toFixed(2) : String(p.kills);
+    const bioHtml = p.bio
+      ? esc(p.bio).replace(/\n/g, "<br>")
+      : `<span style="opacity:0.65;font-style:italic;">${isFr ? "Aucune description redigee sur le site." : "No bio configured yet."}</span>`;
 
     body.innerHTML = `
-      <div class="player-modal-head">
+      <div class="player-modal-top-grid">
+        <div class="player-modal-skin-box">
+          <canvas id="playerInspectSkinCanvas" class="player-modal-skin-canvas" width="175" height="225"></canvas>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">${isFr ? "Glisser pour pivoter" : "Drag to rotate"}</div>
+        </div>
+
         <div>
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
             <span class="nation-rank-badge">#${p.hoursRank}</span>
             ${rankMeta.img ? `<img class="player-rank-icon-lg" src="${esc(rankMeta.img)}" alt="" />` : ""}
             <span class="badge badge-gold">${esc(isFr ? rankMeta.fr : rankMeta.en)}</span>
             ${onlineBadge}
+            ${p.bounty > 0 ? renderBountyBadgeHtml(p, isFr) : ""}
           </div>
-          <h2 style="margin:0;">${esc(p.name)}</h2>
+          <h2 style="margin:0 0 8px;">${esc(p.name)}</h2>
+          <div>${renderNationHtml(p, isFr)}</div>
+          <div class="player-bio-box">${bioHtml}</div>
         </div>
-        <div>${renderNationHtml(p, isFr)}</div>
       </div>
 
       <div class="player-modal-stats">
@@ -610,6 +739,18 @@
           <span class="nation-stat-val">${fmtInt(p.bankBalance)} / ${fmtInt(vaultCap)}</span>
         </div>
         <div class="nation-stat-cell">
+          <span class="nation-stat-lbl">${isFr ? "Kills (PvP / PvE)" : "Kills (PvP / PvE)"}</span>
+          <span class="nation-stat-val" style="color:var(--ok);">${fmtInt(p.kills)} <small style="opacity:0.75">(${p.pvpKills}/${p.pveKills})</small></span>
+        </div>
+        <div class="nation-stat-cell">
+          <span class="nation-stat-lbl">${isFr ? "Morts & K/D" : "Deaths & K/D"}</span>
+          <span class="nation-stat-val"><span style="color:var(--crimson-bright);">${fmtInt(p.deaths)}</span> • ${esc(kdVal)}</span>
+        </div>
+        <div class="nation-stat-cell">
+          <span class="nation-stat-lbl">${isFr ? "Prime Active" : "Active Bounty"}</span>
+          <span class="nation-stat-val">${p.bounty > 0 ? `${fmtInt(p.bounty)} Coins` : "--"}</span>
+        </div>
+        <div class="nation-stat-cell">
           <span class="nation-stat-lbl">${isFr ? "Profession" : "Profession"}</span>
           <span class="nation-stat-val">${jobMeta ? esc(isFr ? jobMeta.fr : jobMeta.en) : (isFr ? "Aucune" : "None")}</span>
         </div>
@@ -617,15 +758,17 @@
           <span class="nation-stat-lbl">${isFr ? "Progression Metier" : "Job Mastery"}</span>
           <span class="nation-stat-val">${p.jobId ? `${p.jobSkills}/${p.jobMaxSkills} (${p.jobPct}%)` : "--"}</span>
         </div>
+        <div class="nation-stat-cell">
+          <span class="nation-stat-lbl">${isFr ? "Palier Pass" : "Pass Tier"}</span>
+          <span class="nation-stat-val">#${fmtInt(p.passTier)}</span>
+        </div>
       </div>
 
-      <div class="nation-xp-box">
-        <div class="nation-xp-head">
-          <span><strong>${isFr ? "Palier FrontierPass" : "FrontierPass Tier"}</strong></span>
-          <span>#${fmtInt(p.passTier)}</span>
-        </div>
-        ${p.jobId ? `<div class="nation-xp-head" style="margin-top:8px;"><span><strong>${esc(isFr ? jobMeta.fr : jobMeta.en)}</strong></span><span>${p.jobSkills} / ${p.jobMaxSkills} (${p.jobPct}%)</span></div><div class="nation-xp-track"><div class="nation-xp-fill" style="width:${p.jobPct}%"></div></div>` : ""}
-      </div>
+      ${p.jobId ? `
+        <div class="nation-xp-box">
+          <div class="nation-xp-head"><span><strong>${esc(isFr ? jobMeta.fr : jobMeta.en)}</strong></span><span>${p.jobSkills} / ${p.jobMaxSkills} (${p.jobPct}%)</span></div>
+          <div class="nation-xp-track"><div class="nation-xp-fill" style="width:${p.jobPct}%"></div></div>
+        </div>` : ""}
 
       <div class="player-modal-actions">
         ${nationBtn}
@@ -634,10 +777,25 @@
 
     modal.classList.add("open");
     hydrateFlags();
+
+    const skinCanvas = document.getElementById("playerInspectSkinCanvas");
+    if (skinCanvas && window.FrontierSkin3D) {
+      const skinUrl = p.hasSkin
+        ? `${RELAY_BASE_URL}/api/public/skin/${encodeURIComponent(p.name.toLowerCase())}?v=${Number(p.skinVersion) || 1}`
+        : "";
+      modalSkinViewer = window.FrontierSkin3D.mountSingleSkinViewer(skinCanvas, {
+        skinUrl,
+        slim: Boolean(p.slim),
+      });
+    }
   }
 
   function closeModal() {
     state.selectedPlayerName = null;
+    if (modalSkinViewer) {
+      modalSkinViewer.destroy();
+      modalSkinViewer = null;
+    }
     document.getElementById("playerModal")?.classList.remove("open");
   }
 
@@ -664,7 +822,7 @@
         id: n.id,
         name: n.name.trim(),
         leaderName: typeof n.leaderName === "string" ? n.leaderName.trim() : "",
-        flagLayers: Array.isArray(n.flagLayers) ? n.flagLayers : [],
+        flagLayers: Array.isArray(n.flag) ? n.flag : (Array.isArray(n.flagLayers) ? n.flagLayers : []),
       };
       byId.set(item.id, item);
       byName.set(item.name.toLowerCase(), item);
@@ -731,6 +889,16 @@
           jobPct,
           bankBalance: Math.max(0, Math.floor(Number(raw.bankBalance) || 0)),
           passTier: Math.max(0, Math.floor(Number(raw.passTier) || 0)),
+          pvpKills: Math.max(0, Math.floor(Number(raw.pvpKills) || 0)),
+          pveKills: Math.max(0, Math.floor(Number(raw.pveKills) || 0)),
+          kills: Math.max(0, Math.floor(Number(raw.kills) || 0)),
+          deaths: Math.max(0, Math.floor(Number(raw.deaths) || 0)),
+          bounty: Math.max(0, Math.floor(Number(raw.bounty) || 0)),
+          bountyContributors: Math.max(0, Math.floor(Number(raw.bountyContributors) || 0)),
+          bio: typeof raw.bio === "string" ? raw.bio.trim() : "",
+          hasSkin: Boolean(raw.hasSkin),
+          skinVersion: Math.max(0, Math.floor(Number(raw.skinVersion) || 0)),
+          slim: Boolean(raw.slim),
           lastSeen: Math.max(0, Math.floor(Number(raw.lastSeen) || 0)),
         };
 
@@ -799,6 +967,16 @@
     });
 
     window.addEventListener("frontier:langchange", refreshAll);
+    window.addEventListener("frontier:profile-updated", async () => {
+      await loadPlayersData();
+      refreshAll();
+    });
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramPlayer = urlParams.get("player");
+    if (paramPlayer) {
+      openPlayerModal(paramPlayer);
+    }
 
     setInterval(async () => {
       if (document.visibilityState === "visible") {

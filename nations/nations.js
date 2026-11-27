@@ -7,97 +7,16 @@
   "use strict";
 
   const W = window.FrontierWiki;
-
-  const TIER_DEFS = [
-    { id: 0, requiredXp: 0, maxMembers: 10, en: "Settlement", fr: "Colonie", badgeCls: "" },
-    { id: 1, requiredXp: 500, maxMembers: 15, en: "Commonwealth", fr: "Communaute", badgeCls: "badge-green" },
-    { id: 2, requiredXp: 1500, maxMembers: 20, en: "State", fr: "Etat", badgeCls: "badge-green" },
-    { id: 3, requiredXp: 3500, maxMembers: 30, en: "Developing State", fr: "Etat en Essor", badgeCls: "badge-blue" },
-    { id: 4, requiredXp: 7000, maxMembers: 40, en: "Advanced State", fr: "Etat Avance", badgeCls: "badge-blue" },
-    { id: 5, requiredXp: 12000, maxMembers: 50, en: "Nation", fr: "Nation", badgeCls: "badge-blue" },
-    { id: 6, requiredXp: 20000, maxMembers: 65, en: "Rising Nation", fr: "Nation Emergente", badgeCls: "badge-gold" },
-    { id: 7, requiredXp: 32000, maxMembers: 80, en: "Established Nation", fr: "Nation Etablie", badgeCls: "badge-gold" },
-    { id: 8, requiredXp: 50000, maxMembers: 100, en: "Great Nation", fr: "Grande Nation", badgeCls: "badge-crimson" },
-    { id: 9, requiredXp: 75000, maxMembers: 150, en: "Superpower", fr: "Superpuissance", badgeCls: "badge-purple" },
-  ];
-
-  const MAX_NATION_LEVEL = 100;
-  const LEVELS_PER_TIER = 10;
-
-  function getLevelRequiredXp(globalLevel) {
-    const level = Math.max(1, Math.min(MAX_NATION_LEVEL, Math.floor(globalLevel || 1)));
-    if (level === 1) return 0;
-    const tierIndex = Math.floor((level - 1) / LEVELS_PER_TIER);
-    const subLevelIndex = (level - 1) % LEVELS_PER_TIER;
-    const currentTier = TIER_DEFS[tierIndex] || TIER_DEFS[0];
-    const nextTierXp = tierIndex + 1 < TIER_DEFS.length
-      ? TIER_DEFS[tierIndex + 1].requiredXp
-      : currentTier.requiredXp + 3000 * LEVELS_PER_TIER;
-    const step = Math.round((nextTierXp - currentTier.requiredXp) / LEVELS_PER_TIER);
-    return currentTier.requiredXp + subLevelIndex * step;
-  }
-
-  function computeGlobalLevel(xp) {
-    const val = Math.max(0, Math.floor(Number(xp) || 0));
-    for (let lvl = MAX_NATION_LEVEL; lvl >= 1; lvl--) {
-      if (val >= getLevelRequiredXp(lvl)) return lvl;
-    }
-    return 1;
-  }
-
-  function getXpProgress(xp, level) {
-    const curLvl = Math.max(1, Math.min(MAX_NATION_LEVEL, Math.floor(level || 1)));
-    const val = Math.max(0, Math.floor(Number(xp) || 0));
-    if (curLvl >= MAX_NATION_LEVEL) return { pct: 100, cur: val, next: getLevelRequiredXp(MAX_NATION_LEVEL) };
-    const startXp = getLevelRequiredXp(curLvl);
-    const nextXp = getLevelRequiredXp(curLvl + 1);
-    const span = Math.max(1, nextXp - startXp);
-    const pct = Math.max(0, Math.min(100, Math.round(((val - startXp) / span) * 100)));
-    return { pct, cur: val, next: nextXp };
-  }
-
-  const flagImageCache = new Map();
-  const composedFlagCache = new Map();
-
-  function loadFlagLayerImg(patternId, colorId) {
-    const p = String(patternId || "").replace(/[^a-zA-Z0-9_]/g, "");
-    const c = String(colorId || "").replace(/[^a-zA-Z0-9_]/g, "");
-    if (!p || !c) return Promise.resolve(null);
-    const key = `${p}:${c}`;
-    if (flagImageCache.has(key)) return flagImageCache.get(key);
-    const prom = new Promise((resolve) => {
-      const img = new Image();
-      img.onload = () => resolve(img);
-      img.onerror = () => resolve(null);
-      img.src = `../flags/${p}/${p}_${c}.png`;
-    });
-    flagImageCache.set(key, prom);
-    return prom;
-  }
-
-  async function composeFlagUrl(layers) {
-    if (!Array.isArray(layers) || layers.length === 0) return "";
-    const cacheKey = JSON.stringify(layers);
-    if (composedFlagCache.has(cacheKey)) return composedFlagCache.get(cacheKey);
-
-    const canvas = document.createElement("canvas");
-    canvas.width = 96;
-    canvas.height = 60;
-    const ctx = canvas.getContext("2d");
-    ctx.imageSmoothingEnabled = false;
-
-    let drawn = 0;
-    for (const layer of layers) {
-      if (!Array.isArray(layer) || layer.length < 2) continue;
-      const img = await loadFlagLayerImg(layer[0], layer[1]);
-      if (!img) continue;
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      drawn++;
-    }
-    const dataUrl = drawn > 0 ? canvas.toDataURL() : "";
-    composedFlagCache.set(cacheKey, dataUrl);
-    return dataUrl;
-  }
+  const S = window.FrontierNationsShared;
+  const TIER_DEFS = S.TIER_DEFS;
+  const MAX_NATION_LEVEL = S.MAX_NATION_LEVEL;
+  const getLevelRequiredXp = S.getLevelRequiredXp;
+  const computeGlobalLevel = S.computeGlobalLevel;
+  const getXpProgress = S.getXpProgress;
+  const composeFlagUrl = S.composeFlagUrl;
+  const getTierMeta = S.getTierMeta;
+  const computeServerRanking = S.computeServerRanking;
+  const loadContinents = S.loadContinents;
 
   const state = {
     nations: [],
@@ -114,85 +33,13 @@
     memberSearch: "",
   };
 
-  function resolveContinent(capital) {
-    if (!capital || !Number.isFinite(capital.x) || !Number.isFinite(capital.z) || state.continents.length === 0) {
-      return "Unknown";
-    }
-    let best = state.continents[0];
-    let bestDist = Infinity;
-    for (const c of state.continents) {
-      const dx = capital.x - c.x;
-      const dz = capital.z - c.z;
-      const d = dx * dx + dz * dz;
-      if (d < bestDist) {
-        bestDist = d;
-        best = c;
-      }
-    }
-    return best ? best.name : "Unknown";
+  function openNationDetailPage(nationId) {
+    if (!nationId) return;
+    window.location.href = `./nation.html?id=${encodeURIComponent(nationId)}`;
   }
 
   function sanitizeNation(raw, isRich) {
-    if (!raw || typeof raw.id !== "string" || typeof raw.name !== "string") return null;
-    // Deliberately never copy or retain raw.treasury
-    const claimsList = Array.isArray(raw.claims) ? raw.claims : [];
-    const claimCount = Number.isFinite(raw.claimCount) ? raw.claimCount : claimsList.length;
-    const hasLevel = Number.isFinite(raw.level) || Number.isFinite(raw.xp) || Number.isFinite(raw.tier);
-    const tier = Number.isInteger(raw.tier) ? Math.max(0, Math.min(9, raw.tier)) : null;
-    const xp = Number.isFinite(raw.xp) ? Math.max(0, Math.floor(raw.xp)) : null;
-    const level = Number.isFinite(raw.level)
-      ? Math.max(1, Math.min(MAX_NATION_LEVEL, Math.floor(raw.level)))
-      : (xp !== null ? computeGlobalLevel(xp) : (tier !== null ? tier * 10 + 1 : null));
-    const members = Array.isArray(raw.members)
-      ? raw.members
-          .filter((m) => m && typeof m.name === "string" && m.name.trim().length > 0)
-          .map((m) => ({
-            name: m.name.trim(),
-            isLeader: Boolean(m.isLeader),
-            role: String(m.role || "citizen"),
-          }))
-      : [];
-    const memberCount = Number.isSafeInteger(raw.memberCount) ? raw.memberCount : members.length;
-    const subCities = Array.isArray(raw.subCities)
-      ? raw.subCities.map((sc) => ({
-          name: String(sc?.name || sc?.id || "").trim(),
-          type: String(sc?.type || sc?.typeId || "city"),
-        })).filter((sc) => sc.name.length > 0)
-      : [];
-    const capital = raw.capital && Number.isFinite(raw.capital.x) && Number.isFinite(raw.capital.z)
-      ? { x: Math.round(raw.capital.x), z: Math.round(raw.capital.z) }
-      : null;
-
-    const recruitmentStatus = ["open", "apply", "closed"].includes(raw.recruitmentStatus)
-      ? raw.recruitmentStatus
-      : "open";
-    const recruitmentNote = typeof raw.recruitmentNote === "string"
-      ? raw.recruitmentNote.trim().slice(0, 120)
-      : "";
-
-    return {
-      id: raw.id,
-      name: raw.name,
-      capitalName: typeof raw.capitalName === "string" ? raw.capitalName : "",
-      leaderName: typeof raw.leaderName === "string" && raw.leaderName ? raw.leaderName : "--",
-      memberCount,
-      members,
-      citizenCount: Number.isFinite(raw.citizenCount) ? raw.citizenCount : null,
-      tier,
-      level,
-      xp,
-      recruitmentStatus,
-      recruitmentNote,
-      hasLevelData: isRich && hasLevel,
-      color: typeof raw.color === "string" ? raw.color : "#63c74d",
-      flag: Array.isArray(raw.flag) ? raw.flag : [],
-      flagUrl: "",
-      capital,
-      continent: resolveContinent(capital),
-      claimCount,
-      subCities,
-      createdAt: raw.createdAt || null,
-    };
+    return S.sanitizeNation(raw, isRich, state.continents);
   }
 
   function formatNumber(val) {
@@ -220,25 +67,6 @@
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    });
-  }
-
-  function getTierMeta(tierId) {
-    const idx = Number.isInteger(tierId) ? Math.max(0, Math.min(9, tierId)) : 0;
-    return TIER_DEFS[idx] || TIER_DEFS[0];
-  }
-
-  function computeServerRanking(list) {
-    return [...list].sort((a, b) => {
-      const lvlA = a.level ?? -1;
-      const lvlB = b.level ?? -1;
-      if (lvlB !== lvlA) return lvlB - lvlA;
-      const xpA = a.xp ?? -1;
-      const xpB = b.xp ?? -1;
-      if (xpB !== xpA) return xpB - xpA;
-      if (b.memberCount !== a.memberCount) return b.memberCount - a.memberCount;
-      if (b.claimCount !== a.claimCount) return b.claimCount - a.claimCount;
-      return a.name.localeCompare(b.name);
     });
   }
 
@@ -639,7 +467,7 @@
     container.querySelectorAll("[data-nation-id]").forEach((el) => {
       el.addEventListener("click", () => {
         const nid = el.getAttribute("data-nation-id");
-        openNationModal(nid);
+        openNationDetailPage(nid);
       });
     });
 
@@ -691,144 +519,12 @@
   }
 
   function openNationModal(nationId) {
-    const n = state.nations.find((x) => x.id === nationId);
-    if (!n) return;
-    state.selectedNationId = nationId;
-    state.memberSearch = "";
-    try {
-      window.history.replaceState(null, "", `#nation=${encodeURIComponent(n.id)}`);
-    } catch { /* ignore */ }
-
-    const lang = W.getLang();
-    const modal = document.getElementById("nationModal");
-    const body = document.getElementById("nationModalBody");
-    if (!modal || !body) return;
-
-    const tm = n.tier !== null ? getTierMeta(n.tier) : null;
-    const prog = n.level !== null ? getXpProgress(n.xp ?? 0, n.level) : null;
-    const mapHref = n.capital ? `../servermap/#rx=${n.capital.x}&rz=${n.capital.z}` : "../map/";
-
-    body.innerHTML = `
-      <div class="nation-modal-hero">
-        <img class="nation-modal-flag" id="modalNationFlagImg" src="${n.flagUrl || ""}" alt="${W.escapeHtml(n.name)}" />
-        <div style="flex:1;min-width:210px;">
-          <div class="chapter-kicker">#${n.serverRank} • ${W.escapeHtml(n.continent)}</div>
-          <h2 style="margin:0 0 6px;font-family:'MinecraftTen',sans-serif;font-size:26px;">${W.escapeHtml(n.name)}</h2>
-          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;">
-            <span class="badge badge-gold">${lang === "fr" ? "Dirigeant" : "Leader"}: ${W.escapeHtml(n.leaderName)}</span>
-            ${n.capitalName ? `<span class="badge">${lang === "fr" ? "Capitale" : "Capital"}: ${W.escapeHtml(n.capitalName)}</span>` : ""}
-            ${tm ? `<span class="badge ${tm.badgeCls}">Tier ${tm.id} • ${W.escapeHtml(lang === "fr" ? tm.fr : tm.en)}</span>` : ""}
-            ${renderRecruitBadge(n.recruitmentStatus, lang)}
-          </div>
-          ${n.recruitmentNote ? `<div class="nation-recruit-note">${W.escapeHtml(n.recruitmentNote)}</div>` : ""}
-          <a class="oreui-btn oreui-btn-sm oreui-btn-info" style="margin-top:10px;" href="${mapHref}">
-            ${lang === "fr" ? "Voir sur la Carte" : "Locate on World Map"}
-          </a>
-        </div>
-      </div>
-
-      ${prog ? `
-        <div class="nation-xp-box" style="margin-bottom:14px;">
-          <div class="nation-xp-head">
-            <span><strong>${lang === "fr" ? "Niveau de Nation" : "Nation Level"} ${n.level} / 100</strong></span>
-            <span>${formatNumber(n.xp ?? 0)} / ${formatNumber(prog.next)} XP (${prog.pct}%)</span>
-          </div>
-          <div class="nation-xp-track"><div class="nation-xp-fill" style="width:${prog.pct}%;"></div></div>
-        </div>
-      ` : ""}
-
-      <div class="nation-modal-stats">
-        <div class="nation-stat-cell">
-          <span class="nation-stat-lbl">${lang === "fr" ? "Membres" : "Members"}</span>
-          <span class="nation-stat-val">${n.memberCount}${tm ? ` / ${tm.maxMembers}` : ""}</span>
-        </div>
-        <div class="nation-stat-cell">
-          <span class="nation-stat-lbl">${lang === "fr" ? "Parcelles 100x100" : "Claimed Parcels"}</span>
-          <span class="nation-stat-val">${n.claimCount}</span>
-        </div>
-        <div class="nation-stat-cell">
-          <span class="nation-stat-lbl">${lang === "fr" ? "Citoyens PNJ" : "NPC Citizens"}</span>
-          <span class="nation-stat-val">${formatNumber(n.citizenCount)}</span>
-        </div>
-        <div class="nation-stat-cell">
-          <span class="nation-stat-lbl">${lang === "fr" ? "Fondation" : "Founded"}</span>
-          <span class="nation-stat-val" style="font-size:12px;">${W.escapeHtml(formatDateShort(n.createdAt, lang))}</span>
-        </div>
-      </div>
-
-      <div class="nation-members-box">
-        <div class="nation-members-head">
-          <strong style="font-family:'MinecraftRegular',monospace;text-transform:uppercase;font-size:12px;">
-            ${lang === "fr" ? `Membres de la Nation (${n.memberCount})` : `Nation Members (${n.memberCount})`}
-          </strong>
-          ${n.members.length > 0 ? `
-            <input class="ore-input" id="modalMemberSearch" type="search"
-              placeholder="${lang === "fr" ? "Filtrer un membre..." : "Filter member..."}"
-              style="padding:4px 9px;font-size:12.5px;" />
-          ` : ""}
-        </div>
-        <div id="modalMembersContainer">${renderMemberRosterHtml(n)}</div>
-      </div>
-
-      ${n.subCities.length > 0 ? `
-        <div class="nation-members-box">
-          <strong style="font-family:'MinecraftRegular',monospace;text-transform:uppercase;font-size:12px;">
-            ${lang === "fr" ? `Sous-villes & Avant-postes (${n.subCities.length})` : `Sub-cities & Outposts (${n.subCities.length})`}
-          </strong>
-          <div class="nation-subcities-row">
-            ${n.subCities.map((sc) => `<span class="badge badge-green">${W.escapeHtml(sc.name)} (${W.escapeHtml(sc.type)})</span>`).join("")}
-          </div>
-        </div>
-      ` : ""}
-    `;
-
-    modal.classList.add("open");
-    if (!n.flagUrl && n.flag.length > 0) {
-      composeFlagUrl(n.flag).then((url) => {
-        if (url) {
-          n.flagUrl = url;
-          const fimg = document.getElementById("modalNationFlagImg");
-          if (fimg) fimg.src = url;
-        }
-      });
-    }
-
-    const ms = document.getElementById("modalMemberSearch");
-    if (ms) {
-      ms.addEventListener("input", (e) => {
-        state.memberSearch = e.target.value;
-        const mc = document.getElementById("modalMembersContainer");
-        if (mc) mc.innerHTML = renderMemberRosterHtml(n);
-      });
-    }
+    openNationDetailPage(nationId);
   }
 
   function closeModal() {
     state.selectedNationId = null;
     document.getElementById("nationModal")?.classList.remove("open");
-    if (window.location.hash.startsWith("#nation=")) {
-      try {
-        window.history.replaceState(null, "", window.location.pathname + window.location.search);
-      } catch { /* ignore */ }
-    }
-  }
-
-  async function loadContinents() {
-    try {
-      const r = await fetch(`../default-continents.json?t=${Date.now()}`, { cache: "no-store" });
-      if (!r.ok) return [];
-      const data = await r.json();
-      const feats = data?.territories?.features || [];
-      return feats
-        .filter((f) => f?.geometry?.type === "Point" && Array.isArray(f.geometry.coordinates) && f?.properties?.text)
-        .map((f) => ({
-          name: String(f.properties.text),
-          x: Number(f.geometry.coordinates[0]),
-          z: Number(f.geometry.coordinates[1]),
-        }));
-    } catch {
-      return [];
-    }
   }
 
   async function loadNationsData() {
@@ -921,12 +617,16 @@
     window.addEventListener("frontier:langchange", refreshAll);
 
     const urlParams = new URLSearchParams(window.location.search);
-    const paramNation = urlParams.get("nation");
-    if (paramNation && state.nations.some((n) => n.id === paramNation)) {
-      openNationModal(paramNation);
-    } else if (window.location.hash.startsWith("#nation=")) {
+    const paramNation = urlParams.get("nation") || urlParams.get("id");
+    if (paramNation) {
+      const target = state.nations.find((n) => n.id === paramNation || n.name.toLowerCase() === paramNation.toLowerCase());
+      window.location.replace(`./nation.html?id=${encodeURIComponent(target ? target.id : paramNation)}`);
+      return;
+    }
+    if (window.location.hash.startsWith("#nation=")) {
       const targetId = decodeURIComponent(window.location.hash.slice("#nation=".length));
-      if (state.nations.some((n) => n.id === targetId)) openNationModal(targetId);
+      window.location.replace(`./nation.html?id=${encodeURIComponent(targetId)}`);
+      return;
     }
   }
 

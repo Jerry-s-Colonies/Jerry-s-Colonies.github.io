@@ -1,0 +1,325 @@
+/* ============================================================================
+ * THE FRONTIER — Account Widget (Top-Corner Grey Head + Profile/Skin Modal)
+ * ============================================================================ */
+
+.fe-acct-mount {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+}
+
+.fe-acct-floating {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 1050;
+}
+
+.fe-acct-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 4px 10px 4px 6px;
+  border-radius: 4px;
+  border: 2px solid #121316;
+  background: linear-gradient(180deg, #52565e 0%, #34373d 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), inset 0 -2px 0 rgba(0, 0, 0, 0.38), 0 3px 8px rgba(0, 0, 0, 0.4);
+  color: #eef0f3;
+  font-family: "MinecraftRegular", Consolas, monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.08s ease, filter 0.12s ease, border-color 0.12s ease;
+}
+
+.fe-acct-trigger:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  border-color: #f5b942;
+}
+
+.fe-acct-trigger.is-logged-in {
+  background: linear-gradient(180deg, #4b6c39 0%, #2f4922 100%);
+  border-color: #192b11;
+}
+
+.fe-acct-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 3px;
+  border: 1px solid #0e1014;
+  background: #4b5058;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+  display: block;
+}
+
+.fe-acct-trigger-label {
+  max-width: 118px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+[data-theme="light"] .fe-acct-trigger:not(.is-logged-in) {
+  background: linear-gradient(180deg, #e0e3ea 0%, #c6cbd6 100%);
+  color: #181b20;
+  border-color: #7c8390;
+}
+
+/* ---------- Modal Overlay ---------- */
+.fe-acct-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2500;
+  background: rgba(8, 10, 14, 0.78);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.fe-acct-backdrop.open {
+  display: flex;
+}
+
+.fe-acct-dialog {
+  position: relative;
+  width: min(100%, 760px);
+  max-height: 92vh;
+  overflow-y: auto;
+  padding: 22px;
+  background: var(--bg-panel, linear-gradient(180deg, #3c3f45 0%, #27292e 100%));
+  color: var(--text-main, #eef0f3);
+  border: 2px solid var(--border-dark, #0c0d0f);
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px var(--border-inner, #5c6068), 0 18px 44px rgba(0, 0, 0, 0.65);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.fe-acct-dialog.is-login {
+  width: min(100%, 460px);
+}
+
+.fe-acct-close {
+  position: sticky;
+  float: right;
+  top: 0;
+  min-width: 32px;
+  min-height: 30px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 2px solid #4a0c13;
+  background: linear-gradient(#e0525f, #8a1220);
+  color: #fff;
+  font-family: "MinecraftRegular", monospace;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.fe-acct-title {
+  margin: 0 0 6px;
+  font-family: "MinecraftTen", "MinecraftRegular", monospace;
+  font-size: 23px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  color: var(--gold, #f5b942);
+}
+
+.fe-acct-sub {
+  margin: 0 0 14px;
+  font-size: 13px;
+  color: var(--text-secondary, #cfd4dd);
+}
+
+.fe-acct-hint {
+  background: rgba(90, 143, 199, 0.14);
+  border: 1px solid rgba(90, 143, 199, 0.42);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  margin-bottom: 14px;
+  color: var(--text-main, #eef0f3);
+}
+
+.fe-acct-hint code {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: #ffd166;
+  font-family: Consolas, monospace;
+}
+
+.fe-acct-alert {
+  padding: 9px 12px;
+  border-radius: 5px;
+  font-size: 12.5px;
+  margin-bottom: 12px;
+  display: none;
+}
+
+.fe-acct-alert.show {
+  display: block;
+}
+
+.fe-acct-alert.err {
+  background: rgba(231, 76, 60, 0.18);
+  border: 1px solid rgba(231, 76, 60, 0.55);
+  color: #ffb8b0;
+}
+
+.fe-acct-alert.ok {
+  background: rgba(123, 227, 86, 0.16);
+  border: 1px solid rgba(123, 227, 86, 0.5);
+  color: #bdf5a7;
+}
+
+[data-theme="light"] .fe-acct-alert.err {
+  color: #7d150c;
+}
+[data-theme="light"] .fe-acct-alert.ok {
+  color: #185c10;
+}
+
+.fe-acct-field {
+  margin-bottom: 12px;
+}
+
+.fe-acct-field label {
+  display: block;
+  margin-bottom: 5px;
+  font-family: "MinecraftRegular", monospace;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-secondary, #cfd4dd);
+}
+
+.fe-acct-input,
+.fe-acct-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--bg-input, #111215);
+  color: var(--text-main, #eef0f3);
+  border: 2px solid var(--border-dark, #0c0d0f);
+  border-radius: 5px;
+  padding: 9px 11px;
+  font-family: inherit;
+  font-size: 13.5px;
+}
+
+.fe-acct-textarea {
+  min-height: 92px;
+  resize: vertical;
+}
+
+.fe-acct-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 4px;
+  border: 2px solid #121316;
+  background: linear-gradient(#666b73, #43474e);
+  color: #fff;
+  font-family: "MinecraftRegular", monospace;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.7);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 -2px 0 rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.fe-acct-btn:hover { filter: brightness(1.1); }
+.fe-acct-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.fe-acct-btn-primary { background: linear-gradient(#8ed965, #4fa832); border-color: #1f4611; }
+.fe-acct-btn-gold { background: linear-gradient(#f2b544, #c97f18); border-color: #613b05; }
+.fe-acct-btn-danger { background: linear-gradient(#e0525f, #8a1220); border-color: #4a0c13; }
+.fe-acct-btn-info { background: linear-gradient(#5a8fc7, #35618f); border-color: #1a3550; }
+
+.fe-acct-profile-grid {
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.fe-acct-preview-box {
+  background: radial-gradient(circle at 50% 42%, rgba(90, 143, 199, 0.2), rgba(14, 16, 20, 0.92));
+  border: 2px solid var(--border-dark, #0c0d0f);
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+}
+
+.fe-acct-preview-canvas {
+  width: 206px;
+  height: 250px;
+  display: block;
+  margin: 0 auto;
+  cursor: grab;
+  touch-action: none;
+}
+
+.fe-acct-preview-canvas:active {
+  cursor: grabbing;
+}
+
+.fe-acct-skin-drop {
+  border: 2px dashed rgba(245, 185, 66, 0.45);
+  background: rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  padding: 12px;
+  text-align: center;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.fe-acct-skin-drop:hover,
+.fe-acct-skin-drop.dragover {
+  border-color: #8ed965;
+  background: rgba(142, 217, 101, 0.08);
+}
+
+.fe-acct-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.fe-acct-nations-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.fe-acct-userbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+  border-bottom: 2px solid var(--border-soft, #31353c);
+}
+
+@media (max-width: 680px) {
+  .fe-acct-profile-grid {
+    grid-template-columns: 1fr;
+  }
+  .fe-acct-trigger-label {
+    display: none;
+  }
+}
